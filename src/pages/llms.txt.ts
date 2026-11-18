@@ -24,7 +24,10 @@ export const GET: APIRoute = async ({ site: base }) => {
   const body = [
     `# ${site.name}`,
     '',
-    `> ${t('site.description')}`,
+    `> ${t('about.definition')}`,
+    '',
+    `Contenido completo en Markdown: ${abs('/llms-full.txt')}`,
+    'Precios: no se publican; cada proyecto se cotiza sin costo después de una primera conversación.',
     '',
     `Atiende en persona en los distritos de ${site.locality} (${districts.join(', ')}) y en línea en todo Costa Rica.`,
     '',

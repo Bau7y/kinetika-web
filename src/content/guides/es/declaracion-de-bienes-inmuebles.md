@@ -9,6 +9,16 @@ seo_title: Declaración de bienes inmuebles en San Carlos, qué necesitás
 meta_description: Quién debe declarar el valor de su propiedad, cada cuánto (Ley 7509, art. 16), qué llevar en San Carlos y qué pasa si no se declara.
 summary: Toda persona dueña de un inmueble debe declarar su valor ante la municipalidad al menos cada cinco años (Ley 7509, art. 16). En San Carlos se presenta el formulario oficial con tu identificación.
 updated: 2026-11-17
+sources:
+  - title: "Ley N.° 7509, Ley de Impuesto sobre Bienes Inmuebles (SINALEVI, Procuraduría General de la República)"
+    url: https://www.pgrweb.go.cr/scij/Busqueda/Normativa/Normas/nrm_texto_completo.aspx?nValor1=1&nValor2=26598
+  - title: "Guías detalladas de bienes inmuebles en TramiMuniSC"
+    url: https://www.tramimunisc.com
+faq:
+  - q: "¿Cada cuánto hay que declarar el valor de una propiedad?"
+    a: "Al menos cada cinco años, según el artículo 16 de la Ley 7509."
+  - q: "¿Qué pasa si no presento la declaración?"
+    a: "La municipalidad puede valorar la propiedad de oficio, sin tu declaración (artículo 17 de la Ley 7509)."
 ---
 
 ## Quién tiene que declarar

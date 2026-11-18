@@ -8,6 +8,11 @@ seo_title: How to move your restaurant’s WhatsApp orders into a system
 meta_description: What changes in the kitchen, at the register and for your customers when orders leave the WhatsApp chat and go into an online ordering system.
 summary: Start with the menu, keep WhatsApp for notices and move only order-taking into the system. The kitchen then sees every order with its status and nothing gets lost in the chat.
 updated: 2026-11-17
+faq:
+  - q: "Do I have to stop using WhatsApp?"
+    a: "No. WhatsApp can stay as a channel for notices; what changes is that orders are taken in one place."
+  - q: "Where do I start?"
+    a: "With the menu: dishes, prices and what sells out early. It helps even if you only take orders on WhatsApp for now."
 ---
 
 ## Why the chat gets hard at rush hour

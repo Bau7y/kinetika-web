@@ -48,6 +48,7 @@ const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alterna
       <meta name="robots" content="noindex, follow" />
     ) : (
       <>
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
         <link rel="canonical" href={canonicalUrl} />
         {LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(alternates[l], Astro.site)} />)}
         <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, Astro.site)} />

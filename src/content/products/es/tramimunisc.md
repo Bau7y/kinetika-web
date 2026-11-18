@@ -44,4 +44,15 @@ faq:
 cta:
   title: ¿Querés algo así para tu negocio?
   text: TramiMuniSC muestra cómo trabajamos. Contanos qué proceso querés ordenar y lo vemos juntos.
+answer:
+  question: "¿Qué es TramiMuniSC?"
+  text: "TramiMuniSC es el servicio de Kinetika que acompaña trámites ante la Municipalidad de San Carlos: declaración y exoneración de bienes inmuebles, patentes, uso de suelo y consultas. Ayuda a reunir requisitos, llenar formularios y dar seguimiento. Es un servicio privado y ya funciona en tramimunisc.com."
+comparison:
+  title: "Por tu cuenta o con TramiMuniSC"
+  columns: ["Por tu cuenta", "Con TramiMuniSC"]
+  rows:
+    - ["Requisitos", "Averiguarlos y reunirlos", "Se revisan con vos"]
+    - ["Formulario", "Lo llenás vos", "Se llena con tus datos"]
+    - ["Seguimiento", "Consultar en la municipalidad", "El servicio te avisa el resultado"]
+    - ["Quién decide", "La municipalidad", "La municipalidad"]
 ---

@@ -20,6 +20,10 @@ const t = useTranslations(Astro.props.lang);
         <p>“{t('why.quote')}”</p>
       </blockquote>
       <p class="why_body" data-reveal>{t('why.text')}</p>
+      <div class="why_answer" data-reveal>
+        <h3>{t('about.question')}</h3>
+        <p>{t('about.definition')}</p>
+      </div>
       <p class="why_signature">{t('why.signature')} <span>· {t('why.place')}</span></p>
     </div>
 
@@ -58,6 +62,27 @@ const t = useTranslations(Astro.props.lang);
   .why_body {
     max-width: 620px;
     font-size: var(--text_md);
+    line-height: 1.65;
+    color: var(--color_text_secondary);
+  }
+
+  /* Self-contained answer: reads on its own when quoted by a search engine or assistant */
+  .why_answer {
+    max-width: 620px;
+    padding: 20px 22px;
+    border-left: 3px solid var(--color_accent);
+    border-radius: 0 var(--radius_lg) var(--radius_lg) 0;
+    background: var(--color_accent_tint);
+  }
+
+  .why_answer h3 {
+    font-size: var(--text_lg);
+    font-weight: 600;
+  }
+
+  .why_answer p {
+    margin-top: 6px;
+    font-size: 0.9375rem;
     line-height: 1.65;
     color: var(--color_text_secondary);
   }

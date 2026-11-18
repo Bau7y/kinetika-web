@@ -45,6 +45,16 @@ const products = defineCollection({
       items: z.array(z.object({ title: z.string(), text: z.string() })).min(2),
     }),
     faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
+    /** Direct answer to "what is it?": self-contained, 40–60 words. */
+    answer: z.object({ question: z.string(), text: z.string() }),
+    /** Two-way comparison table (today vs. with the product). */
+    comparison: z
+      .object({
+        title: z.string(),
+        columns: z.tuple([z.string(), z.string()]),
+        rows: z.array(z.tuple([z.string(), z.string(), z.string()])).min(2),
+      })
+      .optional(),
     cta: z.object({
       title: z.string(),
       text: z.string(),
@@ -72,6 +82,10 @@ const guides = defineCollection({
     /** Law the guide is about, when there is one (e.g. "Ley 7509"). */
     law: z.string().optional(),
     updated: z.coerce.date(),
+    /** Primary sources the guide relies on, listed at the end. */
+    sources: z.array(z.object({ title: z.string(), url: z.url() })).default([]),
+    /** Short questions answered by the guide (FAQPage). */
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
   }),
 });
 

@@ -45,4 +45,15 @@ faq:
 cta:
   title: Join the waitlist.
   text: We will write to you when we open the first version to local firms.
+answer:
+  question: "What is the Kinetika accounting platform?"
+  text: "It is an online platform for accounting firms and accountants in Costa Rica. It brings together the client portfolio, a portal to collect documents, the deadline calendar and a review that lists findings before filing. It works alongside the software you already use and starts by importing your Excel. The waitlist is open."
+comparison:
+  title: "Excel or the platform"
+  columns: ["Excel only", "With the platform"]
+  rows:
+    - ["Client documents", "Arrive by email or WhatsApp", "Each client uploads them to their portal"]
+    - ["Deadlines", "Formulas and colors by hand", "Calendar with reminders"]
+    - ["Before filing", "Manual review", "Findings sorted by severity"]
+    - ["Your current data", "Stays in the sheet", "Imported from your Excel"]
 ---

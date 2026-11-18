@@ -45,4 +45,15 @@ faq:
 cta:
   title: Contanos qué necesitás.
   text: Tres preguntas y te respondemos con una propuesta y una demo.
+answer:
+  question: "¿Qué es un sitio web a la medida de Kinetika?"
+  text: "Es un sitio diseñado y programado para tu negocio, sin plantillas compradas. Carga rápido, queda listo para Google, protege sus formularios del spam y puede tener versión en inglés. Lo hacemos desde San Carlos para negocios de todo Costa Rica y lo ves funcionando antes de contratar."
+comparison:
+  title: "Plantilla o sitio a la medida"
+  columns: ["Plantilla o constructor", "Sitio a la medida de Kinetika"]
+  rows:
+    - ["Diseño", "Compartido con otros sitios", "Hecho para tu negocio"]
+    - ["Cambios de estructura", "Limitados a lo que permite la herramienta", "Sin los límites de una plantilla"]
+    - ["Formularios", "Según el plan contratado", "Captcha invisible, límite de envíos y filtros de spam"]
+    - ["Antes de contratar", "Una plantilla de muestra", "Una primera versión que funciona"]
 ---

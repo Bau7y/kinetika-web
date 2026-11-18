@@ -159,6 +159,27 @@ describe('SEO', () => {
     assert.match(html, /"@type":"FAQPage"/);
   });
 
+  it('llms-full.txt trae el contenido completo y llms.txt lo enlaza', async () => {
+    const full = await (await get('/llms-full.txt')).text();
+    assert.match(full, /# Productos/);
+    assert.match(full, /# Guías/);
+    assert.match(await (await get('/llms.txt')).text(), /llms-full\.txt/);
+  });
+
+  it('cada producto responde qué es en un bloque propio', async () => {
+    const html = await (await get('/productos/tramimunisc')).text();
+    assert.match(html, /<h2 id="answer_title"[^>]*>¿Qué es TramiMuniSC\?<\/h2>/);
+  });
+
+  it('los datos estructurados son JSON válido en todas las páginas clave', async () => {
+    for (const path of ['/', '/en', '/productos/sitios-web', '/guias/declaracion-de-bienes-inmuebles']) {
+      const html = await (await get(path)).text();
+      const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+      assert.ok(blocks.length > 0, path);
+      for (const [, json] of blocks) JSON.parse(json);
+    }
+  });
+
   it('llms.txt resume productos y guías', async () => {
     const text = await (await get('/llms.txt')).text();
     assert.match(text, /^# Kinetika/);
