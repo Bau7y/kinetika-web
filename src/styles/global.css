@@ -298,3 +298,37 @@ main:focus {
     transform: translateX(3px);
   }
 }
+
+/* ── Page transitions ─────────────────────────────── */
+/*
+ * Native cross-document View Transitions: no JS, no router. The old page
+ * fades out quickly and the new one rises in; the navigation pill keeps its
+ * own name, so it stays in place between pages. Browsers without support
+ * simply navigate as usual.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: page_out var(--duration_exit) var(--ease_out) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page_in var(--duration_base) var(--ease_out) both;
+  }
+}
+
+@keyframes page_out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page_in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
