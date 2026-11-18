@@ -1,4 +1,13 @@
 ---
+/**
+ * Floating pill navigation.
+ * - A glass capsule, centered, that turns more solid after scrolling.
+ * - On wide screens a highlight slides to the current section (scroll spy)
+ *   or to the hovered link. It is a duplicated, clipped copy of the links:
+ *   only clip-path animates, so the background and the text color change
+ *   together, with no layout work.
+ * - On narrow screens the pill opens a panel right under it.
+ */
 import Logo from '../brand/Logo.astro';
 import LangSwitch from './LangSwitch.astro';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
@@ -13,11 +22,11 @@ const isHome = Astro.url.pathname === routes.home[lang];
 const anchor = (id: string) => (isHome ? `#${id}` : homeAnchor(lang, id));
 
 const links = [
-  { href: anchor('interruptor'), label: t('nav.products') },
-  { href: anchor('dia'), label: t('nav.day') },
-  { href: anchor('plano'), label: t('nav.proof') },
-  { href: anchor('preguntas'), label: t('nav.faq') },
-  { href: routes.guides[lang], label: t('nav.guides') },
+  { href: anchor('interruptor'), label: t('nav.products'), section: 'interruptor' },
+  { href: anchor('dia'), label: t('nav.day'), section: 'dia' },
+  { href: anchor('plano'), label: t('nav.proof'), section: 'plano' },
+  { href: anchor('preguntas'), label: t('nav.faq'), section: 'preguntas' },
+  { href: routes.guides[lang], label: t('nav.guides'), section: undefined },
 ];
 const quoteHref = isHome ? '#contacto' : routes.quote[lang];
 const path = Astro.url.pathname;
@@ -25,23 +34,31 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
 ---
 <div class="scroll_sentinel" data-scroll-sentinel aria-hidden="true"></div>
 <header class="navbar" data-navbar>
-  <div class="navbar_inner container">
-    <a href={routes.home[lang]} class="navbar_brand" aria-label={t('nav.home_label')} translate="no">
-      <Logo />
+  <div class="pill">
+    <a href={routes.home[lang]} class="pill_brand" aria-label={t('nav.home_label')} translate="no">
+      <Logo size={24} />
     </a>
 
-    <nav class="navbar_nav" aria-label={t('nav.main_label')}>
-      <ul role="list" class="navbar_links">
-        {links.map((link) => <li><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>)}
+    <nav class="pill_nav" aria-label={t('nav.main_label')}>
+      <ul role="list" class="pill_links" data-pill-links>
+        {links.map((link) => (
+          <li>
+            <a href={link.href} aria-current={current(link.href)} data-section={link.section}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+      <!-- Highlight: the same links, styled as active and clipped to one of them -->
+      <ul role="list" class="pill_links pill_highlight" aria-hidden="true" data-pill-highlight>
+        {links.map((link) => <li><span>{link.label}</span></li>)}
       </ul>
     </nav>
 
-    <div class="navbar_actions">
+    <div class="pill_actions">
       <LangSwitch lang={lang} altHref={altHref} />
-      <a href={quoteHref} class="btn btn_primary btn_sm navbar_cta">{t('nav.quote')}</a>
+      <a href={quoteHref} class="btn btn_primary btn_sm pill_cta">{t('nav.quote')}</a>
       <button
         type="button"
-        class="navbar_menu_btn"
+        class="pill_menu_btn"
         data-menu-toggle
         data-label-open={t('nav.open_menu')}
         data-label-close={t('nav.close_menu')}
@@ -55,12 +72,12 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     </div>
   </div>
 
-  <div id="menu_movil" class="navbar_mobile" data-mobile-menu>
-    <nav aria-label={t('nav.mobile_label')} class="container">
+  <div id="menu_movil" class="pill_panel" data-mobile-menu>
+    <nav aria-label={t('nav.mobile_label')}>
       <ul role="list">
         {links.map((link, i) => <li data-i={i}><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>)}
       </ul>
-      <a href={quoteHref} class="btn btn_primary navbar_mobile_cta" data-i={links.length}>{t('nav.quote')}</a>
+      <a href={quoteHref} class="btn btn_primary pill_panel_cta" data-i={links.length}>{t('nav.quote')}</a>
     </nav>
   </div>
 </header>
@@ -70,20 +87,81 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
   const menuButton = navbar.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
   const mobileMenu = navbar.querySelector<HTMLElement>('[data-mobile-menu]')!;
 
-  /* Solid background after scrolling. A sentinel at the top of the page:
+  /* More solid after scrolling. A sentinel at the top of the page:
      no scroll listener and no geometry reads, so no forced layout. */
   const sentinel = document.querySelector<HTMLElement>('[data-scroll-sentinel]')!;
   new IntersectionObserver(([entry]) => navbar.classList.toggle('scrolled', !entry.isIntersecting)).observe(sentinel);
 
-  /* Mobile menu. While open, everything outside the header is inert: focus
-     stays in the menu. Escape closes it and returns focus to the button. */
+  /* ── Sliding highlight (wide screens) ── */
+  const list = navbar.querySelector<HTMLElement>('[data-pill-links]')!;
+  const highlight = navbar.querySelector<HTMLElement>('[data-pill-highlight]')!;
+  const links = [...list.querySelectorAll<HTMLAnchorElement>('a')];
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // Link boxes, measured only when the layout changes (load, resize, fonts)
+  let boxes: { left: number; right: number }[] = [];
+  const measure = () => {
+    const width = list.offsetWidth;
+    boxes = links.map((a) => {
+      const li = a.parentElement!;
+      return { left: li.offsetLeft, right: width - li.offsetLeft - li.offsetWidth };
+    });
+    paint(shown, false);
+  };
+
+  let active = links.findIndex((a) => a.getAttribute('aria-current') === 'page');
+  let shown = active;
+
+  /** Clips the highlight to link `index` (-1 hides it). */
+  function paint(index: number, animate = true) {
+    shown = index;
+    highlight.classList.toggle('no_motion', !animate);
+    const box = boxes[index];
+    if (index < 0 || !box) {
+      highlight.classList.remove('is_on');
+      return;
+    }
+    highlight.style.clipPath = `inset(0 ${box.right}px 0 ${box.left}px round 999px)`;
+    highlight.classList.add('is_on');
+  }
+
+  new ResizeObserver(measure).observe(list);
+  document.fonts?.ready.then(measure);
+
+  if (finePointer) {
+    links.forEach((a, i) => a.addEventListener('pointerenter', () => paint(i)));
+    list.addEventListener('pointerleave', () => paint(active));
+  }
+
+  // Scroll spy: the section crossing the middle of the viewport
+  const sections = links
+    .map((a, i) => ({ i, el: a.dataset.section ? document.getElementById(a.dataset.section) : null }))
+    .filter((s): s is { i: number; el: HTMLElement } => s.el !== null);
+  if (sections.length > 0) {
+    const spy = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const match = sections.find((s) => s.el === entry.target);
+          if (!match) continue;
+          if (entry.isIntersecting) active = match.i;
+          else if (active === match.i) active = -1;
+        }
+        if (!list.matches(':hover')) paint(active);
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => spy.observe(s.el));
+  }
+
+  /* ── Panel (narrow screens). While open, everything outside the header is
+     inert: focus stays in the menu. Escape closes it and returns focus. ── */
   const outside = () => document.querySelectorAll<HTMLElement>('body > :not(header):not(script)');
 
   const setMenuOpen = (isOpen: boolean) => {
     if (isOpen === mobileMenu.classList.contains('open')) return;
     mobileMenu.classList.toggle('open', isOpen);
     menuButton.classList.toggle('open', isOpen);
-    document.documentElement.classList.toggle('menu_open', isOpen);
+    navbar.classList.toggle('menu_open', isOpen);
     menuButton.setAttribute('aria-expanded', String(isOpen));
     menuButton.setAttribute('aria-label', (isOpen ? menuButton.dataset.labelClose : menuButton.dataset.labelOpen) ?? '');
     outside().forEach((el) => el.toggleAttribute('inert', isOpen));
@@ -98,7 +176,7 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
       menuButton.focus();
     }
   });
-  window.matchMedia('(min-width: 1080px)').addEventListener('change', (e) => e.matches && setMenuOpen(false));
+  matchMedia('(min-width: 1080px)').addEventListener('change', (e) => e.matches && setMenuOpen(false));
 </script>
 
 <style>
@@ -113,99 +191,150 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
 
   .navbar {
     position: fixed;
-    inset: 0 0 auto;
+    top: 14px;
+    left: 0;
+    right: 0;
     z-index: var(--z_navbar);
+    padding-inline: 12px;
+    pointer-events: none;
+    /* Stays in place during page transitions */
+    view-transition-name: navbar;
   }
 
-  /* Background on a pseudo-element: fading it is an opacity change only */
-  .navbar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgb(7 11 20 / 0.82);
-    border-bottom: 1px solid var(--color_line);
-    backdrop-filter: saturate(1.3) blur(14px);
-    -webkit-backdrop-filter: saturate(1.3) blur(14px);
-    opacity: 0;
-    transition: opacity var(--duration_base) var(--ease_out);
-  }
-
-  .navbar.scrolled::before,
-  :global(html.menu_open) .navbar::before {
-    opacity: 1;
-  }
-
-  .navbar_inner {
+  /* ── The pill ── */
+  .pill {
     position: relative;
-    z-index: calc(var(--z_menu) + 1);
+    isolation: isolate;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space_sm);
-    min-height: var(--navbar_h);
+    gap: 12px;
+    max-width: 1180px;
+    min-height: 60px;
+    margin-inline: auto;
+    padding: 8px 8px 8px 20px;
+    border-radius: var(--radius_full);
+    pointer-events: auto;
   }
 
-  .navbar_brand {
+  /* Glass layers on pseudo-elements: scrolling only changes their opacity */
+  .pill::before,
+  .pill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    transition: opacity var(--duration_base) var(--ease_out);
+  }
+
+  .pill::before {
+    background: rgb(13 20 34 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    backdrop-filter: saturate(1.4) blur(16px);
+    -webkit-backdrop-filter: saturate(1.4) blur(16px);
+  }
+
+  .pill::after {
+    background: rgb(9 14 25 / 0.88);
+    border: 1px solid var(--color_line_strong);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+    opacity: 0;
+  }
+
+  .navbar.scrolled .pill::after,
+  .navbar.menu_open .pill::after {
+    opacity: 1;
+  }
+
+  .pill_brand {
     display: flex;
     align-items: center;
-    gap: 12px;
     min-height: var(--tap_min);
     color: var(--color_text);
     text-decoration: none;
   }
 
-
-  .navbar_nav {
+  .pill_nav {
+    position: relative;
     display: none;
   }
 
-  .navbar_links {
+  .pill_links {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 2px;
   }
 
-  .navbar_links a {
+  .pill_links a,
+  .pill_links span {
     display: inline-flex;
     align-items: center;
     min-height: var(--tap_min);
-    padding-inline: 0.7rem;
+    padding-inline: 14px;
+    border-radius: var(--radius_full);
     font-size: var(--text_sm);
     font-weight: 500;
+    white-space: nowrap;
     color: var(--color_nav_link);
     text-decoration: none;
   }
 
-  .navbar_links a[aria-current='page'] {
-    color: var(--color_accent_text);
+  .pill_links a:focus-visible {
+    outline-offset: -2px;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .navbar_links a:hover {
-      color: var(--color_text);
-    }
+  /* Copy of the links in their active look, clipped to one item */
+  .pill_highlight {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--color_accent_tint_strong);
+    border-radius: var(--radius_full);
+    clip-path: inset(0 50% 0 50% round 999px);
+    opacity: 0;
+    transition:
+      clip-path 320ms var(--ease_out),
+      opacity var(--duration_fast) ease;
   }
 
-  .navbar_actions {
+  .pill_highlight span {
+    color: var(--color_text);
+  }
+
+  .pill_highlight.is_on {
+    opacity: 1;
+  }
+
+  .pill_highlight.no_motion {
+    transition: none;
+  }
+
+  .pill_actions {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .navbar_cta {
+  .pill_actions :global(.lang_switch) {
+    border-radius: var(--radius_full);
+  }
+
+  .pill_cta {
     display: none;
+    border-radius: var(--radius_full);
   }
 
   /* Two lines that turn into an X */
-  .navbar_menu_btn {
+  .pill_menu_btn {
     position: relative;
     width: var(--tap_min);
     height: var(--tap_min);
-    border-radius: var(--radius_md);
+    border-radius: var(--radius_full);
     border: 1px solid var(--color_line_strong);
   }
 
-  .navbar_menu_btn span {
+  .pill_menu_btn span {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -217,93 +346,111 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     transition: transform var(--duration_base) var(--ease_out);
   }
 
-  .navbar_menu_btn span:nth-child(1) { transform: translateY(-3.5px); }
-  .navbar_menu_btn span:nth-child(2) { transform: translateY(3.5px); }
-  .navbar_menu_btn.open span:nth-child(1) { transform: rotate(45deg); }
-  .navbar_menu_btn.open span:nth-child(2) { transform: rotate(-45deg); }
+  .pill_menu_btn span:nth-child(1) { transform: translateY(-3.5px); }
+  .pill_menu_btn span:nth-child(2) { transform: translateY(3.5px); }
+  .pill_menu_btn.open span:nth-child(1) { transform: rotate(45deg); }
+  .pill_menu_btn.open span:nth-child(2) { transform: rotate(-45deg); }
 
-  /* Full-screen mobile menu with staggered links */
-  .navbar_mobile {
-    position: fixed;
-    inset: 0;
-    z-index: var(--z_menu);
-    display: grid;
-    align-items: center;
-    padding-top: var(--navbar_h);
-    background: rgb(7 11 20 / 0.96);
+  /* ── Panel under the pill (narrow screens) ── */
+  .pill_panel {
+    max-width: 1180px;
+    margin: 10px auto 0;
+    padding: 12px;
+    border-radius: var(--radius_2xl);
+    background: var(--color_surface);
+    border: 1px solid var(--color_line_strong);
+    box-shadow: 0 24px 48px rgb(0 0 0 / 0.45);
+    transform-origin: 50% 0;
     opacity: 0;
+    transform: translateY(-8px) scale(0.97);
     visibility: hidden;
     pointer-events: none;
-    overflow-y: auto;
     /* Closing (this state) is faster than opening */
-    transition: opacity var(--duration_exit) var(--ease_out), visibility var(--duration_exit);
+    transition:
+      opacity var(--duration_exit) var(--ease_out),
+      transform var(--duration_exit) var(--ease_out),
+      visibility var(--duration_exit);
   }
 
-  .navbar_mobile.open {
+  .pill_panel.open {
     opacity: 1;
+    transform: none;
     visibility: visible;
     pointer-events: auto;
     transition-duration: var(--duration_base);
   }
 
-  .navbar_mobile ul {
+  .pill_panel ul {
     display: grid;
-    gap: 0.25rem;
   }
 
-  .navbar_mobile li,
-  .navbar_mobile_cta {
+  .pill_panel li,
+  .pill_panel_cta {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity var(--duration_exit) var(--ease_out), transform var(--duration_exit) var(--ease_out);
+    transform: translateY(8px);
+    transition:
+      opacity var(--duration_exit) var(--ease_out),
+      transform var(--duration_exit) var(--ease_out);
   }
 
-  .navbar_mobile.open li,
-  .navbar_mobile.open .navbar_mobile_cta {
+  .pill_panel.open li,
+  .pill_panel.open .pill_panel_cta {
     opacity: 1;
     transform: none;
     transition-duration: var(--duration_base);
-    transition-delay: calc(60ms + var(--i) * 40ms);
+    transition-delay: calc(40ms + var(--i) * 30ms);
   }
 
-  .navbar_mobile li a {
-    display: block;
-    padding-block: 0.4rem;
-    font-size: clamp(1.75rem, 7vw, 2.5rem);
+  .pill_panel li a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding-inline: 16px;
+    border-radius: var(--radius_lg);
+    font-size: var(--text_lg);
     font-weight: 600;
-    letter-spacing: var(--tracking_tight);
     color: var(--color_nav_link);
     text-decoration: none;
   }
 
-  .navbar_mobile_cta {
-    margin-top: var(--space_lg);
+  .pill_panel li a[aria-current='page'] {
+    color: var(--color_accent_text);
   }
 
-  :global(html.menu_open) {
-    overflow: hidden;
+  .pill_panel_cta {
+    width: 100%;
+    margin-top: 8px;
+    border-radius: var(--radius_full);
   }
 
-  @media (min-width: 640px) {
-    .navbar_cta {
+  @media (min-width: 560px) {
+    .pill_cta {
       display: inline-flex;
     }
   }
 
   @media (min-width: 1080px) {
-    .navbar_nav {
+    .pill_nav {
       display: block;
     }
 
-    .navbar_menu_btn,
-    .navbar_mobile {
+    .pill_menu_btn,
+    .pill_panel {
       display: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .navbar_mobile li,
-    .navbar_mobile_cta {
+    .pill_highlight,
+    .pill_panel,
+    .pill_panel li,
+    .pill_panel_cta {
+      transition-property: opacity;
+    }
+
+    .pill_panel,
+    .pill_panel li,
+    .pill_panel_cta {
       transform: none;
     }
   }
