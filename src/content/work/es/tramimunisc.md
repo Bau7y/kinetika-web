@@ -14,7 +14,7 @@ external_url: https://www.tramimunisc.com
 updated: 2026-11-17
 demo:
   title: Seguí un trámite de principio a fin.
-  text: Marcá los documentos y avanzá el trámite como lo vería una persona que usa el servicio.
+  text: Marcá los documentos y avance el trámite como lo vería una persona que usa el servicio.
 highlights:
   title: Qué trámites acompaña.
   items:
@@ -43,18 +43,18 @@ faq:
   - q: ¿Dónde lo uso?
     a: En tramimunisc.com, donde están los trámites, las guías y el formulario de contacto.
 cta:
-  title: ¿Querés algo así para tu negocio?
-  text: TramiMuniSC muestra cómo trabajamos. Contanos qué proceso querés ordenar y lo vemos juntos.
+  title: ¿Quiere algo así para su negocio?
+  text: TramiMuniSC muestra cómo trabajamos. Cuéntenos qué proceso quiere ordenar y lo vemos juntos.
 answer:
   question: "¿Qué es TramiMuniSC?"
   text: "TramiMuniSC es el servicio de Kinetika que acompaña trámites ante la Municipalidad de San Carlos: declaración y exoneración de bienes inmuebles, patentes, uso de suelo y consultas. Ayuda a reunir requisitos, llenar formularios y dar seguimiento. Es un servicio privado y ya funciona en tramimunisc.com."
 comparison:
-  title: "Por tu cuenta o con TramiMuniSC"
-  columns: ["Por tu cuenta", "Con TramiMuniSC"]
+  title: "Por su cuenta o con TramiMuniSC"
+  columns: ["Por su cuenta", "Con TramiMuniSC"]
   rows:
-    - ["Requisitos", "Averiguarlos y reunirlos", "Se revisan con vos"]
-    - ["Formulario", "Lo llenás vos", "Se llena con tus datos"]
-    - ["Seguimiento", "Consultar en la municipalidad", "El servicio te avisa el resultado"]
+    - ["Requisitos", "Averiguarlos y reunirlos", "Se revisan con usted"]
+    - ["Formulario", "Lo llena usted", "Se llena con sus datos"]
+    - ["Seguimiento", "Consultar en la municipalidad", "El servicio le avisa el resultado"]
     - ["Quién decide", "La municipalidad", "La municipalidad"]
 case:
   problem: "Declarar una propiedad, pedir una exoneración o sacar una patente obliga a averiguar requisitos, llenar formularios y volver varias veces a la municipalidad."

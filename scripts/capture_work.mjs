@@ -51,7 +51,7 @@ async function meanDifference(a, b) {
 const server = await startStaticServer();
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 try {
-  const entries = await readdir(new URL('../.vercel/output/static/proyectos/', import.meta.url), { withFileTypes: true });
+  const entries = await readdir(new URL('../.vercel/output/static/experiencia/', import.meta.url), { withFileTypes: true });
   const slugs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
   for (const slug of slugs) {
     const page = await browser.newPage({ viewport: { width: 1100, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' });
@@ -59,7 +59,7 @@ try {
       sessionStorage.setItem('kinetika_intro', '1');
       localStorage.setItem('kinetika_lang_dismissed', '1');
     });
-    await page.goto(`${server.base}/proyectos/${slug}`);
+    await page.goto(`${server.base}/experiencia/${slug}`);
     const stage = page.locator('.work_demo_stage').first();
     if (!(await stage.count())) {
       console.warn(`sin demo: ${slug}`);

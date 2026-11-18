@@ -18,8 +18,8 @@ const projects = await getProjects(lang);
 const legalPages = await getLegalPages(lang);
 
 const company = [
-  { href: homeAnchor(lang, 'nosotros'), label: t('nav.about') },
-  { href: homeAnchor(lang, 'plano'), label: t('nav.proof') },
+  { href: routes.about[lang], label: t('nav.about') },
+  { href: routes.howWeWork[lang], label: t('nav.how_we_work') },
   { href: homeAnchor(lang, 'preguntas'), label: t('nav.faq') },
   { href: routes.guides[lang], label: t('nav.guides') },
   { href: routes.quote[lang], label: t('nav.contact') },
@@ -37,14 +37,14 @@ const company = [
       </div>
 
       <nav class="footer_col" aria-labelledby="footer_services">
-        <h2 id="footer_services">{t('footer.services')}</h2>
+        <h2 id="footer_services"><a href={routes.solutions[lang]}>{t('nav.solutions')}</a></h2>
         <ul role="list">
           {services.map((s) => <li><a href={s.href}>{s.data.name}</a></li>)}
         </ul>
       </nav>
 
       <nav class="footer_col" aria-labelledby="footer_projects">
-        <h2 id="footer_projects">{t('footer.projects')}</h2>
+        <h2 id="footer_projects"><a href={routes.projectsBase[lang]}>{t('nav.experience')}</a></h2>
         <ul role="list">
           {projects.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
         </ul>
@@ -121,6 +121,11 @@ const company = [
     letter-spacing: var(--tracking_label);
     text-transform: uppercase;
     color: var(--color_text_muted);
+  }
+
+  .footer :global(.footer_col h2 a) {
+    min-height: 0;
+    color: inherit;
   }
 
   .footer :global(.footer_col ul) {

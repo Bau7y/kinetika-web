@@ -26,15 +26,15 @@ export const faq: Record<Lang, FaqItem[]> = {
     },
     {
       q: '¿Puedo ver una demo antes de contratar?',
-      a: 'Sí. Es el primer paso: te mostramos una versión funcional antes de cualquier contrato.',
+      a: 'Sí. Es el primer paso: le mostramos una versión funcional antes de cualquier contrato.',
     },
     {
       q: '¿Cuánto cuesta un sitio web?',
-      a: 'Depende de lo que necesités. Te enviamos una cotización sin costo después de la primera conversación.',
+      a: 'Depende de lo que necesite. Le enviamos una cotización sin costo después de la primera conversación.',
     },
     {
       q: '¿Qué incluye un sitio web de Kinetika?',
-      a: 'Diseño propio, carga rápida, preparación para Google (sitemap y datos estructurados), formularios protegidos contra spam con consentimiento según la Ley 8968 y, si lo necesitás, versión en inglés.',
+      a: 'Diseño propio, carga rápida, preparación para Google (sitemap y datos estructurados), formularios protegidos contra spam con consentimiento según la Ley 8968 y, si lo necesita, versión en inglés.',
     },
     {
       q: '¿Mi sitio va a aparecer en Google?',
@@ -47,7 +47,7 @@ export const faq: Record<Lang, FaqItem[]> = {
     },
     {
       q: '¿La plataforma contable reemplaza mi software?',
-      a: 'No. Se suma al que ya usás: importás tu Excel y organizás clientes y vencimientos.',
+      a: 'No. Se suma al que ya usa: importa su Excel y organiza clientes y vencimientos.',
     },
     {
       q: '¿Atienden en La Fortuna, Aguas Zarcas o Pital?',

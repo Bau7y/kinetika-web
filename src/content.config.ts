@@ -12,7 +12,7 @@ const slug = z.string().regex(/^[a-z0-9-]+$/);
 
 /**
  * Services (what we offer) and projects (case studies of what we built).
- * `kind` decides the URL: /servicios/<slug> or /proyectos/<slug>.
+ * `kind` decides the URL: /soluciones/<slug> or /experiencia/<slug>.
  */
 const caseStudy = z.object({
   /** The manual process before. */

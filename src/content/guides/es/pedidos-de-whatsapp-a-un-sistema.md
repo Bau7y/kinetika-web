@@ -4,8 +4,8 @@ url_slug: pedidos-de-whatsapp-a-un-sistema
 topic: Restaurantes
 product: pedidos
 title: Cómo pasar los pedidos de WhatsApp a un sistema
-seo_title: Cómo pasar los pedidos de WhatsApp a un sistema en tu restaurante
-meta_description: Qué cambia en la cocina, en la caja y para tus clientes cuando los pedidos dejan el chat de WhatsApp y entran a un sistema de pedidos en línea.
+seo_title: Cómo pasar los pedidos de WhatsApp a un sistema en su restaurante
+meta_description: Qué cambia en la cocina, en la caja y para sus clientes cuando los pedidos dejan el chat de WhatsApp y entran a un sistema de pedidos en línea.
 summary: Empezá por el menú, mantené WhatsApp como canal de aviso y mové solo la toma del pedido al sistema. Así la cocina ve cada pedido con estado y nadie se pierde en el chat.
 updated: 2026-11-17
 faq:
@@ -24,7 +24,7 @@ WhatsApp funciona bien mientras los pedidos son pocos. Cuando llegan muchos al m
 - Nadie sabe con certeza qué pedido está en cocina y cuál ya salió.
 - El cliente pregunta "¿ya viene?" y alguien tiene que buscar en el chat para responder.
 
-Un sistema de pedidos no reemplaza la atención: ordena la parte repetitiva para que tu equipo atienda mejor lo demás.
+Un sistema de pedidos no reemplaza la atención: ordena la parte repetitiva para que su equipo atienda mejor lo demás.
 
 ## Qué cambia en cada parte del negocio
 
@@ -37,15 +37,15 @@ Un sistema de pedidos no reemplaza la atención: ordena la parte repetitiva para
 
 ## Un paso a la vez
 
-1. **Ordená el menú.** Platos, precios y lo que se acaba temprano. Es la base de todo lo demás y sirve aunque todavía uses solo WhatsApp.
-2. **Definí los estados.** Por ejemplo: nuevo, en cocina y listo. Si tu equipo ya los usa de palabra, el sistema solo los hace visibles.
-3. **Probá con un grupo pequeño.** Compartí el enlace con clientes de confianza antes de anunciarlo a todos.
-4. **Mantené WhatsApp para avisos.** No tenés que cerrar el canal que tus clientes ya usan; el cambio es que el pedido se toma en un solo lugar.
-5. **Revisá después de una semana.** Mirá qué preguntas siguen llegando al chat y ajustá el menú o las indicaciones.
+1. **Ordene el menú.** Platos, precios y lo que se acaba temprano. Es la base de todo lo demás y sirve aunque todavía use solo WhatsApp.
+2. **Defina los estados.** Por ejemplo: nuevo, en cocina y listo. Si su equipo ya los usa de palabra, el sistema solo los hace visibles.
+3. **Pruebe con un grupo pequeño.** Compartí el enlace con clientes de confianza antes de anunciarlo a todos.
+4. **Mantenga WhatsApp para avisos.** No tiene que cerrar el canal que sus clientes ya usan; el cambio es que el pedido se toma en un solo lugar.
+5. **Revise después de una semana.** Vea qué preguntas siguen llegando al chat y ajuste el menú o las indicaciones.
 
 ## Antes de elegir un sistema
 
-- ¿Tus clientes pueden pedir desde el celular sin descargar una aplicación?
+- ¿Sus clientes pueden pedir desde el celular sin descargar una aplicación?
 - ¿La cocina ve los pedidos en una pantalla o en el celular que ya tiene?
-- ¿Podés cambiar precios y platos sin pedirle ayuda a nadie?
-- ¿Te muestran una demo con tu propio menú antes de pagar?
+- ¿Puede cambiar precios y platos sin pedirle ayuda a nadie?
+- ¿Te muestran una demo con su propio menú antes de pagar?

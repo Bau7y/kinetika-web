@@ -20,19 +20,29 @@ export default defineConfig({
   // (instead of a <meta>), so frame-ancestors also applies.
   adapter: vercel({ staticHeaders: true }),
   trailingSlash: 'never',
-  // Old product URLs: services and projects now have their own sections
+  // Old URLs always point at the final page (never a redirect chain)
   redirects: {
     // The quote chat became the contact page
     '/cotizar': { status: 301, destination: '/contacto' },
     '/en/quote': { status: 301, destination: '/en/contact' },
-    '/productos/sitios-web': { status: 301, destination: '/servicios/sitios-web' },
-    '/productos/pedidos': { status: 301, destination: '/proyectos/pedidos' },
-    '/productos/tramimunisc': { status: 301, destination: '/proyectos/tramimunisc' },
-    '/productos/plataforma-contable': { status: 301, destination: '/proyectos/plataforma-contable' },
-    '/en/products/websites': { status: 301, destination: '/en/services/websites' },
-    '/en/products/ordering': { status: 301, destination: '/en/projects/ordering' },
-    '/en/products/tramimunisc': { status: 301, destination: '/en/projects/tramimunisc' },
-    '/en/products/accounting-platform': { status: 301, destination: '/en/projects/accounting-platform' },
+    // /servicios and /proyectos became /soluciones and /experiencia
+    '/servicios': { status: 301, destination: '/soluciones' },
+    '/servicios/[slug]': { status: 301, destination: '/soluciones/[slug]' },
+    '/proyectos': { status: 301, destination: '/experiencia' },
+    '/proyectos/[slug]': { status: 301, destination: '/experiencia/[slug]' },
+    '/en/services': { status: 301, destination: '/en/solutions' },
+    '/en/services/[slug]': { status: 301, destination: '/en/solutions/[slug]' },
+    '/en/projects': { status: 301, destination: '/en/work' },
+    '/en/projects/[slug]': { status: 301, destination: '/en/work/[slug]' },
+    // Even older product URLs
+    '/productos/sitios-web': { status: 301, destination: '/soluciones/sitios-web' },
+    '/productos/pedidos': { status: 301, destination: '/experiencia/pedidos' },
+    '/productos/tramimunisc': { status: 301, destination: '/experiencia/tramimunisc' },
+    '/productos/plataforma-contable': { status: 301, destination: '/experiencia/plataforma-contable' },
+    '/en/products/websites': { status: 301, destination: '/en/solutions/websites' },
+    '/en/products/ordering': { status: 301, destination: '/en/work/ordering' },
+    '/en/products/tramimunisc': { status: 301, destination: '/en/work/tramimunisc' },
+    '/en/products/accounting-platform': { status: 301, destination: '/en/work/accounting-platform' },
   },
   // All CSS goes inside each HTML page: no render-blocking request and no
   // unstyled page if a separate stylesheet fails to load.

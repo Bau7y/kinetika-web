@@ -1,0 +1,103 @@
+---
+/**
+ * "How we work", shared by /nosotros/como-trabajamos and its English
+ * counterpart: the four steps of a project, from first contact to launch.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { process } from '../data/process';
+import { breadcrumbSchema } from '../lib/structured_data';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const steps = process[lang];
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.about'), href: routes.about[lang] },
+  { name: t('nav.how_we_work'), href: routes.howWeWork[lang] },
+];
+---
+<BaseLayout lang={lang} title={t('howwework.seo_title')} description={t('howwework.meta')} alternates={routes.howWeWork}>
+  <JsonLd slot="head" data={breadcrumbSchema(Astro.site!, crumbs)} />
+
+  <section class="how" aria-labelledby="how_title">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1 id="how_title" class="how_title">{t('howwework.title')}</h1>
+      <p class="lede">{t('howwework.lede')}</p>
+
+      <ol role="list" class="how_steps">
+        {steps.map((step, i) => (
+          <li data-reveal data-i={i}>
+            <span class="mono how_n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h2>{step.title}</h2>
+              <p>{step.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <ClosingCta
+    eyebrow={t('closing.eyebrow')}
+    title={t('closing.title')}
+    text={t('closing.text')}
+    primary={{ href: routes.quote[lang], label: t('nav.quote') }}
+    secondary={{ href: routes.about[lang], label: t('nav.about') }}
+  />
+</BaseLayout>
+
+<style>
+  .how {
+    padding: calc(var(--navbar_h) + var(--space_sm)) 0 var(--section_py);
+  }
+
+  .how_title {
+    margin: var(--space_lg) 0 var(--space_sm);
+    max-width: 22ch;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: var(--leading_tight);
+    letter-spacing: -0.035em;
+  }
+
+  .how_steps {
+    display: grid;
+    gap: var(--space_md);
+    margin: var(--space_xl) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .how_steps li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space_md);
+    padding: var(--space_lg);
+    border: 1px solid var(--color_line);
+    border-radius: var(--radius_lg);
+  }
+
+  .how_n {
+    color: var(--color_accent_text);
+  }
+
+  .how_steps h2 {
+    margin: 0 0 var(--space_xs);
+    font-size: var(--text_h3);
+    font-weight: 500;
+  }
+
+  .how_steps p {
+    margin: 0;
+    color: var(--color_text_secondary);
+  }
+</style>

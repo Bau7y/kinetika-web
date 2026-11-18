@@ -35,8 +35,8 @@ async function open(path, options = {}) {
 describe('páginas clave', () => {
   const paths = [
     '/', '/en', '/contacto', '/en/contact', '/guias', '/en/guides', '/privacidad', '/en/privacy',
-    '/servicios/automatizacion-de-procesos', '/servicios/sitios-web', '/proyectos/pedidos', '/proyectos/tramimunisc', '/proyectos/plataforma-contable',
-    '/en/services/websites', '/en/projects/tramimunisc', '/guias/declaracion-de-bienes-inmuebles',
+    '/soluciones/automatizacion-de-procesos', '/soluciones/sitios-web', '/experiencia/pedidos', '/experiencia/tramimunisc', '/experiencia/plataforma-contable',
+    '/en/solutions/websites', '/en/work/tramimunisc', '/guias/declaracion-de-bienes-inmuebles',
   ];
 
   for (const path of paths) {
@@ -81,12 +81,12 @@ describe('seguridad', () => {
 });
 
 describe('cotización', () => {
-  it('pide lo que necesitás, el negocio, el correo y el consentimiento antes de enviar', async () => {
+  it('pide lo que necesita, el negocio, el correo y el consentimiento antes de enviar', async () => {
     const page = await open('/contacto');
     await page.click('[data-contact-form] button[type="submit"]');
     const invalid = await page.$$eval('[data-contact-form] [aria-invalid="true"]', (els) => [...new Set(els.map((e) => e.getAttribute('name')))].sort());
     assert.deepEqual(invalid, ['business', 'consent', 'email', 'need']);
-    assert.equal(await page.textContent('[data-error-for="consent"]'), 'Necesitamos tu autorización para usar estos datos.');
+    assert.equal(await page.textContent('[data-error-for="consent"]'), 'Necesitamos su autorización para usar estos datos.');
     assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-error-summary')), true);
     // Choosing an option clears its error
     await page.click('.contact_card >> nth=0');
@@ -112,18 +112,18 @@ describe('cotización', () => {
   });
 
   it('la lista de espera también valida', async () => {
-    const page = await open('/proyectos/plataforma-contable');
+    const page = await open('/experiencia/plataforma-contable');
     await page.click('[data-waitlist] button[type="submit"]');
-    assert.equal(await page.textContent('[data-waitlist] [data-error-for="email"]'), 'Escribí tu correo.');
+    assert.equal(await page.textContent('[data-waitlist] [data-error-for="email"]'), 'Escriba su correo.');
     await page.close();
   });
 });
 
 describe('idioma', () => {
   it('el selector lleva a la misma página en el otro idioma', async () => {
-    const page = await open('/proyectos/pedidos');
+    const page = await open('/experiencia/pedidos');
     await page.click('[data-lang-switch]');
-    await page.waitForURL(/\/en\/projects\/ordering$/);
+    await page.waitForURL(/\/en\/work\/ordering$/);
     assert.equal(await page.getAttribute('html', 'lang'), 'en');
     await page.close();
   });
@@ -142,7 +142,7 @@ describe('menú móvil', () => {
 
 describe('proyectos', () => {
   it('el filtro por estado oculta las demás tarjetas y anuncia el total', async () => {
-    const page = await open('/proyectos');
+    const page = await open('/experiencia');
     await page.click('[data-project-filter] button[data-status="in_production"]');
     assert.equal(await page.locator('li[data-status]:visible').count(), 1);
     assert.match(await page.textContent('[data-project-count]'), /^1 proyecto$/);
@@ -200,14 +200,14 @@ describe('SEO', () => {
     const config = JSON.parse(await readFile('.vercel/output/config.json', 'utf8'));
     const routes = JSON.stringify(config.routes);
     assert.match(routes, /productos\/pedidos/);
-    assert.match(routes, /proyectos\/pedidos/);
+    assert.match(routes, /experiencia\/pedidos/);
   });
 
   it('el índice de proyectos lista cada caso con su enlace', async () => {
-    const html = await (await get('/proyectos')).text();
-    for (const slug of ['pedidos', 'tramimunisc', 'plataforma-contable']) assert.match(html, new RegExp(`href="/proyectos/${slug}"`));
+    const html = await (await get('/experiencia')).text();
+    for (const slug of ['pedidos', 'tramimunisc', 'plataforma-contable']) assert.match(html, new RegExp(`href="/experiencia/${slug}"`));
     assert.match(html, /"@type":"ItemList"/);
-    assert.equal((await get('/en/projects')).status, 200);
+    assert.equal((await get('/en/work')).status, 200);
   });
 
   it('las preguntas usan details nativo y la primera empieza abierta', async () => {
@@ -216,18 +216,18 @@ describe('SEO', () => {
   });
 
   it('cada proyecto muestra su caso: antes, qué se automatizó y hoy', async () => {
-    const html = await (await get('/proyectos/tramimunisc')).text();
+    const html = await (await get('/experiencia/tramimunisc')).text();
     assert.match(html, /id="case_title"/);
     assert.match(html, /En producción en tramimunisc\.com\./);
   });
 
   it('cada producto responde qué es en un bloque propio', async () => {
-    const html = await (await get('/proyectos/tramimunisc')).text();
+    const html = await (await get('/experiencia/tramimunisc')).text();
     assert.match(html, /<h2 id="answer_title"[^>]*>¿Qué es TramiMuniSC\?<\/h2>/);
   });
 
   it('los datos estructurados son JSON válido en todas las páginas clave', async () => {
-    for (const path of ['/', '/en', '/servicios/sitios-web', '/proyectos/pedidos', '/guias/declaracion-de-bienes-inmuebles']) {
+    for (const path of ['/', '/en', '/soluciones/sitios-web', '/experiencia/pedidos', '/guias/declaracion-de-bienes-inmuebles']) {
       const html = await (await get(path)).text();
       const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
       assert.ok(blocks.length > 0, path);
@@ -241,5 +241,50 @@ describe('SEO', () => {
     assert.match(text, /## Servicios/);
     assert.match(text, /## Proyectos/);
     assert.match(text, /## Guías/);
+  });
+});
+
+describe('estructura multipágina', () => {
+  const sections = [
+    ['/soluciones', 'CollectionPage', '/en/solutions'],
+    ['/nosotros', 'AboutPage', '/en/about'],
+    ['/nosotros/como-trabajamos', 'BreadcrumbList', '/en/about/how-we-work'],
+  ];
+
+  for (const [path, type, alt] of sections) {
+    it(`${path} responde con su schema, migas y alternativa en inglés`, async () => {
+      const html = await (await get(path)).text();
+      assert.match(html, new RegExp(`"@type":"${type}"`));
+      assert.match(html, /"@type":"BreadcrumbList"/);
+      assert.match(html, /<h1[^>]*>/);
+      assert.match(html, new RegExp(`hreflang="en" href="https://kinetikacr.com${alt}"`));
+      assert.equal((await get(alt)).status, 200);
+    });
+  }
+
+  it('el sitemap incluye las páginas nuevas y ninguna URL antigua', async () => {
+    const xml = await (await get('/sitemap.xml')).text();
+    for (const path of ['/soluciones', '/nosotros', '/nosotros/como-trabajamos', '/experiencia']) {
+      assert.match(xml, new RegExp(`<loc>https://kinetikacr.com${path}</loc>`));
+    }
+    assert.doesNotMatch(xml, /\/servicios|\/proyectos|\/en\/services|\/en\/projects/);
+  });
+
+  it('las URLs de /servicios y /proyectos redirigen con 301 a su destino final', async () => {
+    const config = JSON.parse(await readFile('.vercel/output/config.json', 'utf8'));
+    const rules = config.routes.filter((r) => r.status === 301);
+    const target = (from) => rules.find((r) => new RegExp(r.src).test(from))?.headers.Location;
+    assert.equal(target('/servicios'), '/soluciones');
+    assert.equal(target('/servicios/sitios-web'), '/soluciones/$1');
+    assert.equal(target('/proyectos/pedidos'), '/experiencia/$1');
+    assert.equal(target('/en/projects'), '/en/work');
+    assert.equal(target('/productos/pedidos'), '/experiencia/pedidos');
+  });
+
+  it('la navegación marca la página actual con aria-current', async () => {
+    const page = await open('/nosotros');
+    const current = await page.$$eval('.pill_nav a[aria-current="page"]', (els) => els.map((e) => e.getAttribute('href')));
+    assert.deepEqual(current, ['/nosotros']);
+    await page.close();
   });
 });

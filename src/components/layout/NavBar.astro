@@ -12,7 +12,7 @@
 import Logo from '../brand/Logo.astro';
 import LangSwitch from './LangSwitch.astro';
 import NavPanel from './NavPanel.astro';
-import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
+import { routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -20,14 +20,11 @@ interface Props {
 }
 const { lang, altHref } = Astro.props;
 const t = useTranslations(lang);
-const isHome = Astro.url.pathname === routes.home[lang];
-const anchor = (id: string) => (isHome ? `#${id}` : homeAnchor(lang, id));
 
 const links = [
-  { href: anchor('servicios'), label: t('nav.services'), section: 'servicios' },
-  { href: anchor('proyectos'), label: t('nav.projects'), section: 'proyectos' },
-  { href: anchor('nosotros'), label: t('nav.about'), section: 'nosotros' },
-  { href: anchor('preguntas'), label: t('nav.faq'), section: 'preguntas' },
+  { href: routes.solutions[lang], label: t('nav.solutions'), section: undefined },
+  { href: routes.projectsBase[lang], label: t('nav.experience'), section: undefined },
+  { href: routes.about[lang], label: t('nav.about'), section: undefined },
   { href: routes.guides[lang], label: t('nav.guides'), section: undefined },
 ];
 const quoteHref = routes.quote[lang];

@@ -11,8 +11,11 @@ export const LANGS = Object.keys(languages) as Lang[];
 export const routes = {
   home: { es: '/', en: '/en' },
   quote: { es: '/contacto', en: '/en/contact' },
-  servicesBase: { es: '/servicios', en: '/en/services' },
-  projectsBase: { es: '/proyectos', en: '/en/projects' },
+  servicesBase: { es: '/soluciones', en: '/en/solutions' },
+  projectsBase: { es: '/experiencia', en: '/en/work' },
+  solutions: { es: '/soluciones', en: '/en/solutions' },
+  about: { es: '/nosotros', en: '/en/about' },
+  howWeWork: { es: '/nosotros/como-trabajamos', en: '/en/about/how-we-work' },
   guides: { es: '/guias', en: '/en/guides' },
   legalBase: { es: '', en: '/en' },
 } as const satisfies Record<string, Record<Lang, string>>;

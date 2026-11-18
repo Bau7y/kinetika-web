@@ -24,7 +24,7 @@ export const dayScenes: Record<Lang, DayScene[]> = {
       product: 'sitios-web',
       name: 'Sitios web a la medida',
       status: 'available',
-      text: 'Tus clientes te encuentran en Google y escriben desde tu sitio.',
+      text: 'Sus clientes lo encuentran en Google y escriben desde su sitio.',
       rows: [
         ['Formulario recibido', 'hace 2 min'],
         ['Visitas desde Google', 'hoy'],
