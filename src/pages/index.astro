@@ -1,21 +1,12 @@
 ---
 // Página provisional: se reemplaza al construir el inicio.
-import '../styles/global.css';
-import Fonts from '../components/layout/Fonts.astro';
----
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { routes, useTranslations } from '../i18n/ui';
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <Fonts />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Kinetika</title>
-  </head>
-  <body>
-    <main class="container section">
-      <h1 class="section_title">Kinetika</h1>
-    </main>
-  </body>
-</html>
+const t = useTranslations('es');
+---
+<BaseLayout lang="es" title={t('site.tagline')} alternates={routes.home}>
+  <div class="container section">
+    <h1 class="section_title">{t('site.tagline')}</h1>
+  </div>
+</BaseLayout>

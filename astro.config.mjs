@@ -1,12 +1,18 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
 import vercel from '@astrojs/vercel';
+import { createHash } from 'node:crypto';
+import { THEME_INIT } from './src/lib/theme_init.mjs';
 
 /**
  * `astro dev` injects unhashed <style> tags (Vite) that the CSP header would
  * block, leaving the page unstyled. The CSP applies to builds only.
  */
 const isDev = process.argv.includes('dev');
+
+/** CSP hash of the one inline script Astro does not process (runs before first paint). */
+/** @type {`sha256-${string}`} */
+const themeInitHash = `sha256-${createHash('sha256').update(THEME_INIT).digest('base64')}`;
 
 export default defineConfig({
   site: 'https://kinetika.cr',
@@ -38,6 +44,7 @@ export default defineConfig({
           ],
           scriptDirective: {
             resources: ["'self'", 'https://challenges.cloudflare.com'],
+            hashes: [themeInitHash],
           },
         },
       },

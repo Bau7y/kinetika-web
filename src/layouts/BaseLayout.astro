@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import Fonts from '../components/layout/Fonts.astro';
+import { site } from '../data/site';
+import { THEME_INIT } from '../lib/theme_init.mjs';
+import { LANGS, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Page title; " | Kinetika" is appended unless it already names the site. */
+  title: string;
+  description?: string;
+  /** Same page in each language, for the switcher and hreflang. */
+  alternates: Record<Lang, string>;
+  /** Pages that must stay out of search results (404): no canonical or hreflang either. */
+  noindex?: boolean;
+}
+
+const { lang, title, description, alternates, noindex = false } = Astro.props;
+const t = useTranslations(lang);
+const otherLang: Lang = lang === 'es' ? 'en' : 'es';
+const metaDescription = description ?? t('site.description');
+const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Fonts />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {noindex ? (
+      <meta name="robots" content="noindex, follow" />
+    ) : (
+      <>
+        <link rel="canonical" href={canonicalUrl} />
+        {LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(alternates[l], Astro.site)} />)}
+        <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, Astro.site)} />
+      </>
+    )}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#070B14" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={t('meta.locale')} />
+    <meta property="og:locale:alternate" content={useTranslations(otherLang)('meta.locale')} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    {!noindex && <meta property="og:url" content={canonicalUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline set:html={THEME_INIT}></script>
+    <slot name="head" />
+  </head>
+  <body>
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+  </body>
+</html>
