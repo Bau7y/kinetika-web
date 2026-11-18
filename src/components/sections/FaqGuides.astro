@@ -8,15 +8,17 @@ import { routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** Position in the home page, set by HomeView. */
+  number: string;
 }
-const { lang } = Astro.props;
+const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 const items = faq[lang];
 const guides = (await getGuides(lang)).slice(0, 3);
 
 ---
 <section id="preguntas" class="section container" aria-labelledby="faq_title">
-  <p class="section_label" data-reveal data-i="0"><span>08</span>{t('label.faq')}</p>
+  <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.faq')}</p>
   <h2 id="faq_title" class="section_title faq_title" data-reveal data-i="1">{t('faq.title')}</h2>
   <Faq items={items} columns />
 

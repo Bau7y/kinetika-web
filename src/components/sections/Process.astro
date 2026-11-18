@@ -9,14 +9,16 @@ import { useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** Position in the home page, set by HomeView. */
+  number: string;
 }
-const { lang } = Astro.props;
+const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 const steps = process[lang];
 ---
 <section id="proceso" class="section container process" aria-labelledby="process_title" data-process>
   <div class="process_head">
-    <p class="section_label" data-reveal data-i="0"><span>06</span>{t('label.process')}</p>
+    <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.process')}</p>
     <h2 id="process_title" class="section_title" data-reveal data-i="1">{t('process.title')}</h2>
     <p class="lede" data-reveal data-i="2">{t('process.lede')}</p>
   </div>

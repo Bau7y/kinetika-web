@@ -12,8 +12,10 @@ import { useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** Position in the home page, set by HomeView. */
+  number: string;
 }
-const { lang } = Astro.props;
+const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 const scenes = dayScenes[lang];
 const hrefs = new Map((await getWork(lang)).map((p) => [p.key, p.href]));
@@ -22,7 +24,7 @@ const hrefs = new Map((await getWork(lang)).map((p) => [p.key, p.href]));
   <div class="container">
     <div class="day_head">
       <div>
-        <p class="section_label" data-reveal data-i="0"><span>04</span>{t('label.day')}</p>
+        <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.day')}</p>
         <h2 id="day_title" class="section_title" data-reveal data-i="1">{t('day.title')}</h2>
         <p class="lede day_lede" data-reveal data-i="2">{t('day.lede')}</p>
       </div>
