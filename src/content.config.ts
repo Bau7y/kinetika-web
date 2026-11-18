@@ -75,4 +75,16 @@ const guides = defineCollection({
   }),
 });
 
-export const collections = { products, guides };
+/** Privacy policy and legal notice. `updated` is the version date. */
+const legal = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/legal' }),
+  schema: z.object({
+    order: z.number().int(),
+    url_slug: slug,
+    title: z.string(),
+    meta_description: z.string().max(160),
+    updated: z.coerce.date(),
+  }),
+});
+
+export const collections = { products, guides, legal };

@@ -8,6 +8,7 @@ import { LANGS, routes, type Lang } from '../i18n/routes';
 import { useTranslations } from '../i18n/ui';
 import { getProducts } from './products';
 import { getGuides } from './guides';
+import { getLegalPages } from './legal';
 
 export type PageSection = 'home' | 'quote' | 'product' | 'guides' | 'guide' | 'legal';
 
@@ -59,6 +60,8 @@ export async function getPages(): Promise<PageEntry[]> {
   const productAlt = pairHrefs(products);
   const guides = { es: await getGuides('es'), en: await getGuides('en') };
   const guideAlt = pairHrefs(guides);
+  const legal = { es: await getLegalPages('es'), en: await getLegalPages('en') };
+  const legalAlt = pairHrefs(legal);
 
   return LANGS.flatMap((lang) => [
     ...fixedPages(lang),
@@ -82,6 +85,17 @@ export async function getPages(): Promise<PageEntry[]> {
         description: g.data.meta_description,
         alternates: guideAlt(g.key, lang),
         updated: g.data.updated,
+      }),
+    ),
+    ...legal[lang].map(
+      (l): PageEntry => ({
+        path: l.href,
+        lang,
+        section: 'legal',
+        title: l.data.title,
+        description: l.data.meta_description,
+        alternates: legalAlt(l.key, lang),
+        updated: l.data.updated,
       }),
     ),
   ]);

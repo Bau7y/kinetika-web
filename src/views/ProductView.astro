@@ -12,6 +12,7 @@ import WaitlistForm from '../components/product/WaitlistForm.astro';
 import { render } from 'astro:content';
 import { getProducts, type Product } from '../data/products';
 import { pairHrefs } from '../data/pages';
+import { getLegalHref } from '../data/legal';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 }
 const { lang, product } = Astro.props;
 const t = useTranslations(lang);
+const privacyHref = await getLegalHref('privacidad', lang);
 const { data } = product;
 const { Content } = await render(product);
 const hasBody = Boolean(product.body?.trim());
@@ -71,7 +73,7 @@ const crumbs = [
   <slot />
 
   {data.status === 'waitlist' && (
-    <WaitlistForm lang={lang} product={product.key} privacyHref={lang === 'es' ? '/privacidad' : '/en/privacy'} />
+    <WaitlistForm lang={lang} product={product.key} privacyHref={privacyHref} />
   )}
 
   {data.faq.length > 0 && (

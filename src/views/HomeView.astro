@@ -8,6 +8,7 @@ import Blueprint from '../components/sections/Blueprint.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
 import QuoteChat from '../components/sections/QuoteChat.astro';
+import { getLegalHref } from '../data/legal';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const privacyHref = await getLegalHref('privacidad', lang);
 ---
 <BaseLayout intro lang={lang} title={t('site.tagline')} description={t('site.description')} alternates={routes.home}>
   <Hero lang={lang} />
@@ -23,5 +25,5 @@ const t = useTranslations(lang);
   <Blueprint lang={lang} />
   <WhyServiceArea lang={lang} />
   <FaqGuides lang={lang} />
-  <QuoteChat lang={lang} privacyHref={lang === 'es' ? '/privacidad' : '/en/privacy'} />
+  <QuoteChat lang={lang} privacyHref={privacyHref} />
 </BaseLayout>

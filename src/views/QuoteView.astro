@@ -3,6 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import QuoteChat from '../components/sections/QuoteChat.astro';
+import { getLegalHref } from '../data/legal';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const privacyHref = lang === 'es' ? '/privacidad' : '/en/privacy';
+const privacyHref = await getLegalHref('privacidad', lang);
 const crumbs = [
   { name: t('nav.home'), href: routes.home[lang] },
   { name: t('nav.quote'), href: routes.quote[lang] },

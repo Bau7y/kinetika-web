@@ -2,6 +2,7 @@
 import Logo from '../brand/Logo.astro';
 import { site } from '../../data/site';
 import { getProducts } from '../../data/products';
+import { getLegalPages } from '../../data/legal';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
@@ -13,6 +14,7 @@ const { lang, replayIntro = false } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 const products = await getProducts(lang);
+const legalPages = await getLegalPages(lang);
 
 const company = [
   { href: homeAnchor(lang, 'dia'), label: t('nav.day') },
@@ -43,6 +45,13 @@ const company = [
         <h2 id="footer_company">{t('footer.company')}</h2>
         <ul role="list">
           {company.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <nav class="footer_col" aria-labelledby="footer_legal">
+        <h2 id="footer_legal">{t('footer.legal')}</h2>
+        <ul role="list">
+          {legalPages.map((p) => <li><a href={p.href}>{p.data.title}</a></li>)}
         </ul>
       </nav>
     </div>

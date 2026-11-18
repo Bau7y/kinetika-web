@@ -11,6 +11,7 @@ import {
 } from 'astro:env/server';
 import { analyzeMessage, isBotSubmission, isRateLimited, verifyTurnstile } from '../lib/spam';
 import { useTranslations, type UiKey } from '../i18n/ui';
+import { privacyVersion } from '../data/legal';
 import { canReceiveEmail } from '../lib/email';
 import { BUSINESS_TYPES, MESSAGE_MAX, NEEDS } from '../data/quote_options';
 
@@ -181,7 +182,7 @@ export const server = {
           ['Necesidad', need],
           ['Correo', input.email],
           ['Idioma', input.lang === 'en' ? 'Inglés' : 'Español'],
-          ['Consentimiento', 'Aceptó la política de privacidad'],
+          ['Consentimiento', `Aceptó la política de privacidad (versión del ${await privacyVersion()})`],
           ...(review.length ? [['Revisar', review.join(', ')] as [string, string]] : []),
         ],
         message: input.message,
@@ -205,7 +206,7 @@ export const server = {
           ['Correo', input.email],
           ['Despacho', input.firm || 'No indicado'],
           ['Idioma', input.lang === 'en' ? 'Inglés' : 'Español'],
-          ['Consentimiento', 'Aceptó la política de privacidad'],
+          ['Consentimiento', `Aceptó la política de privacidad (versión del ${await privacyVersion()})`],
           ...(review.length ? [['Revisar', review.join(', ')] as [string, string]] : []),
         ],
         message: '',
