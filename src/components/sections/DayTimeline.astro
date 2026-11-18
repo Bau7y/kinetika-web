@@ -19,12 +19,13 @@ const scenes = dayScenes[lang];
 const last = scenes[scenes.length - 1].hour;
 const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
 ---
-<section id="dia" class="section section_band day" aria-labelledby="day_title" data-day>
+<section id="dia" class="section section_blue day" aria-labelledby="day_title" data-day>
   <div class="container">
     <div class="day_head">
       <div>
-        <h2 id="day_title" class="section_title" data-reveal>{t('day.title')}</h2>
-        <p class="lede day_lede" data-reveal>{t('day.lede')}</p>
+        <p class="section_label" data-reveal data-i="0"><span>02</span>{t('label.day')}</p>
+        <h2 id="day_title" class="section_title" data-reveal data-i="1">{t('day.title')}</h2>
+        <p class="lede day_lede" data-reveal data-i="2">{t('day.lede')}</p>
       </div>
       <div class="day_controls">
         <button type="button" class="day_btn" aria-label={t('day.prev')} data-day-prev>

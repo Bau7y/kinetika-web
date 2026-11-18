@@ -10,8 +10,8 @@ interface Props {
 const { guides, as: Title = 'h3' } = Astro.props;
 ---
 <ul role="list" class="guide_cards">
-  {guides.map((g) => (
-    <li data-reveal>
+  {guides.map((g, i) => (
+    <li data-reveal data-i={i}>
       <a href={g.href} class="guide_card">
         <span class="eyebrow">{g.data.topic}</span>
         <Title class="guide_card_title">{g.data.title}</Title>

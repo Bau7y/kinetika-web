@@ -145,6 +145,15 @@ main:focus {
   border-block: 1px solid var(--color_line);
 }
 
+/* Blue band: the rhythm accent between plain sections */
+.section_blue {
+  background:
+    radial-gradient(70% 110% at 88% 0%, rgb(47 111 235 / 0.22), transparent 62%),
+    radial-gradient(50% 80% at 0% 100%, rgb(61 139 255 / 0.1), transparent 70%),
+    linear-gradient(180deg, #0a1428, #0b1631);
+  border-block: 1px solid rgb(61 139 255 / 0.18);
+}
+
 .visually_hidden {
   position: absolute;
   width: 1px;
@@ -160,9 +169,37 @@ main:focus {
 /* ── Type helpers ─────────────────────────────────── */
 .section_title {
   font-size: var(--text_h2);
-  font-weight: 700;
-  line-height: var(--leading_tight);
-  letter-spacing: var(--tracking_tight);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+/* Numbered label above section titles: "01 — Productos" */
+.section_label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--space_md);
+  font-family: var(--font_mono);
+  font-size: var(--text_xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking_label);
+  text-transform: uppercase;
+  color: var(--color_text_secondary);
+}
+
+.section_label span {
+  color: var(--color_accent_text);
+}
+
+.section_label span::after {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  margin-left: 12px;
+  vertical-align: middle;
+  background: var(--color_accent_border_strong);
 }
 
 .lede {
