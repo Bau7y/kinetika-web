@@ -235,13 +235,15 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     visibility: hidden;
     pointer-events: none;
     overflow-y: auto;
-    transition: opacity var(--duration_base) var(--ease_out), visibility var(--duration_base);
+    /* Closing (this state) is faster than opening */
+    transition: opacity var(--duration_exit) var(--ease_out), visibility var(--duration_exit);
   }
 
   .navbar_mobile.open {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    transition-duration: var(--duration_base);
   }
 
   .navbar_mobile ul {
@@ -253,13 +255,14 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
   .navbar_mobile_cta {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity var(--duration_base) var(--ease_out), transform var(--duration_base) var(--ease_out);
+    transition: opacity var(--duration_exit) var(--ease_out), transform var(--duration_exit) var(--ease_out);
   }
 
   .navbar_mobile.open li,
   .navbar_mobile.open .navbar_mobile_cta {
     opacity: 1;
     transform: none;
+    transition-duration: var(--duration_base);
     transition-delay: calc(60ms + var(--i) * 40ms);
   }
 

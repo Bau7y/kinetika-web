@@ -28,6 +28,9 @@ export function initDayTimeline(root: HTMLElement) {
     if (live && announce) live.textContent = `${hours[index]}, ${names[index]}`;
   };
 
+  // Keyboard users tabbing into another scene: bring that scene into view
+  scenes.forEach((scene, i) => scene.addEventListener('focusin', () => i !== index && go(i)));
+
   prev.addEventListener('click', () => go(index - 1));
   next.addEventListener('click', () => go(index + 1));
   go(0, false);

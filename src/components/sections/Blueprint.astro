@@ -85,10 +85,7 @@ const specs = (['hero', 'demos', 'faq', 'form'] as const).map((id) => ({
     text-align: left;
     font-size: var(--text_sm);
     line-height: 1.5;
-    transition:
-      background-color var(--duration_fast) ease,
-      border-color var(--duration_fast) ease,
-      transform var(--duration_press) var(--ease_out);
+    transition: transform var(--duration_press) var(--ease_out);
   }
 
   .proof_spec:active {

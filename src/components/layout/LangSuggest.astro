@@ -47,7 +47,13 @@ const t = useTranslations(target);
     box.querySelector('[data-lang-accept]')!.addEventListener('click', () => write(CHOICE_KEY, target));
     box.querySelector('[data-lang-dismiss]')!.addEventListener('click', () => {
       write(DISMISS_KEY, '1');
-      box.hidden = true;
+      // Leaves the way it came (down), faster than it entered
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        box.hidden = true;
+        return;
+      }
+      box.classList.add('leaving');
+      box.addEventListener('animationend', () => (box.hidden = true), { once: true });
     });
   }
 </script>
@@ -89,6 +95,17 @@ const t = useTranslations(target);
     height: var(--tap_min);
     border-radius: var(--radius_md);
     color: var(--color_text_muted);
+  }
+
+  .lang_suggest.leaving {
+    animation: lang_out var(--duration_exit) var(--ease_out) both;
+  }
+
+  @keyframes lang_out {
+    to {
+      opacity: 0;
+      transform: translateY(16px);
+    }
   }
 
   @keyframes lang_in {

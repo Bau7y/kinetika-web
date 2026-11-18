@@ -85,7 +85,9 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   .day {
     --card_w: min(420px, 82vw);
     --gap: 24px;
-    overflow: hidden;
+    /* clip, not hidden: a clipped box cannot be scrolled, so focusing a
+       link in a scene off to the side never shifts the section */
+    overflow: clip;
   }
 
   .day_head {
@@ -182,6 +184,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   }
 
   .day_card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -189,7 +192,18 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     border-radius: var(--radius_xl);
     background: var(--color_raised);
     border: 1px solid var(--color_line);
-    transition: border-color 400ms ease;
+  }
+
+  /* Ring of the current scene: fades in with opacity only */
+  .day_card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    border: 1px solid var(--color_accent_border_strong);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration_move) ease;
   }
 
   .day_card_head {
@@ -260,7 +274,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     background: var(--color_accent);
     transform: scaleX(0.25);
     transform-origin: 0 50%;
-    transition: transform var(--duration_slow) var(--ease_in_out);
+    transition: transform var(--duration_move) var(--ease_in_out);
   }
 
   /* ── Enhanced: buttons move the track ── */
@@ -275,13 +289,13 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   }
 
   :global(html.js) .day_track {
-    transition: transform var(--duration_slow) var(--ease_in_out);
+    transition: transform var(--duration_move) var(--ease_in_out);
   }
 
   /* The current scene stands out by its border and dot, not by fading the
      others: every scene keeps WCAG AA contrast. */
-  :global(html.js) .day_scene[aria-current] .day_card {
-    border-color: var(--color_accent_border_strong);
+  :global(html.js) .day_scene[aria-current] .day_card::after {
+    opacity: 1;
   }
 
   :global(html.js) .day_scene:not([aria-current]) .day_dot {
@@ -291,7 +305,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   @media (prefers-reduced-motion: reduce) {
     .day_track,
     .day_fill,
-    .day_card {
+    .day_card::after {
       transition: none !important;
     }
   }

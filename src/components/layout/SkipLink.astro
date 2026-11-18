@@ -28,4 +28,10 @@ const t = useTranslations(Astro.props.lang);
     transform: translateY(80px);
     color: var(--color_on_cta);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skip_link {
+      transition: none;
+    }
+  }
 </style>
