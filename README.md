@@ -41,16 +41,18 @@ kinetika-web/
 │   │   │   └── Intro.astro       # la K se arma al cargar
 │   │   ├── layout/
 │   │   │   ├── Fonts.astro       # @font-face y precarga
-│   │   │   ├── NavBar.astro
+│   │   │   ├── NavBar.astro       # menú pill flotante con indicador de sección
 │   │   │   ├── LangSwitch.astro
 │   │   │   ├── LangSuggest.astro # sugerencia de idioma no intrusiva
 │   │   │   ├── SkipLink.astro
 │   │   │   └── Footer.astro
 │   │   ├── sections/             # secciones del inicio, una por commit
 │   │   │   ├── Hero.astro
+│   │   │   ├── StatsStrip.astro     # datos tomados de products y service_area
 │   │   │   ├── SwitchCompare.astro
 │   │   │   ├── DayTimeline.astro
 │   │   │   ├── Blueprint.astro
+│   │   │   ├── Process.astro        # Cómo trabajamos
 │   │   │   ├── WhyServiceArea.astro
 │   │   │   ├── FaqGuides.astro
 │   │   │   └── QuoteChat.astro
@@ -85,6 +87,7 @@ kinetika-web/
 │   │   ├── day_scenes.ts
 │   │   ├── service_area.ts       # 13 distritos de San Carlos
 │   │   ├── faq.ts
+│   │   ├── process.ts            # pasos de Cómo trabajamos
 │   │   └── quote_options.ts      # opciones del chat de cotización
 │   ├── i18n/
 │   │   ├── ui.ts                 # textos de interfaz ES / EN
@@ -124,6 +127,9 @@ kinetika-web/
 │   │   ├── sitemap.xml.ts
 │   │   └── llms.txt.ts
 │   ├── scripts/                  # JS de cliente por sección
+│   │   ├── hero_lines.ts         # arranca las líneas del hero cuando la página está libre
+│   │   ├── hero_lines.worker.ts  # dibuja las líneas en un OffscreenCanvas (fuera del hilo principal)
+│   │   ├── spotlight.ts          # luz que sigue al cursor en [data-spotlight]
 │   │   ├── switch_compare.ts
 │   │   ├── day_timeline.ts
 │   │   ├── blueprint.ts
@@ -260,7 +266,7 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 | `yarn typecheck` | `astro check` |
 | `yarn test` | Pruebas unitarias |
 | `yarn test:e2e` | Pruebas de humo sobre el build |
-| `yarn test:a11y` | Accesibilidad con axe (ES y EN) |
+| `yarn test:a11y` | Accesibilidad con axe (escritorio y móvil) |
 
 ## Variables de entorno
 
