@@ -1,7 +1,8 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro/zod';
 import { Resend } from 'resend';
-import { RESEND_API_KEY, CONTACT_TO, CONTACT_FROM } from 'astro:env/server';
+import { RESEND_API_KEY, CONTACT_TO, CONTACT_FROM, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } from 'astro:env/server';
+import { isBotSubmission, isRateLimited } from '../lib/spam';
 import { useTranslations, type UiKey } from '../i18n/ui';
 import { canReceiveEmail } from '../lib/email';
 import { BUSINESS_TYPES, MESSAGE_MAX, NEEDS } from '../data/quote_options';
@@ -30,7 +31,20 @@ const lang = z
   .nullish()
   .transform((v) => v ?? 'es');
 
+/** Anti-spam fields present in every form: honeypot and load timestamp. */
+const protection = {
+  website: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  loaded_at: z.coerce
+    .number()
+    .nullish()
+    .transform((v) => v ?? 0),
+};
+
 export const quoteSchema = z.object({
+  ...protection,
   lang,
   business: z.enum(BUSINESS_TYPES, 'business_required'),
   need: z.enum(NEEDS, 'need_required'),
@@ -78,6 +92,26 @@ async function deliver({ subject, replyTo, rows, message }: Mail) {
   }
 }
 
+/** Accepted messages per IP and hour, shared by every form. */
+const RATE_LIMIT = { limit: 5, windowSeconds: 3600 };
+const redis =
+  UPSTASH_REDIS_REST_URL && UPSTASH_REDIS_REST_TOKEN ? { url: UPSTASH_REDIS_REST_URL, token: UPSTASH_REDIS_REST_TOKEN } : undefined;
+
+type Protected = { website: string; loaded_at: number };
+
+/**
+ * Runs the anti-spam layers in order. Returns false when the submission must
+ * be dropped silently (the caller still answers "sent"); throws when the
+ * visitor has to be told.
+ */
+async function screen(input: Protected, ip: string): Promise<boolean> {
+  if (isBotSubmission({ website: input.website, loadedAt: input.loaded_at })) return false;
+  if (await isRateLimited(ip, { ...RATE_LIMIT, redis })) {
+    throw new ActionError({ code: 'TOO_MANY_REQUESTS', message: 'rate_limited' });
+  }
+  return true;
+}
+
 // The email to the office is always in Spanish.
 const es = useTranslations('es');
 
@@ -85,7 +119,9 @@ export const server = {
   sendQuote: defineAction({
     accept: 'form',
     input: quoteSchema,
-    handler: async (input) => {
+    handler: async (input, context) => {
+      if (!(await screen(input, context.clientAddress))) return { sent: true };
+
       const business = es(`quote.business.${input.business}` as UiKey);
       const need = es(`quote.need.${input.need}` as UiKey);
 

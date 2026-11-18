@@ -39,6 +39,10 @@ export function initQuoteChat(form: HTMLFormElement, send: QuoteSender) {
   const progressLabel = section.querySelector<HTMLElement>('.quote_progress_label');
   let sending = false;
 
+  // Load time for the minimum-time check on the server
+  const loadedAt = form.querySelector<HTMLInputElement>('[data-loaded-at]');
+  if (loadedAt) loadedAt.value = String(Date.now());
+
   const setProgress = (reached: number) => {
     bars.forEach((bar, i) => bar.classList.toggle('is_on', i < reached));
     if (progressLabel) progressLabel.textContent = (progressLabel.dataset.template ?? '').replace('{n}', String(Math.min(reached, 3)));

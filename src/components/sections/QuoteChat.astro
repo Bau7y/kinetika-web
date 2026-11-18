@@ -37,6 +37,12 @@ const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiK
 
     <form class="chat" novalidate aria-label={t('quote.form_label')} data-quote data-errors={JSON.stringify(errors)} data-lang={lang}>
       <input type="hidden" name="lang" value={lang} />
+      <input type="hidden" name="loaded_at" value="0" data-loaded-at />
+      <!-- Honeypot: hidden from people and assistive tech; bots fill it in -->
+      <div class="chat_trap" aria-hidden="true">
+        <label for={`${id}_website`}>Website</label>
+        <input id={`${id}_website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
 
       <fieldset class="chat_step" data-step="0">
         <legend class="chat_bubble chat_them">{t('quote.q_business')}</legend>
@@ -104,7 +110,6 @@ const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiK
         </div>
 
         <slot name="protection" />
-
         <button type="submit" class="btn btn_primary chat_submit" data-label={t('quote.submit')} data-sending={t('quote.sending')}>{t('quote.submit')}</button>
         <noscript><p class="chat_error">{t('quote.noscript')}</p></noscript>
       </fieldset>
@@ -193,6 +198,14 @@ const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiK
     border-radius: var(--radius_2xl);
     background: var(--color_bg);
     border: 1px solid var(--color_line);
+  }
+
+  .chat_trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
   .chat_step {
