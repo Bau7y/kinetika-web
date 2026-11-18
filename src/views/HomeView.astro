@@ -3,6 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import StatsStrip from '../components/sections/StatsStrip.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
 import ProjectsGrid from '../components/sections/ProjectsGrid.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
 import SwitchCompare from '../components/sections/SwitchCompare.astro';
@@ -34,8 +35,22 @@ const business = businessSchema(Astro.site!, lang, {
   services: services.map((s) => ({ name: s.data.name, path: s.href, description: s.data.meta_description })),
 });
 // Story order of the home page: each numbered section takes its place here
-const chapters = ['projects', 'services', 'compare', 'day', 'about', 'process', 'proof', 'faq', 'quote'] as const;
-const n = (key: (typeof chapters)[number]) => String(chapters.indexOf(key) + 1).padStart(2, '0');
+import { testimonials } from '../data/testimonials';
+// Testimonials take a number only once there are real ones
+type Chapter = 'projects' | 'services' | 'compare' | 'day' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq' | 'quote';
+const chapters: Chapter[] = [
+  'projects',
+  'services',
+  'compare',
+  'day',
+  'about',
+  ...(testimonials[lang].length > 0 ? (['testimonials'] as const) : []),
+  'process',
+  'proof',
+  'faq',
+  'quote',
+];
+const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
 ---
 <BaseLayout intro lang={lang} title={t('home.seo_title')} description={t('site.description')} alternates={routes.home}>
   <JsonLd slot="head" data={[business, websiteSchema(Astro.site!, lang, routes.home[lang]), faqSchema(faq[lang])]} />
@@ -46,6 +61,7 @@ const n = (key: (typeof chapters)[number]) => String(chapters.indexOf(key) + 1).
   <DayTimeline lang={lang} number={n('day')} />
   <WhyServiceArea lang={lang} number={n('about')} />
   <StatsStrip lang={lang} />
+  <Testimonials lang={lang} number={n('testimonials')} />
   <Process lang={lang} number={n('process')} />
   <Blueprint lang={lang} number={n('proof')} />
   <FaqGuides lang={lang} number={n('faq')} />

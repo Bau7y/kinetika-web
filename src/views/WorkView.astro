@@ -88,6 +88,16 @@ const crumbs = [
         <li data-reveal data-i="2" class="work_case_result"><h3 class="eyebrow">{t('case.result')}</h3><p>{data.case.result}</p></li>
       </ol>
       <Chips items={data.case.tags} label={t('case.tags')} class="work_tags" />
+      {data.case.milestones.length > 0 && (
+        <ol role="list" class="work_milestones" aria-label={t('case.milestones')}>
+          {data.case.milestones.map((m) => (
+            <li>
+              <time datetime={m.date.toISOString().slice(0, 10)}>{formatDate(m.date, lang)}</time>
+              <span>{m.text}</span>
+            </li>
+          ))}
+        </ol>
+      )}
     </section>
   )}
 
@@ -236,6 +246,25 @@ const crumbs = [
     margin-top: var(--space_md);
   }
 
+
+  .work_milestones {
+    display: grid;
+    gap: 10px;
+    margin-top: var(--space_md);
+    padding-left: 18px;
+    border-left: 1px solid var(--color_accent_border);
+  }
+
+  .work_milestones li {
+    display: grid;
+    gap: 2px;
+  }
+
+  .work_milestones time {
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    color: var(--color_accent_text);
+  }
 
   .work_showcase {
     display: grid;

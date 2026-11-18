@@ -23,6 +23,8 @@ const caseStudy = z.object({
   result: z.string(),
   /** Short labels of what the project uses (forms, panel, portal…). */
   tags: z.array(z.string()).min(1),
+  /** Dated facts of the project, newest last (published, first client…). */
+  milestones: z.array(z.object({ date: z.coerce.date(), text: z.string() })).default([]),
 });
 
 const work = defineCollection({
