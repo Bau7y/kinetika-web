@@ -13,7 +13,9 @@
     "preview": "astro preview",
     "typecheck": "astro check",
     "astro": "astro",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "node --test tests/e2e/*.test.mjs",
+    "test:a11y": "node scripts/a11y.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.22",
@@ -29,7 +31,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
     "@types/node": "^22",
+    "playwright": "^1.65.1",
     "typescript": "^6",
     "vitest": "^5.1.0"
   }
