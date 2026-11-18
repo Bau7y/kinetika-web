@@ -35,8 +35,8 @@ async function open(path, options = {}) {
 describe('páginas clave', () => {
   const paths = [
     '/', '/en', '/contacto', '/en/contact', '/guias', '/en/guides', '/privacidad', '/en/privacy',
-    '/servicios/automatizacion-de-procesos', '/servicios/sitios-web', '/proyectos/pedidos', '/proyectos/tramimunisc', '/proyectos/plataforma-contable',
-    '/en/services/websites', '/en/projects/tramimunisc', '/guias/declaracion-de-bienes-inmuebles',
+    '/soluciones/automatizacion-de-procesos', '/soluciones/sitios-web', '/experiencia/pedidos', '/experiencia/tramimunisc', '/experiencia/plataforma-contable',
+    '/en/solutions/websites', '/en/work/tramimunisc', '/guias/declaracion-de-bienes-inmuebles',
   ];
 
   for (const path of paths) {
@@ -112,7 +112,7 @@ describe('cotización', () => {
   });
 
   it('la lista de espera también valida', async () => {
-    const page = await open('/proyectos/plataforma-contable');
+    const page = await open('/experiencia/plataforma-contable');
     await page.click('[data-waitlist] button[type="submit"]');
     assert.equal(await page.textContent('[data-waitlist] [data-error-for="email"]'), 'Escribí tu correo.');
     await page.close();
@@ -121,7 +121,7 @@ describe('cotización', () => {
 
 describe('idioma', () => {
   it('el selector lleva a la misma página en el otro idioma', async () => {
-    const page = await open('/proyectos/pedidos');
+    const page = await open('/experiencia/pedidos');
     await page.click('[data-lang-switch]');
     await page.waitForURL(/\/en\/projects\/ordering$/);
     assert.equal(await page.getAttribute('html', 'lang'), 'en');
@@ -142,7 +142,7 @@ describe('menú móvil', () => {
 
 describe('proyectos', () => {
   it('el filtro por estado oculta las demás tarjetas y anuncia el total', async () => {
-    const page = await open('/proyectos');
+    const page = await open('/experiencia');
     await page.click('[data-project-filter] button[data-status="in_production"]');
     assert.equal(await page.locator('li[data-status]:visible').count(), 1);
     assert.match(await page.textContent('[data-project-count]'), /^1 proyecto$/);
@@ -200,14 +200,14 @@ describe('SEO', () => {
     const config = JSON.parse(await readFile('.vercel/output/config.json', 'utf8'));
     const routes = JSON.stringify(config.routes);
     assert.match(routes, /productos\/pedidos/);
-    assert.match(routes, /proyectos\/pedidos/);
+    assert.match(routes, /experiencia\/pedidos/);
   });
 
   it('el índice de proyectos lista cada caso con su enlace', async () => {
-    const html = await (await get('/proyectos')).text();
-    for (const slug of ['pedidos', 'tramimunisc', 'plataforma-contable']) assert.match(html, new RegExp(`href="/proyectos/${slug}"`));
+    const html = await (await get('/experiencia')).text();
+    for (const slug of ['pedidos', 'tramimunisc', 'plataforma-contable']) assert.match(html, new RegExp(`href="/experiencia/${slug}"`));
     assert.match(html, /"@type":"ItemList"/);
-    assert.equal((await get('/en/projects')).status, 200);
+    assert.equal((await get('/en/work')).status, 200);
   });
 
   it('las preguntas usan details nativo y la primera empieza abierta', async () => {
@@ -216,18 +216,18 @@ describe('SEO', () => {
   });
 
   it('cada proyecto muestra su caso: antes, qué se automatizó y hoy', async () => {
-    const html = await (await get('/proyectos/tramimunisc')).text();
+    const html = await (await get('/experiencia/tramimunisc')).text();
     assert.match(html, /id="case_title"/);
     assert.match(html, /En producción en tramimunisc\.com\./);
   });
 
   it('cada producto responde qué es en un bloque propio', async () => {
-    const html = await (await get('/proyectos/tramimunisc')).text();
+    const html = await (await get('/experiencia/tramimunisc')).text();
     assert.match(html, /<h2 id="answer_title"[^>]*>¿Qué es TramiMuniSC\?<\/h2>/);
   });
 
   it('los datos estructurados son JSON válido en todas las páginas clave', async () => {
-    for (const path of ['/', '/en', '/servicios/sitios-web', '/proyectos/pedidos', '/guias/declaracion-de-bienes-inmuebles']) {
+    for (const path of ['/', '/en', '/soluciones/sitios-web', '/experiencia/pedidos', '/guias/declaracion-de-bienes-inmuebles']) {
       const html = await (await get(path)).text();
       const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
       assert.ok(blocks.length > 0, path);
