@@ -62,9 +62,8 @@ function build() {
     const y3 = H * (-0.15 + t * 0.75) + (rand() - 0.5) * H * 0.12;
     const alpha = 0.02 + Math.pow(rand(), 3) * 0.42;
     const width = 0.5 + rand() * 1.3;
-    // Mostly neutral gray lines; the blue lives in the pulses
-    const hue = 215;
-    const light = 55 + rand() * 25;
+    const hue = 210 + rand() * 16;
+    const light = 48 + rand() * 22;
     const lift = H * (0.2 + rand() * 0.25);
     lines.push({
       y0,
@@ -73,7 +72,7 @@ function build() {
       y3,
       alpha,
       width,
-      color: `hsla(${hue},6%,${light}%,`,
+      color: `hsla(${hue},92%,${light}%,`,
       phase: (i * 2.399) % (Math.PI * 2),
       speed: 0.12 + ((i * 7) % 13) / 13 * 0.22,
       amp: H * (0.012 + ((i * 11) % 17) / 17 * 0.028),
@@ -196,9 +195,9 @@ function draw(now: number) {
   // Same darkening as the static image: calmer bottom-left behind the text
   ctx.globalCompositeOperation = 'source-over';
   const mask = ctx.createLinearGradient(0, H, W * 0.7, 0);
-  mask.addColorStop(0, 'rgba(5,5,5,0.9)');
-  mask.addColorStop(0.55, 'rgba(5,5,5,0.35)');
-  mask.addColorStop(1, 'rgba(5,5,5,0)');
+  mask.addColorStop(0, 'rgba(5,8,15,0.9)');
+  mask.addColorStop(0.55, 'rgba(5,8,15,0.35)');
+  mask.addColorStop(1, 'rgba(5,8,15,0)');
   ctx.fillStyle = mask;
   ctx.fillRect(0, 0, W, H);
 

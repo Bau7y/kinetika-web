@@ -148,9 +148,10 @@ main:focus {
 /* Blue band: the rhythm accent between plain sections */
 .section_blue {
   background:
-    radial-gradient(60% 90% at 90% 0%, rgb(61 139 255 / 0.1), transparent 60%),
-    linear-gradient(180deg, #0b0b0b, #101010);
-  border-block: 1px solid var(--color_line);
+    radial-gradient(70% 110% at 88% 0%, rgb(47 111 235 / 0.22), transparent 62%),
+    radial-gradient(50% 80% at 0% 100%, rgb(61 139 255 / 0.1), transparent 70%),
+    linear-gradient(180deg, #0a1428, #0b1631);
+  border-block: 1px solid rgb(61 139 255 / 0.18);
 }
 
 .visually_hidden {
@@ -168,7 +169,7 @@ main:focus {
 /* ── Type helpers ─────────────────────────────────── */
 .section_title {
   font-size: var(--text_h2);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.06;
   letter-spacing: -0.04em;
 }
@@ -291,7 +292,7 @@ main:focus {
 }
 
 .btn_ghost::before {
-  border: 1px solid var(--color_text_secondary);
+  border: 1px solid var(--color_accent);
   box-shadow: 0 0 24px var(--color_glow);
 }
 
@@ -386,7 +387,7 @@ main:focus {
   width: 360px;
   height: 360px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0) 70%);
+  background: radial-gradient(circle, rgb(61 139 255 / 0.16), rgb(61 139 255 / 0) 70%);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--duration_base) ease;

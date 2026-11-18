@@ -1,36 +1,35 @@
 /*
  * Design tokens. Every color, size and curve used by the components lives
  * here, so the palette or the type scale changes in one place.
- * Palette: monochrome with a minimal blue accent (dark only). Blue is
- * reserved for links, focus, live states and one detail per section.
+ * Palette: "azul empresarial" (dark only).
  */
 :root {
   color-scheme: dark;
 
   /* Backgrounds */
-  --color_bg: #050505;
-  --color_surface: #0d0d0d;
-  --color_raised: #151515;
+  --color_bg: #070b14;
+  --color_surface: #0d1422;
+  --color_raised: #111a2b;
 
   /* Lines */
-  --color_line: #1f1f1f;
-  --color_line_strong: #333333;
+  --color_line: #1c2536;
+  --color_line_strong: #2b3650;
 
   /* Text */
-  --color_text: #f2f2f2;
-  --color_text_secondary: #b5b5b5;
-  --color_text_muted: #929292;
-  --color_nav_link: #cfcfcf;
+  --color_text: #e8eef7;
+  --color_text_secondary: #b4c0d3;
+  --color_text_muted: #94a3b8;
+  --color_nav_link: #c5d0e0;
 
   /* Accent */
   --color_accent: #3d8bff;
   --color_accent_text: #6ea8ff;
   --color_accent_hover: #a9cbff;
-  /* Primary button: white on black, like the rest of the monochrome system */
-  --color_cta: #f2f2f2;
-  --color_cta_hover: #ffffff;
-  --color_on_cta: #050505;
-  --color_glow: rgb(255 255 255 / 0.16);
+  --color_cta: #2f6feb;
+  --color_cta_hover: #3f7ef5;
+  --color_on_cta: #ffffff;
+  /* Soft halo behind buttons on hover */
+  --color_glow: rgb(61 139 255 / 0.35);
   --color_accent_tint: rgb(61 139 255 / 0.08);
   --color_accent_tint_strong: rgb(61 139 255 / 0.16);
   --color_accent_border: rgb(61 139 255 / 0.35);
@@ -43,8 +42,8 @@
   --color_warn_bg: rgb(252 211 77 / 0.14);
   --color_bad: #fca5a5;
   --color_bad_bg: rgb(252 165 165 / 0.14);
-  --color_neutral: #d4d4d4;
-  --color_neutral_bg: rgb(212 212 212 / 0.12);
+  --color_neutral: #cbd5e1;
+  --color_neutral_bg: rgb(180 192 211 / 0.14);
 
   /* Typography */
   --font_sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

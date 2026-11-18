@@ -25,11 +25,11 @@ const loadFonts = () =>
   ));
 
 const COLORS = {
-  bg: '#050505',
-  glow: '#1C1C1C',
-  line: '#333333',
-  text: '#F2F2F2',
-  secondary: '#B5B5B5',
+  bg: '#070B14',
+  glow: '#172B5C',
+  line: '#2B3650',
+  text: '#E8EEF7',
+  secondary: '#B4C0D3',
   accent: '#6EA8FF',
 };
 

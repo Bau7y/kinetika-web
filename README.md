@@ -278,7 +278,7 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 - **Proyectos** (`kind: project`): casos de estudio con `case` (antes, qué se automatizó, hoy y etiquetas). El resultado solo dice hechos; no se inventan cifras.
 - **Redirecciones:** las URLs antiguas `/productos/*` y `/en/products/*` responden 301 a su nueva ruta (`astro.config.mjs`).
 - **Capturas del portafolio:** las tarjetas de proyecto usan `src/assets/work/<clave>.png`, tomadas de la demo de cada proyecto. Si una demo cambia: `yarn build && yarn capture:work`.
-- **Paleta:** monocroma con azul mínimo (enlaces, foco, estados en vivo y un detalle por sección).
+- **Paleta:** azul empresarial. De Portfolite se toma la estructura (pastilla, scroll, franja, casos), los titulares en peso 500 y el brillo de los botones, no los colores.
 - **Testimonios:** no hay sección hasta tener testimonios reales con permiso de cada cliente.
 
 ## SEO, AEO y GEO

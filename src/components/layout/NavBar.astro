@@ -229,14 +229,14 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
   }
 
   .pill::before {
-    background: rgb(20 20 20 / 0.55);
+    background: rgb(13 20 34 / 0.55);
     border: 1px solid rgb(255 255 255 / 0.08);
     backdrop-filter: saturate(1.4) blur(16px);
     -webkit-backdrop-filter: saturate(1.4) blur(16px);
   }
 
   .pill::after {
-    background: rgb(12 12 12 / 0.88);
+    background: rgb(9 14 25 / 0.88);
     border: 1px solid var(--color_line_strong);
     box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
     opacity: 0;
@@ -289,7 +289,7 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: rgb(255 255 255 / 0.09);
+    background: var(--color_accent_tint_strong);
     border-radius: var(--radius_full);
     clip-path: inset(0 50% 0 50% round 999px);
     opacity: 0;
