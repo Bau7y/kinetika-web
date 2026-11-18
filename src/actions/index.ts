@@ -1,5 +1,8 @@
-import { defineAction } from 'astro:actions';
+import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro/zod';
+import { Resend } from 'resend';
+import { RESEND_API_KEY, CONTACT_TO, CONTACT_FROM } from 'astro:env/server';
+import { useTranslations, type UiKey } from '../i18n/ui';
 import { canReceiveEmail } from '../lib/email';
 import { BUSINESS_TYPES, MESSAGE_MAX, NEEDS } from '../data/quote_options';
 
@@ -40,11 +43,65 @@ export const quoteSchema = z.object({
   consent,
 });
 
+let client: Resend | null = null;
+const getClient = () => (client ??= new Resend(RESEND_API_KEY));
+
+const escapeHtml = (text: string) =>
+  text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+interface Mail {
+  subject: string;
+  replyTo: string;
+  rows: [string, string][];
+  message: string;
+}
+
+/** Sends a message to the office inbox. Every value is escaped. */
+async function deliver({ subject, replyTo, rows, message }: Mail) {
+  const text = [...rows.map(([key, value]) => `${key}: ${value}`), '', message].join('\n');
+  const html = `
+    <table style="font-family:system-ui,sans-serif;font-size:14px;border-collapse:collapse">
+      ${rows
+        .map(
+          ([key, value]) =>
+            `<tr><td style="padding:4px 12px 4px 0;color:#475569"><strong>${escapeHtml(key)}</strong></td><td style="padding:4px 0">${escapeHtml(value)}</td></tr>`,
+        )
+        .join('')}
+    </table>
+    ${message ? `<p style="font-family:system-ui,sans-serif;font-size:14px;white-space:pre-wrap;margin-top:16px">${escapeHtml(message)}</p>` : ''}
+  `;
+
+  const { error } = await getClient().emails.send({ from: CONTACT_FROM, to: [CONTACT_TO], replyTo, subject, text, html });
+  if (error) {
+    console.error('[deliver] Resend:', error);
+    throw new ActionError({ code: 'INTERNAL_SERVER_ERROR', message: 'generic' });
+  }
+}
+
+// The email to the office is always in Spanish.
+const es = useTranslations('es');
+
 export const server = {
   sendQuote: defineAction({
     accept: 'form',
     input: quoteSchema,
-    handler: async () => {
+    handler: async (input) => {
+      const business = es(`quote.business.${input.business}` as UiKey);
+      const need = es(`quote.need.${input.need}` as UiKey);
+
+      await deliver({
+        subject: `[Cotización] ${business} · ${need}`,
+        replyTo: input.email,
+        rows: [
+          ['Negocio', business],
+          ['Necesidad', need],
+          ['Correo', input.email],
+          ['Idioma', input.lang === 'en' ? 'Inglés' : 'Español'],
+          ['Consentimiento', 'Aceptó la política de privacidad'],
+        ],
+        message: input.message,
+      });
+
       return { sent: true };
     },
   }),
