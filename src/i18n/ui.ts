@@ -46,6 +46,13 @@ const es = {
 
   'breadcrumbs.label': 'Ruta de navegación',
   'updated.label': 'Actualizado el',
+  'product.cta_quote': 'Cotizar este producto',
+  'product.cta_live': 'Ver el sitio en producción',
+  'product.cta_waitlist': 'Unirme a la lista de espera',
+  'product.demo_note': 'Demo con datos de ejemplo.',
+  'product.faq_title': 'Preguntas sobre este producto',
+  'product.see': 'Ver producto',
+  'product.others': 'Otros productos',
 
   'hero.title_a': 'Software empresarial para negocios que',
   'hero.title_b': 'no se detienen.',
@@ -189,6 +196,13 @@ const en: Strings = {
 
   'breadcrumbs.label': 'Breadcrumb',
   'updated.label': 'Updated on',
+  'product.cta_quote': 'Get a quote for this product',
+  'product.cta_live': 'Visit the live site',
+  'product.cta_waitlist': 'Join the waitlist',
+  'product.demo_note': 'Demo with sample data.',
+  'product.faq_title': 'Questions about this product',
+  'product.see': 'See product',
+  'product.others': 'Other products',
 
   'hero.title_a': 'Business software for companies that',
   'hero.title_b': 'never stop.',

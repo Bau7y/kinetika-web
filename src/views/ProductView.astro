@@ -1,0 +1,218 @@
+---
+/**
+ * Product page, shared by /productos/<slug> and /en/products/<slug>.
+ * Each product brings its own demo (slot "demo").
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductHero from '../components/product/ProductHero.astro';
+import ProductDemo from '../components/product/ProductDemo.astro';
+import Prose from '../components/ui/Prose.astro';
+import Button from '../components/ui/Button.astro';
+import { render } from 'astro:content';
+import { getProducts, type Product } from '../data/products';
+import { pairHrefs } from '../data/pages';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  product: Product;
+}
+const { lang, product } = Astro.props;
+const t = useTranslations(lang);
+const { data } = product;
+const { Content } = await render(product);
+const hasBody = Boolean(product.body?.trim());
+
+const alternates = pairHrefs({ es: await getProducts('es'), en: await getProducts('en') })(product.key, lang);
+const others = (await getProducts(lang)).filter((p) => p.key !== product.key);
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.products'), href: `${routes.home[lang] === '/' ? '' : routes.home[lang]}/#interruptor` },
+  { name: data.name, href: product.href },
+];
+---
+<BaseLayout lang={lang} title={data.seo_title} description={data.meta_description} alternates={alternates}>
+  <slot name="head" slot="head" />
+  <ProductHero lang={lang} product={product} crumbs={crumbs} />
+
+  <ProductDemo lang={lang} title={data.demo.title} text={data.demo.text}>
+    <slot name="demo" />
+  </ProductDemo>
+
+  <section class="section section_band" aria-labelledby="highlights_title">
+    <div class="container">
+      <h2 id="highlights_title" class="section_title product_h2">{data.highlights.title}</h2>
+      <ul role="list" class="product_highlights">
+        {data.highlights.items.map((item) => (
+          <li data-reveal>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section container" aria-labelledby="steps_title">
+    <h2 id="steps_title" class="section_title product_h2">{data.steps.title}</h2>
+    <ol role="list" class="product_steps">
+      {data.steps.items.map((step, i) => (
+        <li data-reveal>
+          <span class="mono product_step_n">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
+    </ol>
+    {hasBody && <div class="product_body"><Prose><Content /></Prose></div>}
+  </section>
+
+  <slot />
+
+  {data.faq.length > 0 && (
+    <section class="section section_band" aria-labelledby="product_faq_title">
+      <div class="container">
+        <h2 id="product_faq_title" class="section_title product_h2">{t('product.faq_title')}</h2>
+        <dl class="product_faq">
+          {data.faq.map((item) => (
+            <div>
+              <dt>{item.q}</dt>
+              <dd>{item.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )}
+
+  <section class="section container product_cta" aria-labelledby="product_cta_title">
+    <h2 id="product_cta_title" class="section_title">{data.cta.title}</h2>
+    <p class="lede">{data.cta.text}</p>
+    {data.status === 'waitlist' ? (
+      <Button href="#lista-de-espera" arrow>{t('product.cta_waitlist')}</Button>
+    ) : (
+      <Button href={routes.quote[lang]} arrow>{t('product.cta_quote')}</Button>
+    )}
+    {others.length > 0 && (
+      <nav class="product_others" aria-labelledby="product_others_title">
+        <h3 id="product_others_title" class="eyebrow">{t('product.others')}</h3>
+        <ul role="list">
+          {others.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
+        </ul>
+      </nav>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .product_h2 {
+    max-width: 800px;
+    margin-bottom: var(--space_lg);
+  }
+
+  .product_highlights {
+    display: grid;
+    gap: var(--space_sm);
+  }
+
+  .product_highlights li {
+    padding: 28px;
+    border-radius: var(--radius_xl);
+    background: var(--color_raised);
+    border: 1px solid var(--color_line);
+  }
+
+  .product_highlights h3,
+  .product_steps h3 {
+    font-size: var(--text_xl);
+    font-weight: 700;
+  }
+
+  .product_highlights p,
+  .product_steps p {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  .product_steps {
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .product_steps li {
+    padding-top: var(--space_sm);
+    border-top: 1px solid var(--color_line_strong);
+  }
+
+  .product_step_n {
+    display: block;
+    margin-bottom: 8px;
+    font-size: var(--text_xs);
+    color: var(--color_accent_text);
+  }
+
+  .product_body {
+    margin-top: var(--space_xl);
+  }
+
+  .product_faq {
+    display: grid;
+    column-gap: var(--space_xl);
+  }
+
+  .product_faq > div {
+    padding-block: var(--space_md);
+    border-top: 1px solid var(--color_line);
+  }
+
+  .product_faq dt {
+    font-size: var(--text_lg);
+    font-weight: 600;
+  }
+
+  .product_faq dd {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  .product_cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space_md);
+  }
+
+  .product_others {
+    margin-top: var(--space_lg);
+  }
+
+  .product_others ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin-top: var(--space_xs);
+  }
+
+  .product_others a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    font-weight: 500;
+  }
+
+  @media (min-width: 760px) {
+    .product_highlights {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .product_steps {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .product_faq {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

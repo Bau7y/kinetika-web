@@ -6,6 +6,7 @@
  */
 import { LANGS, routes, type Lang } from '../i18n/routes';
 import { useTranslations } from '../i18n/ui';
+import { getProducts } from './products';
 
 export type PageSection = 'home' | 'quote' | 'product' | 'guides' | 'guide' | 'legal';
 
@@ -52,7 +53,23 @@ function fixedPages(lang: Lang): PageEntry[] {
 }
 
 export async function getPages(): Promise<PageEntry[]> {
-  return LANGS.flatMap((lang) => fixedPages(lang));
+  const products = { es: await getProducts('es'), en: await getProducts('en') };
+  const productAlt = pairHrefs(products);
+
+  return LANGS.flatMap((lang) => [
+    ...fixedPages(lang),
+    ...products[lang].map(
+      (p): PageEntry => ({
+        path: p.href,
+        lang,
+        section: 'product',
+        title: p.data.title,
+        description: p.data.meta_description,
+        alternates: productAlt(p.key, lang),
+        updated: p.data.updated,
+      }),
+    ),
+  ]);
 }
 
 /** Open Graph image size. */

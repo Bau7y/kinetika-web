@@ -1,0 +1,72 @@
+---
+/** Top of a product page: status, name, summary and the next step. */
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import Breadcrumbs, { type Crumb } from '../ui/Breadcrumbs.astro';
+import { statusBadge } from '../../data/product_status';
+import type { Product } from '../../data/products';
+import { routes, useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  product: Product;
+  crumbs: Crumb[];
+}
+const { lang, product, crumbs } = Astro.props;
+const t = useTranslations(lang);
+const { data } = product;
+const badge = statusBadge[data.status];
+const waitlist = data.status === 'waitlist';
+---
+<section class="product_hero" aria-labelledby="product_title">
+  <div class="container">
+    <Breadcrumbs lang={lang} items={crumbs} />
+    <div class="product_hero_body">
+      <Badge tone={badge.tone}>{t(badge.label)}</Badge>
+      <h1 id="product_title" class="product_title">{data.title}</h1>
+      <p class="lede">{data.summary}</p>
+      <div class="product_actions">
+        {waitlist ? (
+          <Button href="#lista-de-espera" arrow>{t('product.cta_waitlist')}</Button>
+        ) : (
+          <Button href={routes.quote[lang]} arrow>{t('product.cta_quote')}</Button>
+        )}
+        {data.external_url && (
+          <Button href={data.external_url} variant="ghost">{t('product.cta_live')}</Button>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .product_hero {
+    padding-top: calc(var(--navbar_h) + var(--space_sm));
+    padding-bottom: var(--space_2xl);
+    background: radial-gradient(70% 90% at 80% 0%, #132552, var(--color_bg) 70%);
+    border-bottom: 1px solid var(--color_line);
+  }
+
+  .product_hero_body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space_md);
+    max-width: 820px;
+    margin-top: var(--space_lg);
+  }
+
+  .product_title {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: var(--leading_tight);
+    letter-spacing: -0.035em;
+  }
+
+  .product_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: var(--space_xs);
+  }
+</style>
