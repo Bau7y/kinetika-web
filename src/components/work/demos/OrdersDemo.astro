@@ -5,47 +5,13 @@
  * the next status. Sample dishes and prices; nothing leaves the browser.
  */
 import type { Lang } from '../../../i18n/routes';
+import { ordersCopy } from '../../../data/demos/orders';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const copy = {
-  es: {
-    menu: 'Menú · Soda La Esquina',
-    items: [
-      { id: 'casado', name: 'Casado con pollo', price: 3500 },
-      { id: 'arroz', name: 'Arroz cantonés', price: 3200 },
-      { id: 'fresco', name: 'Fresco natural', price: 1200 },
-    ],
-    add: 'Agregar',
-    remove: 'Quitar',
-    total: 'Total',
-    send: 'Enviar pedido',
-    kitchen: 'Panel de cocina',
-    empty: 'Todavía no hay pedidos.',
-    statuses: ['Nuevo', 'En cocina', 'Listo'],
-    next: 'Pasar a',
-    done: 'Entregado',
-  },
-  en: {
-    menu: 'Menu · La Esquina Diner',
-    items: [
-      { id: 'casado', name: 'Chicken casado', price: 3500 },
-      { id: 'arroz', name: 'Fried rice', price: 3200 },
-      { id: 'fresco', name: 'Fresh juice', price: 1200 },
-    ],
-    add: 'Add',
-    remove: 'Remove',
-    total: 'Total',
-    send: 'Send order',
-    kitchen: 'Kitchen panel',
-    empty: 'No orders yet.',
-    statuses: ['New', 'Cooking', 'Ready'],
-    next: 'Move to',
-    done: 'Delivered',
-  },
-}[lang];
+const copy = ordersCopy[lang];
 const locale = lang === 'es' ? 'es-CR' : 'en-US';
 const money = (n: number) => `₡${n.toLocaleString(locale)}`;
 ---
