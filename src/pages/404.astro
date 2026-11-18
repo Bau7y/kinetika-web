@@ -1,0 +1,52 @@
+---
+/** Single 404 for both languages: Spanish first, English below. Not indexed. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/brand/Logo.astro';
+import Button from '../components/ui/Button.astro';
+import { routes, useTranslations } from '../i18n/ui';
+
+const t = useTranslations('es');
+const tEn = useTranslations('en');
+---
+<BaseLayout lang="es" title="404" noindex description={t('not_found.text')} alternates={routes.home}>
+  <section class="not_found container" aria-labelledby="not_found_title">
+    <Logo size={64} wordmark={false} class="not_found_logo" />
+    <span class="eyebrow">Error 404</span>
+    <h1 id="not_found_title">{t('not_found.title')}</h1>
+    <p class="lede">{t('not_found.text')}</p>
+    <p class="not_found_en" lang="en">{tEn('not_found.title')}. {tEn('not_found.text')}</p>
+    <div class="not_found_actions">
+      <Button href={routes.home.es} arrow>{t('not_found.home')}</Button>
+      <Button href={routes.home.en} variant="ghost" lang="en">{tEn('not_found.home')}</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not_found {
+    display: grid;
+    justify-items: start;
+    gap: var(--space_md);
+    min-height: 80dvh;
+    align-content: center;
+    padding-top: var(--navbar_h);
+  }
+
+  .not_found h1 {
+    font-size: var(--text_h2);
+    font-weight: 700;
+    line-height: var(--leading_tight);
+    letter-spacing: var(--tracking_tight);
+  }
+
+  .not_found_en {
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
+  }
+
+  .not_found_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

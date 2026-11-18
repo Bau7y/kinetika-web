@@ -46,6 +46,9 @@ const es = {
 
   'breadcrumbs.label': 'Ruta de navegación',
   'updated.label': 'Actualizado el',
+  'not_found.title': 'Esta página no existe',
+  'not_found.text': 'Puede que el enlace esté mal escrito o que la página se haya movido.',
+  'not_found.home': 'Volver al inicio',
   'product.cta_quote': 'Cotizar este producto',
   'product.cta_live': 'Ver el sitio en producción',
   'product.cta_waitlist': 'Unirme a la lista de espera',
@@ -209,6 +212,9 @@ const en: Strings = {
 
   'breadcrumbs.label': 'Breadcrumb',
   'updated.label': 'Updated on',
+  'not_found.title': 'This page does not exist',
+  'not_found.text': 'The link may be mistyped or the page may have moved.',
+  'not_found.home': 'Back to home',
   'product.cta_quote': 'Get a quote for this product',
   'product.cta_live': 'Visit the live site',
   'product.cta_waitlist': 'Join the waitlist',
