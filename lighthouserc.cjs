@@ -11,6 +11,8 @@ module.exports = {
         'http://localhost/index.html',
         'http://localhost/soluciones/automatizacion-de-procesos/index.html',
         'http://localhost/experiencia/pedidos/index.html',
+        'http://localhost/nosotros/index.html',
+        'http://localhost/soluciones/index.html',
       ],
       // Three runs: the median ignores one cold start of the CI machine
       numberOfRuns: 3,
