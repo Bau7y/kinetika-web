@@ -1,13 +1,9 @@
 ---
 /**
- * About: where the company comes from, what backs the work, its projects and
- * where it serves. The district list replaces a
+ * About: where the company comes from and where it serves. The district list replaces a
  * team photo: real, indexable local text (it also feeds schema.org areaServed).
  */
-import Badge from '../ui/Badge.astro';
 import { districts } from '../../data/service_area';
-import { getProjects } from '../../data/work';
-import { statusBadge } from '../../data/work_status';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
@@ -16,7 +12,6 @@ interface Props {
 }
 const { lang, number } = Astro.props;
 const t = useTranslations(lang);
-const projects = await getProjects(lang);
 ---
 <section id="nosotros" class="section section_band" aria-labelledby="why_title">
   <div class="container why">
@@ -27,19 +22,6 @@ const projects = await getProjects(lang);
         <p>“{t('why.quote')}”</p>
       </blockquote>
       <p class="why_body" data-reveal>{t('why.text')}</p>
-      <dl class="why_projects" aria-label={t('about.projects_label')} data-reveal>
-        {projects.map((p) => (
-          <div>
-            <dt><a href={p.href}>{p.data.name}</a></dt>
-            <dd>{p.data.service_type}</dd>
-            <dd><Badge tone={statusBadge[p.data.status].tone}>{t(statusBadge[p.data.status].label)}</Badge></dd>
-          </div>
-        ))}
-      </dl>
-      <div class="why_answer" data-reveal>
-        <h3>{t('about.question')}</h3>
-        <p>{t('about.definition')}</p>
-      </div>
       <p class="why_signature">{t('why.signature')} <span>· {t('why.place')}</span></p>
     </div>
 
@@ -78,71 +60,6 @@ const projects = await getProjects(lang);
     font-size: 0.9375rem;
     line-height: 1.6;
     color: var(--color_text_secondary);
-  }
-
-  /* Self-contained answer: reads on its own when quoted by a search engine or assistant */
-  .why_answer {
-    max-width: 620px;
-    padding: 20px 22px;
-    border-left: 3px solid var(--color_accent);
-    border-radius: 0 var(--radius_lg) var(--radius_lg) 0;
-    background: var(--color_accent_tint);
-  }
-
-  .why_answer h3 {
-    font-size: var(--text_lg);
-    font-weight: 600;
-  }
-
-  .why_answer p {
-    margin-top: 6px;
-    font-size: 0.9375rem;
-    line-height: 1.65;
-    color: var(--color_text_secondary);
-  }
-
-  .why_projects {
-    max-width: 620px;
-  }
-
-  .why_projects > div {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2px 16px;
-    align-items: center;
-    padding-block: 10px;
-    border-top: 1px solid var(--color_line);
-  }
-
-  .why_projects > div:last-child {
-    border-bottom: 1px solid var(--color_line);
-  }
-
-  .why_projects dt {
-    font-weight: 600;
-  }
-
-  .why_projects dt a {
-    color: var(--color_text);
-    text-decoration: none;
-  }
-
-  .why_projects dd:nth-of-type(1) {
-    grid-column: 1;
-    grid-row: 2;
-    font-size: var(--text_sm);
-    color: var(--color_text_muted);
-  }
-
-  .why_projects dd:nth-of-type(2) {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .why_projects dt a:hover {
-      color: var(--color_accent_text);
-    }
   }
 
   .why_signature {

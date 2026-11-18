@@ -4,7 +4,6 @@
  * link turns one phrase of the answer into an anchor.
  */
 import type { Lang } from '../i18n/routes';
-import { site } from './site';
 
 export interface FaqItem {
   q: string;
@@ -12,17 +11,11 @@ export interface FaqItem {
   link?: { text: string; href: string };
 }
 
-const tramimuni = { text: 'tramimunisc.com', href: site.external.tramimunisc };
-
 export const faq: Record<Lang, FaqItem[]> = {
   es: [
     {
       q: '¿Qué es Kinetika?',
       a: 'Un estudio de San Carlos, Costa Rica, que automatiza procesos de negocios con sitios y sistemas web y crea sitios que amplían su alcance. Sus proyectos muestran cómo: TramiMuniSC para trámites municipales, pedidos en línea para restaurantes y una plataforma para despachos contables.',
-    },
-    {
-      q: '¿Trabajan con negocios fuera de San Carlos?',
-      a: 'Sí. Atendemos en persona en la zona norte y en línea en todo Costa Rica.',
     },
     {
       q: '¿Puedo ver una demo antes de contratar?',
@@ -41,17 +34,8 @@ export const faq: Record<Lang, FaqItem[]> = {
       a: 'Lo dejamos listo para buscadores: sitemap, datos estructurados y registro en Search Console. El posicionamiento también depende del contenido y de la competencia.',
     },
     {
-      q: '¿Qué es TramiMuniSC?',
-      a: 'Nuestro servicio de acompañamiento para trámites municipales, ya en producción en tramimunisc.com.',
-      link: tramimuni,
-    },
-    {
-      q: '¿La plataforma contable reemplaza mi software?',
-      a: 'No. Se suma al que ya usa: importa su Excel y organiza clientes y vencimientos.',
-    },
-    {
       q: '¿Atienden en La Fortuna, Aguas Zarcas o Pital?',
-      a: 'Sí. Atendemos en persona en los 13 distritos de San Carlos, entre ellos Quesada, La Fortuna, Aguas Zarcas y Pital.',
+      a: 'Sí. Atendemos en persona en los 13 distritos de San Carlos, entre ellos Quesada, La Fortuna, Aguas Zarcas y Pital, y en línea en todo Costa Rica.',
     },
     {
       q: '¿Pueden hacer el sitio en español y en inglés?',
@@ -62,10 +46,6 @@ export const faq: Record<Lang, FaqItem[]> = {
     {
       q: 'What is Kinetika?',
       a: 'A studio in San Carlos, Costa Rica, that automates business processes with websites and web systems and builds sites that extend their reach. Its projects show how: TramiMuniSC for municipal procedures, online ordering for restaurants and a platform for accounting firms.',
-    },
-    {
-      q: 'Do you work with businesses outside San Carlos?',
-      a: 'Yes. We meet in person in northern Costa Rica and work online with clients across the country.',
     },
     {
       q: 'Can I see a demo before hiring you?',
@@ -84,17 +64,8 @@ export const faq: Record<Lang, FaqItem[]> = {
       a: 'We leave it ready for search engines: sitemap, structured data and Search Console setup. Ranking also depends on your content and your competition.',
     },
     {
-      q: 'What is TramiMuniSC?',
-      a: 'Our assistance service for municipal procedures, already live at tramimunisc.com.',
-      link: tramimuni,
-    },
-    {
-      q: 'Does the accounting platform replace my software?',
-      a: 'No. It works alongside what you already use: import your Excel files and keep clients and deadlines organized.',
-    },
-    {
       q: 'Do you work in La Fortuna, Aguas Zarcas or Pital?',
-      a: 'Yes. We meet clients in person in all 13 districts of San Carlos, including Quesada, La Fortuna, Aguas Zarcas and Pital.',
+      a: 'Yes. We meet clients in person in all 13 districts of San Carlos, including Quesada, La Fortuna, Aguas Zarcas and Pital, and online across Costa Rica.',
     },
     {
       q: 'Can the site be in Spanish and English?',
