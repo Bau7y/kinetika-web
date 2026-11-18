@@ -63,6 +63,13 @@ const es = {
   'hero.cred_software': 'Ingeniería de software',
   'hero.cred_software_text': 'Código propio, no plantillas',
   'hero.cred_live': 'En producción',
+
+  'compare.title': 'Cambiá un interruptor, no tu forma de trabajar.',
+  'compare.lede': 'Deslizá el control: el mismo mediodía de un restaurante, con y sin Kinetika.',
+  'compare.before': 'Hoy',
+  'compare.after': 'Con Kinetika',
+  'compare.control': 'Comparar hoy con Kinetika',
+  'compare.value': '{before} % hoy, {after} % con Kinetika',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -123,6 +130,13 @@ const en: Strings = {
   'hero.cred_software': 'Software engineering',
   'hero.cred_software_text': 'Our own code, no templates',
   'hero.cred_live': 'In production',
+
+  'compare.title': 'Flip a switch, not the way you work.',
+  'compare.lede': 'Drag the control: the same lunch rush at a restaurant, with and without Kinetika.',
+  'compare.before': 'Today',
+  'compare.after': 'With Kinetika',
+  'compare.control': 'Compare today with Kinetika',
+  'compare.value': '{before}% today, {after}% with Kinetika',
 };
 
 export const ui = { es, en } as const;
