@@ -16,6 +16,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 
 const capabilities = t('services.capabilities').split('|');
+// The lede appears word by word (secondary text only: the h1 paints at once)
+const words = t('hero.lede').split(' ');
 const anchor = (id: string) => homeAnchor(lang, id);
 ---
 <section class="hero" aria-labelledby="hero_title" data-hero>
@@ -33,7 +35,9 @@ const anchor = (id: string) => homeAnchor(lang, id);
   <div class="hero_body container">
     <p class="hero_kicker hero_in" data-i="0"><span class="hero_dot" aria-hidden="true"></span>{t('hero.kicker')}</p>
     <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
-    <p class="hero_lede hero_in" data-i="1">{t('hero.lede')}</p>
+    <p class="hero_lede">
+      {words.map((word, i) => <Fragment>{i > 0 && ' '}<span class="hero_word">{word}</span></Fragment>)}
+    </p>
     <div class="hero_actions hero_in" data-i="2">
       <Button href={routes.quote[lang]} arrow>{t('nav.quote')}</Button>
       <Button href={anchor('proyectos')} variant="ghost">{t('hero.cta_secondary')}</Button>
@@ -318,6 +322,69 @@ const anchor = (id: string) => homeAnchor(lang, id);
   @keyframes hero_marquee {
     to {
       transform: translateX(-100%);
+    }
+  }
+
+  /* Word by word: each word rises a little, 28 ms after the previous one */
+  .hero_word {
+    display: inline-block;
+  }
+
+  .hero_word:nth-child(1) { --w: 0; }
+  .hero_word:nth-child(2) { --w: 1; }
+  .hero_word:nth-child(3) { --w: 2; }
+  .hero_word:nth-child(4) { --w: 3; }
+  .hero_word:nth-child(5) { --w: 4; }
+  .hero_word:nth-child(6) { --w: 5; }
+  .hero_word:nth-child(7) { --w: 6; }
+  .hero_word:nth-child(8) { --w: 7; }
+  .hero_word:nth-child(9) { --w: 8; }
+  .hero_word:nth-child(10) { --w: 9; }
+  .hero_word:nth-child(11) { --w: 10; }
+  .hero_word:nth-child(12) { --w: 11; }
+  .hero_word:nth-child(13) { --w: 12; }
+  .hero_word:nth-child(14) { --w: 13; }
+  .hero_word:nth-child(15) { --w: 14; }
+  .hero_word:nth-child(16) { --w: 15; }
+  .hero_word:nth-child(17) { --w: 16; }
+  .hero_word:nth-child(18) { --w: 17; }
+  .hero_word:nth-child(19) { --w: 18; }
+  .hero_word:nth-child(20) { --w: 19; }
+  .hero_word:nth-child(21) { --w: 20; }
+  .hero_word:nth-child(22) { --w: 21; }
+  .hero_word:nth-child(23) { --w: 22; }
+  .hero_word:nth-child(24) { --w: 23; }
+  .hero_word:nth-child(25) { --w: 24; }
+  .hero_word:nth-child(26) { --w: 25; }
+  .hero_word:nth-child(27) { --w: 26; }
+  .hero_word:nth-child(28) { --w: 27; }
+  .hero_word:nth-child(29) { --w: 28; }
+  .hero_word:nth-child(30) { --w: 29; }
+  .hero_word:nth-child(31) { --w: 30; }
+  .hero_word:nth-child(32) { --w: 31; }
+  .hero_word:nth-child(33) { --w: 32; }
+  .hero_word:nth-child(34) { --w: 33; }
+  .hero_word:nth-child(35) { --w: 34; }
+  .hero_word:nth-child(36) { --w: 35; }
+  .hero_word:nth-child(37) { --w: 36; }
+  .hero_word:nth-child(38) { --w: 37; }
+  .hero_word:nth-child(39) { --w: 38; }
+  .hero_word:nth-child(40) { --w: 39; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .hero_word {
+      animation: hero_word 700ms var(--ease_out) calc(260ms + var(--w, 0) * 28ms) both;
+    }
+
+    :global(html.intro) .hero_word {
+      animation-delay: calc(1960ms + var(--w, 0) * 28ms);
+    }
+  }
+
+  @keyframes hero_word {
+    from {
+      opacity: 0;
+      transform: translateY(0.45em);
     }
   }
 
