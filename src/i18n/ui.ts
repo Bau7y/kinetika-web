@@ -103,6 +103,9 @@ const es = {
   'why.place': 'San Carlos, Costa Rica',
   'area.title': 'Atendemos en persona en los 13 distritos de San Carlos',
   'area.online': 'Y en línea en todo Costa Rica.',
+  'faq.title': 'Lo que nos preguntan antes de empezar.',
+  'guides.preview_title': 'Guías para decidir mejor',
+  'guides.see_all': 'Ver todas las guías',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -203,6 +206,9 @@ const en: Strings = {
   'why.place': 'San Carlos, Costa Rica',
   'area.title': 'We meet in person in all 13 districts of San Carlos',
   'area.online': 'And online across Costa Rica.',
+  'faq.title': 'What people ask us before starting.',
+  'guides.preview_title': 'Guides to help you decide',
+  'guides.see_all': 'See all guides',
 };
 
 export const ui = { es, en } as const;

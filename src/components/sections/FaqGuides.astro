@@ -1,0 +1,156 @@
+---
+/** Frequent questions (FAQPage) and a preview of the guides (Article). */
+import { faq, type FaqItem } from '../../data/faq';
+import { guidesPreview } from '../../data/guides_preview';
+import { joinPath, routes, useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const items = faq[lang];
+const guides = guidesPreview[lang];
+
+/** Splits an answer around its link text, if any. */
+const parts = (item: FaqItem) => {
+  if (!item.link) return { before: item.a, link: undefined, after: '' };
+  const [before, ...rest] = item.a.split(item.link.text);
+  return { before, link: item.link, after: rest.join(item.link.text) };
+};
+---
+<section id="preguntas" class="section container" aria-labelledby="faq_title">
+  <h2 id="faq_title" class="section_title faq_title" data-reveal>{t('faq.title')}</h2>
+  <dl class="faq_list">
+    {items.map((item) => {
+      const { before, link, after } = parts(item);
+      return (
+        <div class="faq_item" data-reveal>
+          <dt>{item.q}</dt>
+          <dd>{before}{link && <a href={link.href}>{link.text}</a>}{after}</dd>
+        </div>
+      );
+    })}
+  </dl>
+
+  <div class="guides_head">
+    <h3>{t('guides.preview_title')}</h3>
+    <a href={routes.guides[lang]}>{t('guides.see_all')}</a>
+  </div>
+  <ul role="list" class="guides_grid">
+    {guides.map((g) => (
+      <li data-reveal>
+        <a href={joinPath(routes.guides[lang], g.slug)} class="guide_card">
+          <span class="eyebrow">{g.topic}</span>
+          <span class="guide_card_title">{g.title}</span>
+          <span class="guide_card_text">{g.summary}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .faq_title {
+    max-width: 800px;
+    margin-bottom: var(--space_lg);
+  }
+
+  .faq_list {
+    display: grid;
+    column-gap: var(--space_xl);
+  }
+
+  .faq_item {
+    padding-block: var(--space_md);
+    border-top: 1px solid var(--color_line);
+  }
+
+  .faq_item dt {
+    font-size: var(--text_xl);
+    font-weight: 600;
+    line-height: var(--leading_snug);
+  }
+
+  .faq_item dd {
+    margin-top: 10px;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color_text_secondary);
+  }
+
+  .guides_head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space_sm);
+    margin-top: var(--space_2xl);
+  }
+
+  .guides_head h3 {
+    font-size: var(--text_h3);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .guides_head a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .guides_grid {
+    display: grid;
+    gap: var(--space_sm);
+    margin-top: var(--space_md);
+  }
+
+  .guide_card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 28px;
+    border-radius: 18px;
+    background: var(--color_raised);
+    border: 1px solid var(--color_line);
+    color: var(--color_text);
+    text-decoration: none;
+    transition: border-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+  }
+
+  .guide_card:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .guide_card:hover {
+      border-color: var(--color_accent_border_strong);
+      color: var(--color_text);
+    }
+  }
+
+  .guide_card_title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: var(--leading_snug);
+  }
+
+  .guide_card_text {
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  @media (min-width: 760px) {
+    .faq_list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .guides_grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
