@@ -33,6 +33,13 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
 ---
 <div class="scroll_sentinel" data-scroll-sentinel aria-hidden="true"></div>
 <header class="navbar" data-navbar>
+  <!-- Blurred veil behind the open menu: it also takes the taps, so the page below cannot be used -->
+  <div class="pill_scrim" data-menu-scrim aria-hidden="true"></div>
+  <div class="pill_wrap">
+  <!-- The glass is its own element, outside the pill that keeps the transition name:
+       an element with a view-transition-name isolates everything inside it, which
+       would leave the glass blurring nothing -->
+  <div class="pill_glass" aria-hidden="true"></div>
   <div class="pill">
     <a href={routes.home[lang]} class="pill_brand" aria-label={t('nav.home_label')} translate="no">
       <Logo size={24} />
@@ -70,6 +77,7 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
       </button>
     </div>
   </div>
+  </div>
 
   <NavPanel links={links} quoteLabel={t('nav.quote')} quoteHref={quoteHref} label={t('nav.mobile_label')} />
 </header>
@@ -97,11 +105,15 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     z-index: var(--z_navbar);
     padding-inline: 12px;
     pointer-events: none;
-    /* Stays in place during page transitions */
-    view-transition-name: navbar;
   }
 
   /* ── The pill ── */
+  .pill_wrap {
+    position: relative;
+    max-width: 1180px;
+    margin-inline: auto;
+  }
+
   .pill {
     position: relative;
     isolation: isolate;
@@ -109,42 +121,92 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    max-width: 1180px;
     min-height: 60px;
-    margin-inline: auto;
     padding: 8px 8px 8px 20px;
     border-radius: var(--radius_full);
     pointer-events: auto;
+    /* Stays in place during page transitions */
+    view-transition-name: navbar;
   }
 
-  /* Glass layers on pseudo-elements: scrolling only changes their opacity */
-  .pill::before,
-  .pill::after {
+  /* Glass: the pane itself (blur, sheen, bright top edge) plus a second layer
+     (::after) that adds density once the page is scrolled or the menu is open.
+     Only opacity changes, so it stays cheap to paint. */
+  .pill_glass {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius_full);
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.02) 55%, rgb(255 255 255 / 0.05)),
+      rgb(13 20 34 / 0.42);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 -1px 0 rgb(0 0 0 / 0.3),
+      0 10px 30px rgb(0 0 0 / 0.22);
+    backdrop-filter: blur(22px) saturate(1.7);
+    /* Named apart from the pill so it also stays put between pages */
+    view-transition-name: navbar_glass;
+  }
+
+  .pill_glass::after {
     content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
     border-radius: inherit;
+    background: rgb(7 11 20 / 0.5);
+    box-shadow: 0 14px 34px rgb(0 0 0 / 0.3);
+    opacity: 0;
     transition: opacity var(--duration_base) var(--ease_out);
   }
 
-  .pill::before {
-    background: rgb(13 20 34 / 0.55);
-    border: 1px solid rgb(255 255 255 / 0.08);
-    backdrop-filter: saturate(1.4) blur(16px);
-    -webkit-backdrop-filter: saturate(1.4) blur(16px);
-  }
-
-  .pill::after {
-    background: rgb(9 14 25 / 0.88);
-    border: 1px solid var(--color_line_strong);
-    box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
-    opacity: 0;
-  }
-
-  .navbar.scrolled .pill::after,
-  .navbar.menu_open .pill::after {
+  .navbar.scrolled .pill_glass::after,
+  .navbar.menu_open .pill_glass::after {
     opacity: 1;
+  }
+
+  /* Veil behind the open menu (narrow screens) */
+  .pill_scrim {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: rgb(7 11 20 / 0.45);
+    backdrop-filter: blur(14px) saturate(1.2);
+    opacity: 0;
+    pointer-events: none;
+    /* Taps and drags stop here: nothing reaches the page */
+    touch-action: none;
+    transition: opacity var(--duration_exit) var(--ease_out);
+  }
+
+  .navbar.menu_open .pill_scrim {
+    opacity: 1;
+    pointer-events: auto;
+    transition-duration: var(--duration_base);
+  }
+
+  /* While the menu is open the page behind does not scroll */
+  :global(html.menu_lock) {
+    overflow: hidden;
+    overscroll-behavior: none;
+    scrollbar-gutter: stable;
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .pill_glass { background: rgb(13 20 34 / 0.92); }
+    .pill_scrim { background: rgb(7 11 20 / 0.8); }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .pill_glass {
+      background: rgb(13 20 34 / 0.96);
+      backdrop-filter: none;
+    }
+    .pill_scrim {
+      background: rgb(7 11 20 / 0.85);
+      backdrop-filter: none;
+    }
   }
 
   .pill_brand {
@@ -182,6 +244,16 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
 
   .pill_links a:focus-visible {
     outline-offset: -2px;
+  }
+
+  /* Dock-style magnification: navbar.ts sets --mag (1 to ~1.2) on each link
+     and on its copy in the highlight, so both grow together */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .pill_links a,
+    .pill_links span {
+      transform: scale(var(--mag, 1));
+      transition: transform 140ms var(--ease_out);
+    }
   }
 
   /* Copy of the links in their active look, clipped to one item */

@@ -138,6 +138,27 @@ describe('menú móvil', () => {
     assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-menu-toggle')), true);
     await page.close();
   });
+
+  it('al abrir desenfoca y bloquea la página de fondo; tocar el velo lo cierra', async () => {
+    const page = await open('/', { viewport: { width: 390, height: 844 } });
+    await page.click('[data-menu-toggle]');
+    const state = await page.evaluate(() => ({
+      locked: document.documentElement.classList.contains('menu_lock'),
+      overflow: getComputedStyle(document.documentElement).overflow,
+      inertMain: document.querySelector('main')?.hasAttribute('inert') ?? false,
+      blur: getComputedStyle(document.querySelector('[data-menu-scrim]')).backdropFilter,
+    }));
+    assert.equal(state.locked, true);
+    assert.equal(state.overflow, 'hidden');
+    assert.equal(state.inertMain, true);
+    assert.match(state.blur, /blur/);
+    // A tap on the veil (outside the panel) closes it and frees the page
+    await page.mouse.click(195, 760);
+    assert.equal(await page.getAttribute('[data-menu-toggle]', 'aria-expanded'), 'false');
+    assert.equal(await page.evaluate(() => document.documentElement.classList.contains('menu_lock')), false);
+    assert.equal(await page.evaluate(() => document.querySelector('main')?.hasAttribute('inert')), false);
+    await page.close();
+  });
 });
 
 describe('proyectos', () => {
