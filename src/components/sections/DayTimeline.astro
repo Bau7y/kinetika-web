@@ -1,0 +1,274 @@
+---
+/**
+ * A work day in four scenes, one per product. With JS the track moves one
+ * card at a time (transform only); without it, it is a horizontal list that
+ * scrolls with snap points.
+ */
+import Badge from '../ui/Badge.astro';
+import { dayScenes } from '../../data/day_scenes';
+import { statusBadge } from '../../data/product_status';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const scenes = dayScenes[lang];
+const last = scenes[scenes.length - 1].hour;
+---
+<section id="dia" class="section section_band day" aria-labelledby="day_title" data-day>
+  <div class="container">
+    <div class="day_head">
+      <div>
+        <h2 id="day_title" class="section_title" data-reveal>{t('day.title')}</h2>
+        <p class="lede day_lede" data-reveal>{t('day.lede')}</p>
+      </div>
+      <div class="day_controls">
+        <button type="button" class="day_btn" aria-label={t('day.prev')} data-day-prev>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+        </button>
+        <button type="button" class="day_btn day_btn_next" aria-label={t('day.next')} data-day-next>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="day_viewport">
+      <ol role="list" class="day_track" aria-label={t('day.scenes_label')} data-day-track>
+        {scenes.map((scene, i) => {
+          const badge = statusBadge[scene.status];
+          return (
+            <li class="day_scene" data-day-scene aria-current={i === 0 ? 'step' : undefined}>
+              <div class="day_time">
+                <span class="day_dot" aria-hidden="true"></span>
+                <span class="day_hour">{scene.hour}</span>
+                <span class="eyebrow day_moment">{scene.moment}</span>
+              </div>
+              <article class="day_card">
+                <div class="day_card_head">
+                  <h3>{scene.name}</h3>
+                  <Badge tone={badge.tone}>{t(badge.label)}</Badge>
+                </div>
+                <p>{scene.text}</p>
+                {scene.rows.map(([label, value]) => (
+                  <div class="day_row"><span>{label}</span><span>{value}</span></div>
+                ))}
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+
+    <div class="day_progress" aria-hidden="true">
+      <div class="day_bar"><div class="day_fill" data-day-fill></div></div>
+      <span class="mono" data-day-label>{scenes[0].hour} / {last}</span>
+    </div>
+    <p class="visually_hidden" aria-live="polite" data-day-live></p>
+  </div>
+</section>
+
+<script>
+  import { initDayTimeline } from '../../scripts/day_timeline';
+  document.querySelectorAll<HTMLElement>('[data-day]').forEach(initDayTimeline);
+</script>
+
+<style>
+  .day {
+    --card_w: min(420px, 82vw);
+    --gap: 24px;
+    overflow: hidden;
+  }
+
+  .day_head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--space_md);
+  }
+
+  .day_head > div:first-child {
+    max-width: 720px;
+  }
+
+  .day_lede {
+    margin-top: var(--space_sm);
+  }
+
+  .day_controls {
+    display: none;
+    gap: 8px;
+  }
+
+  .day_btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--color_line_strong);
+    transition: transform var(--duration_press) var(--ease_out), opacity var(--duration_fast) ease;
+  }
+
+  .day_btn_next {
+    border-color: transparent;
+    background: var(--color_cta);
+    color: var(--color_on_cta);
+  }
+
+  .day_btn:active {
+    transform: scale(0.97);
+  }
+
+  .day_btn[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .day_viewport {
+    margin-top: 48px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+
+  .day_track {
+    display: flex;
+    gap: var(--gap);
+  }
+
+  .day_scene {
+    flex: 0 0 var(--card_w);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-snap-align: start;
+    transition: opacity 400ms ease;
+  }
+
+  .day_time {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color_line_strong);
+  }
+
+  .day_dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color_accent);
+  }
+
+  .day_hour {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: var(--tracking_tight);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .day_moment {
+    color: var(--color_text_muted);
+  }
+
+  .day_card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px;
+    border-radius: var(--radius_xl);
+    background: var(--color_raised);
+    border: 1px solid var(--color_line);
+  }
+
+  .day_card_head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .day_card h3 {
+    font-size: var(--text_xl);
+    font-weight: 700;
+  }
+
+  .day_card p {
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  .day_row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius_md);
+    background: var(--color_surface);
+    font-family: var(--font_mono);
+    font-size: 0.8125rem;
+  }
+
+  .day_row span:last-child {
+    color: var(--color_accent_text);
+    text-align: right;
+  }
+
+  .day_progress {
+    display: none;
+    align-items: center;
+    gap: 16px;
+    max-width: 560px;
+    margin-top: var(--space_lg);
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  .day_bar {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--color_line_strong);
+    overflow: hidden;
+  }
+
+  .day_fill {
+    height: 3px;
+    background: var(--color_accent);
+    transform: scaleX(0.25);
+    transform-origin: 0 50%;
+    transition: transform var(--duration_slow) var(--ease_in_out);
+  }
+
+  /* ── Enhanced: buttons move the track ── */
+  :global(html.js) .day_controls,
+  :global(html.js) .day_progress {
+    display: flex;
+  }
+
+  :global(html.js) .day_viewport {
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  :global(html.js) .day_track {
+    transition: transform var(--duration_slow) var(--ease_in_out);
+  }
+
+  :global(html.js) .day_scene:not([aria-current]) {
+    opacity: 0.45;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .day_track,
+    .day_fill,
+    .day_scene {
+      transition: none !important;
+    }
+  }
+</style>

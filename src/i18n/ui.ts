@@ -70,6 +70,12 @@ const es = {
   'compare.after': 'Con Kinetika',
   'compare.control': 'Comparar hoy con Kinetika',
   'compare.value': '{before} % hoy, {after} % con Kinetika',
+
+  'day.title': 'Un día cualquiera, con todo en movimiento.',
+  'day.lede': 'Avanzá las horas y mirá dónde entra cada producto.',
+  'day.prev': 'Hora anterior',
+  'day.next': 'Hora siguiente',
+  'day.scenes_label': 'Escenas de un día de trabajo',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -137,6 +143,12 @@ const en: Strings = {
   'compare.after': 'With Kinetika',
   'compare.control': 'Compare today with Kinetika',
   'compare.value': '{before}% today, {after}% with Kinetika',
+
+  'day.title': 'An ordinary day, with everything in motion.',
+  'day.lede': 'Move through the hours and see where each product comes in.',
+  'day.prev': 'Previous hour',
+  'day.next': 'Next hour',
+  'day.scenes_label': 'Scenes from a work day',
 };
 
 export const ui = { es, en } as const;
