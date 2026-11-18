@@ -185,6 +185,30 @@ export function contactPageSchema(base: URL, lang: Lang, path: string, name: str
   };
 }
 
+/** About page: a page about the business node. */
+export function aboutPageSchema(base: URL, lang: Lang, path: string, name: string): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name,
+    url: absolute(path, base),
+    inLanguage: lang === 'es' ? 'es-CR' : 'en',
+    about: businessRef(base),
+  };
+}
+
+/** Index page that groups other pages (solutions, work). */
+export function collectionPageSchema(base: URL, lang: Lang, path: string, name: string): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    url: absolute(path, base),
+    inLanguage: lang === 'es' ? 'es-CR' : 'en',
+    isPartOf: businessRef(base),
+  };
+}
+
 /** Ordered list of pages (projects index). */
 export function itemListSchema(base: URL, items: { name: string; path: string }[]): Json {
   return {

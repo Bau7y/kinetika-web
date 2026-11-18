@@ -1,0 +1,172 @@
+---
+/**
+ * About page, shared by /nosotros and /en/about: what Kinetika is, how it
+ * began, what it values and what already works.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import ProjectCard from '../components/ui/ProjectCard.astro';
+import { getProjects } from '../data/work';
+import { aboutPageSchema, breadcrumbSchema } from '../lib/structured_data';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.about'), href: routes.about[lang] },
+];
+const values = [
+  { title: t('about.value_1_title'), text: t('about.value_1_text') },
+  { title: t('about.value_2_title'), text: t('about.value_2_text') },
+  { title: t('about.value_3_title'), text: t('about.value_3_text') },
+  { title: t('about.value_4_title'), text: t('about.value_4_text') },
+];
+---
+<BaseLayout lang={lang} title={t('about.seo_title')} description={t('about.meta')} alternates={routes.about}>
+  <JsonLd slot="head" data={[breadcrumbSchema(Astro.site!, crumbs), aboutPageSchema(Astro.site!, lang, routes.about[lang], t('about.title'))]} />
+
+  <section class="about" aria-labelledby="about_title">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1 id="about_title" class="about_title">{t('about.title')}</h1>
+      <p class="lede">{t('about.definition')}</p>
+    </div>
+  </section>
+
+  <section class="about_block" aria-labelledby="about_story">
+    <div class="container about_narrow">
+      <h2 id="about_story">{t('about.story_title')}</h2>
+      <p>{t('about.story')}</p>
+      <p><a href={routes.howWeWork[lang]}>{t('about.process_link')} <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+
+  <section class="about_block" aria-labelledby="about_values">
+    <div class="container">
+      <h2 id="about_values">{t('about.values_title')}</h2>
+      <ul role="list" class="about_values">
+        {values.map((v, i) => (
+          <li data-reveal data-i={i}>
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="about_block" aria-labelledby="about_work">
+    <div class="container">
+      <h2 id="about_work">{t('about.work_title')}</h2>
+      <p class="about_work_text">{t('about.work_text')}</p>
+      <ul role="list" class="about_projects">
+        {projects.map((p, i) => (
+          <li data-reveal data-i={i % 3}>
+            <ProjectCard lang={lang} project={p} index={i} level={3} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <ClosingCta
+    eyebrow={t('closing.eyebrow')}
+    title={t('closing.title')}
+    text={t('closing.text')}
+    primary={{ href: routes.quote[lang], label: t('nav.quote') }}
+    secondary={{ href: routes.projectsBase[lang], label: t('hero.cta_secondary') }}
+  />
+</BaseLayout>
+
+<style>
+  .about {
+    padding: calc(var(--navbar_h) + var(--space_sm)) 0 var(--space_xl);
+  }
+
+  .about_title {
+    margin: var(--space_lg) 0 var(--space_sm);
+    max-width: 20ch;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: var(--leading_tight);
+    letter-spacing: -0.035em;
+  }
+
+  .about_block {
+    padding: var(--space_xl) 0;
+  }
+
+  .about_block h2 {
+    margin: 0 0 var(--space_md);
+    font-size: var(--text_h3);
+    font-weight: 500;
+  }
+
+  .about_narrow {
+    max-width: 46rem;
+  }
+
+  .about_narrow p {
+    color: var(--color_text_secondary);
+  }
+
+  .about_narrow a {
+    color: var(--color_accent_text);
+  }
+
+  .about_values {
+    display: grid;
+    gap: var(--space_md);
+    padding: 0;
+    list-style: none;
+  }
+
+  .about_values li {
+    padding: var(--space_lg);
+    border: 1px solid var(--color_line);
+    border-radius: var(--radius_lg);
+  }
+
+  .about_values h3 {
+    margin: 0 0 var(--space_xs);
+    font-size: var(--text_xl);
+    font-weight: 500;
+  }
+
+  .about_values p {
+    margin: 0;
+    color: var(--color_text_secondary);
+  }
+
+  .about_work_text {
+    margin: 0 0 var(--space_md);
+    color: var(--color_text_secondary);
+  }
+
+  .about_projects {
+    display: grid;
+    gap: var(--space_md);
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .about_values,
+    .about_projects {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .about_projects {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

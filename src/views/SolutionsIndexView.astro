@@ -1,0 +1,159 @@
+---
+/**
+ * Solutions index, shared by /soluciones and /en/solutions: the services
+ * Kinetika offers, each with its own page.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
+import Chips from '../components/ui/Chips.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { getServices } from '../data/work';
+import { breadcrumbSchema, collectionPageSchema, itemListSchema } from '../lib/structured_data';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const services = await getServices(lang);
+const capabilities = t('services.capabilities').split('|');
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.solutions'), href: routes.solutions[lang] },
+];
+---
+<BaseLayout lang={lang} title={t('solutions.seo_title')} description={t('solutions.meta')} alternates={routes.solutions}>
+  <JsonLd
+    slot="head"
+    data={[
+      breadcrumbSchema(Astro.site!, crumbs),
+      collectionPageSchema(Astro.site!, lang, routes.solutions[lang], t('solutions.title')),
+      itemListSchema(Astro.site!, services.map((s) => ({ name: s.data.name, path: s.href }))),
+    ]}
+  />
+  <section class="solutions" aria-labelledby="solutions_title">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1 id="solutions_title" class="solutions_title">{t('solutions.title')}</h1>
+      <p class="lede">{t('solutions.lede')}</p>
+      <Chips items={capabilities} label={t('services.capabilities_label')} />
+
+      <h2 class="solutions_list_title">{t('solutions.list_title')}</h2>
+      <ul role="list" class="solutions_grid">
+        {services.map((s, i) => (
+          <li data-reveal data-i={i}>
+            <a href={s.href} class="solution" aria-labelledby={`solution_${s.key}`}>
+              <span class="mono solution_n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h3 id={`solution_${s.key}`}>{s.data.name}</h3>
+              <p>{s.data.summary}</p>
+              <ul role="list" class="solution_points">
+                {s.data.highlights.items.map((h) => <li>{h.title}</li>)}
+              </ul>
+              <span class="solution_more">{t('services.more')} <span aria-hidden="true">→</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <ClosingCta
+    eyebrow={t('closing.eyebrow')}
+    title={t('closing.title')}
+    text={t('closing.text')}
+    primary={{ href: routes.quote[lang], label: t('nav.quote') }}
+    secondary={{ href: routes.projectsBase[lang], label: t('hero.cta_secondary') }}
+  />
+</BaseLayout>
+
+<style>
+  .solutions {
+    padding: calc(var(--navbar_h) + var(--space_sm)) 0 var(--section_py);
+  }
+
+  .solutions_title {
+    margin: var(--space_lg) 0 var(--space_sm);
+    max-width: 22ch;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: var(--leading_tight);
+    letter-spacing: -0.035em;
+  }
+
+  .solutions_list_title {
+    margin: var(--space_xl) 0 var(--space_md);
+    font-size: var(--text_lg);
+    font-weight: 500;
+  }
+
+  .solutions_grid {
+    display: grid;
+    gap: var(--space_md);
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .solutions_grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .solution {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space_xs);
+    height: 100%;
+    padding: var(--space_lg);
+    border: 1px solid var(--color_line);
+    border-radius: var(--radius_lg);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 160ms var(--ease_out), transform 160ms var(--ease_out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .solution:hover {
+      border-color: var(--color_accent);
+      transform: translateY(-2px);
+    }
+  }
+
+  .solution:focus-visible {
+    outline: 2px solid var(--color_accent);
+    outline-offset: 3px;
+  }
+
+  .solution_n {
+    color: var(--color_text_muted);
+  }
+
+  .solution h3 {
+    margin: 0;
+    font-size: var(--text_xl);
+    font-weight: 500;
+  }
+
+  .solution p {
+    margin: 0;
+    color: var(--color_text_muted);
+  }
+
+  .solution_points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space_xs);
+    margin: var(--space_xs) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--text_sm);
+  }
+
+  .solution_more {
+    margin-top: auto;
+    padding-top: var(--space_sm);
+    font-weight: 500;
+  }
+</style>

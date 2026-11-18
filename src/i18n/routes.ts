@@ -13,6 +13,9 @@ export const routes = {
   quote: { es: '/contacto', en: '/en/contact' },
   servicesBase: { es: '/soluciones', en: '/en/solutions' },
   projectsBase: { es: '/experiencia', en: '/en/work' },
+  solutions: { es: '/soluciones', en: '/en/solutions' },
+  about: { es: '/nosotros', en: '/en/about' },
+  howWeWork: { es: '/nosotros/como-trabajamos', en: '/en/about/how-we-work' },
   guides: { es: '/guias', en: '/en/guides' },
   legalBase: { es: '', en: '/en' },
 } as const satisfies Record<string, Record<Lang, string>>;
