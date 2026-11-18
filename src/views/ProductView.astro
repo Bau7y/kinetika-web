@@ -8,6 +8,7 @@ import ProductHero from '../components/product/ProductHero.astro';
 import ProductDemo from '../components/product/ProductDemo.astro';
 import Prose from '../components/ui/Prose.astro';
 import Button from '../components/ui/Button.astro';
+import WaitlistForm from '../components/product/WaitlistForm.astro';
 import { render } from 'astro:content';
 import { getProducts, type Product } from '../data/products';
 import { pairHrefs } from '../data/pages';
@@ -69,8 +70,12 @@ const crumbs = [
 
   <slot />
 
+  {data.status === 'waitlist' && (
+    <WaitlistForm lang={lang} product={product.key} privacyHref={lang === 'es' ? '/privacidad' : '/en/privacy'} />
+  )}
+
   {data.faq.length > 0 && (
-    <section class="section section_band" aria-labelledby="product_faq_title">
+    <section class:list={['section', data.status !== 'waitlist' && 'section_band']} aria-labelledby="product_faq_title">
       <div class="container">
         <h2 id="product_faq_title" class="section_title product_h2">{t('product.faq_title')}</h2>
         <dl class="product_faq">

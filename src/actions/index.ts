@@ -68,6 +68,19 @@ export const quoteSchema = z.object({
   consent,
 });
 
+export const waitlistSchema = z.object({
+  ...protection,
+  lang,
+  product: z.string().trim().max(60).regex(/^[a-z0-9-]*$/),
+  firm: z
+    .string()
+    .nullish()
+    .transform((v) => (v ?? '').trim())
+    .pipe(z.string().max(120, 'firm_max')),
+  email,
+  consent,
+});
+
 let client: Resend | null = null;
 const getClient = () => (client ??= new Resend(RESEND_API_KEY));
 
@@ -172,6 +185,30 @@ export const server = {
           ...(review.length ? [['Revisar', review.join(', ')] as [string, string]] : []),
         ],
         message: input.message,
+      });
+
+      return { sent: true };
+    },
+  }),
+  joinWaitlist: defineAction({
+    accept: 'form',
+    input: waitlistSchema,
+    handler: async (input, context) => {
+      const review = await screen({ ...input, message: input.firm, onTopic: true }, context.clientAddress);
+      if (!review) return { sent: true };
+
+      await deliver({
+        subject: `${review.length ? '[Revisar] ' : ''}[Lista de espera] ${input.product}`,
+        replyTo: input.email,
+        rows: [
+          ['Producto', input.product],
+          ['Correo', input.email],
+          ['Despacho', input.firm || 'No indicado'],
+          ['Idioma', input.lang === 'en' ? 'Inglés' : 'Español'],
+          ['Consentimiento', 'Aceptó la política de privacidad'],
+          ...(review.length ? [['Revisar', review.join(', ')] as [string, string]] : []),
+        ],
+        message: '',
       });
 
       return { sent: true };

@@ -1,0 +1,48 @@
+---
+order: 4
+url_slug: plataforma-contable
+status: waitlist
+name: Plataforma contable
+title: Plataforma para despachos contables de Costa Rica
+seo_title: Plataforma para despachos contables en Costa Rica
+meta_description: Cartera de clientes, portal para recibir documentos, calendario de obligaciones y revisión de hallazgos con Hacienda. Importá tu Excel. Lista de espera.
+summary: Organizá la cartera de tus clientes, recibí sus documentos por un portal y revisá los registros antes de declarar. Se suma al software que ya usás y empieza con tu Excel. Estamos abriendo la lista de espera.
+service_type: Software para despachos contables
+audience: Despachos y contadores independientes de Costa Rica
+updated: 2026-11-17
+demo:
+  title: Traé tu Excel y empezá hoy.
+  text: Importá una cartera de ejemplo, filtrá lo pendiente y corré una revisión para ver qué hallazgos aparecen.
+highlights:
+  title: Lo que va a incluir.
+  items:
+    - title: Cartera e importación de Excel
+      text: Tus clientes, sus obligaciones y vencimientos, cargados desde la hoja que ya tenés.
+    - title: Portal del cliente
+      text: Cada cliente sube sus documentos del mes por un enlace, sin contraseñas, y ve qué le falta.
+    - title: Calendario y recordatorios
+      text: Las obligaciones de cada mes y avisos automáticos a quien se atrasa.
+    - title: Revisión de hallazgos
+      text: Compara ventas, compras y montos declarados y te muestra hallazgos por gravedad. La firma profesional sigue siendo tuya.
+steps:
+  title: Cómo la vamos a construir.
+  items:
+    - title: Lista de espera
+      text: Conversamos con despachos de la zona para entender su mes real.
+    - title: Producto inicial
+      text: Cartera, importación de Excel, portal, requisitos y calendario.
+    - title: Revisión
+      text: El motor de revisión con las primeras reglas, validadas antes de publicarse.
+    - title: Complementos
+      text: Vencimientos de documentos, cobro de honorarios y varios usuarios por despacho.
+faq:
+  - q: ¿Reemplaza mi software contable?
+    a: No. Se suma al que ya usás. Importás tu Excel y seguís trabajando en tu sistema de siempre.
+  - q: ¿La revisión dice si una declaración cumple?
+    a: No. Muestra hallazgos para que los revisés. La responsabilidad profesional sigue en el contador.
+  - q: ¿Cuándo va a estar disponible?
+    a: Estamos en la etapa de lista de espera. Te avisamos por correo cuando haya una versión para probar.
+cta:
+  title: Sumate a la lista de espera.
+  text: Te escribimos cuando abramos la primera versión para despachos de la zona.
+---

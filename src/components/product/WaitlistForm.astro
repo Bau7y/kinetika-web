@@ -1,0 +1,198 @@
+---
+/**
+ * Waitlist sign-up for products not released yet. Same protections as the
+ * quote form: server validation, consent (Ley 8968) and anti-spam layers.
+ */
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { useTranslations, type Lang, type UiKey } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Product key, sent with the sign-up. */
+  product: string;
+  privacyHref: string;
+}
+const { lang, product, privacyHref } = Astro.props;
+const t = useTranslations(lang);
+const errorKeys = ['email_required', 'email_invalid', 'email_unreachable', 'firm_max', 'consent_required', 'rate_limited', 'captcha_failed', 'offensive', 'generic'] as const;
+const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiKey)]));
+---
+<section id="lista-de-espera" class="section section_band" aria-labelledby="waitlist_title">
+  <div class="container waitlist">
+    <div>
+      <h2 id="waitlist_title" class="section_title">{t('waitlist.title')}</h2>
+      <p class="lede waitlist_text">{t('waitlist.text')}</p>
+    </div>
+
+    <form class="waitlist_form" novalidate data-waitlist data-errors={JSON.stringify(errors)}>
+      <input type="hidden" name="lang" value={lang} />
+      <input type="hidden" name="product" value={product} />
+      <input type="hidden" name="loaded_at" value="0" data-loaded-at />
+      <div class="waitlist_trap" aria-hidden="true">
+        <label for="waitlist_website">Website</label>
+        <input id="waitlist_website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="waitlist_errors" role="alert" tabindex="-1" data-error-summary hidden>
+        <p>{t('quote.errors_title')}</p>
+        <ul></ul>
+      </div>
+
+      <div class="waitlist_field">
+        <label for="waitlist_email">{t('quote.email')}</label>
+        <input id="waitlist_email" name="email" type="email" inputmode="email" autocomplete="email" spellcheck="false" maxlength="254" aria-describedby="waitlist_email_error" required />
+        <p id="waitlist_email_error" class="waitlist_error" data-error-for="email"></p>
+      </div>
+
+      <div class="waitlist_field">
+        <label for="waitlist_firm">{t('waitlist.firm')}</label>
+        <input id="waitlist_firm" name="firm" type="text" autocomplete="organization" maxlength="120" aria-describedby="waitlist_firm_error" />
+        <p id="waitlist_firm_error" class="waitlist_error" data-error-for="firm"></p>
+      </div>
+
+      <div class="waitlist_field">
+        <label class="waitlist_consent">
+          <input id="waitlist_consent" name="consent" type="checkbox" aria-describedby="waitlist_consent_error" required />
+          <span>{t('quote.consent_before')} <a href={privacyHref}>{t('quote.consent_link')}</a> {t('quote.consent_after')}</span>
+        </label>
+        <p id="waitlist_consent_error" class="waitlist_error" data-error-for="consent"></p>
+      </div>
+
+      {PUBLIC_TURNSTILE_SITE_KEY && (
+        <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-appearance="interaction-only" data-theme="dark" data-language={lang}></div>
+      )}
+
+      <button type="submit" class="btn btn_primary waitlist_submit" data-label={t('waitlist.submit')} data-sending={t('quote.sending')}>{t('waitlist.submit')}</button>
+      <p class="waitlist_done" role="status" tabindex="-1" data-done hidden>{t('waitlist.done')}</p>
+      <noscript><p class="waitlist_error">{t('quote.noscript')}</p></noscript>
+    </form>
+  </div>
+</section>
+
+{PUBLIC_TURNSTILE_SITE_KEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<script>
+  import { actions } from 'astro:actions';
+  import { initWaitlist } from '../../scripts/waitlist';
+  import { toErrorCode } from '../../scripts/quote_sender';
+
+  document.querySelectorAll<HTMLFormElement>('[data-waitlist]').forEach((form) =>
+    initWaitlist(form, async (data) => toErrorCode((await actions.joinWaitlist(data)).error)),
+  );
+</script>
+
+<style>
+  .waitlist {
+    display: grid;
+    gap: var(--space_lg);
+  }
+
+  .waitlist_text {
+    margin-top: var(--space_sm);
+  }
+
+  .waitlist_form {
+    position: relative;
+    display: grid;
+    gap: 16px;
+    padding: 28px;
+    border-radius: var(--radius_2xl);
+    background: var(--color_bg);
+    border: 1px solid var(--color_line);
+  }
+
+  .waitlist_trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .waitlist_field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .waitlist_field > label:not(.waitlist_consent) {
+    font-size: var(--text_sm);
+    font-weight: 500;
+  }
+
+  .waitlist_field input[type='email'],
+  .waitlist_field input[type='text'] {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: var(--radius_md);
+    border: 1px solid var(--color_line_strong);
+    background: var(--color_surface);
+  }
+
+  .waitlist_field [aria-invalid='true'] {
+    border-color: var(--color_bad);
+  }
+
+  .waitlist_consent {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    min-height: var(--tap_min);
+    font-size: 0.8125rem;
+    color: var(--color_text_secondary);
+    cursor: pointer;
+  }
+
+  .waitlist_consent input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--color_cta);
+  }
+
+  .waitlist_error {
+    font-size: 0.8125rem;
+    color: var(--color_bad);
+  }
+
+  .waitlist_error:empty {
+    display: none;
+  }
+
+  .waitlist_errors {
+    padding: 12px 16px;
+    border-radius: var(--radius_md);
+    background: var(--color_bad_bg);
+    color: var(--color_bad);
+    font-size: var(--text_sm);
+  }
+
+  .waitlist_errors ul {
+    margin-top: 4px;
+    padding-left: 1.1rem;
+  }
+
+  .waitlist_submit {
+    justify-self: start;
+  }
+
+  .waitlist_submit[aria-disabled='true'] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .waitlist_done {
+    padding: 12px 16px;
+    border-radius: var(--radius_md);
+    background: var(--color_ok_bg);
+    color: var(--color_ok);
+  }
+
+  @media (min-width: 900px) {
+    .waitlist {
+      grid-template-columns: 1fr 1.2fr;
+      align-items: start;
+    }
+  }
+</style>

@@ -1,0 +1,246 @@
+---
+/**
+ * Accounting platform demo: import a sample portfolio, filter what is
+ * pending and run a review that lists findings by severity. Sample data;
+ * nothing leaves the browser.
+ */
+import type { Lang } from '../../../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+const copy = {
+  es: {
+    import: 'Importar Excel de ejemplo',
+    file: 'cartera_noviembre.xlsx',
+    filter: 'Solo con pendientes',
+    review: 'Correr revisión',
+    caption: 'Cartera de clientes',
+    cols: ['Cliente', 'Pendiente', 'Vence'],
+    empty: 'Importá la hoja para ver la cartera.',
+    rows: [
+      ['Ferretería El Roble', 'Faltan 2 documentos', '15 nov'],
+      ['Taller JR', 'IVA del mes', '15 nov'],
+      ['Soda La Esquina', 'Al día', '—'],
+      ['Agroservicios Pital', 'Faltan facturas de compra', '18 nov'],
+      ['Clínica Veterinaria Norte', 'Al día', '—'],
+    ],
+    findings_title: 'Hallazgos de la revisión',
+    findings: [
+      { tone: 'bad', level: 'Crítico', text: 'Taller JR: clave de comprobante repetida en compras.' },
+      { tone: 'warn', level: 'Advertencia', text: 'Agroservicios Pital: IVA de compras distinto del monto declarado.' },
+    ],
+    loaded: 'Se importaron 5 clientes.',
+  },
+  en: {
+    import: 'Import sample Excel',
+    file: 'portfolio_november.xlsx',
+    filter: 'Only pending',
+    review: 'Run review',
+    caption: 'Client portfolio',
+    cols: ['Client', 'Pending', 'Due'],
+    empty: 'Import the sheet to see the portfolio.',
+    rows: [
+      ['El Roble Hardware', '2 documents missing', 'Nov 15'],
+      ['JR Garage', 'Monthly VAT', 'Nov 15'],
+      ['La Esquina Diner', 'Up to date', '—'],
+      ['Pital Farm Supply', 'Purchase invoices missing', 'Nov 18'],
+      ['North Vet Clinic', 'Up to date', '—'],
+    ],
+    findings_title: 'Review findings',
+    findings: [
+      { tone: 'bad', level: 'Critical', text: 'JR Garage: repeated receipt key in purchases.' },
+      { tone: 'warn', level: 'Warning', text: 'Pital Farm Supply: purchase VAT differs from the declared amount.' },
+    ],
+    loaded: '5 clients imported.',
+  },
+}[Astro.props.lang];
+const upToDate = copy.rows[2][1];
+---
+<div class="acc_demo" data-acc-demo data-loaded={copy.loaded}>
+  <div class="acc_toolbar">
+    <button type="button" class="btn btn_primary btn_sm" data-acc-import>{copy.import}</button>
+    <span class="mono acc_file" data-acc-file hidden>{copy.file}</span>
+    <label class="acc_filter" data-acc-filter-wrap hidden><input type="checkbox" data-acc-filter /> {copy.filter}</label>
+    <button type="button" class="btn btn_ghost btn_sm" data-acc-review hidden>{copy.review}</button>
+  </div>
+
+  <p class="acc_empty" data-acc-empty>{copy.empty}</p>
+  <div class="acc_table_wrap" role="region" aria-label={copy.caption} tabindex="0" data-acc-table hidden>
+    <table>
+      <caption class="visually_hidden">{copy.caption}</caption>
+      <thead>
+        <tr>{copy.cols.map((c) => <th scope="col">{c}</th>)}</tr>
+      </thead>
+      <tbody>
+        {copy.rows.map(([client, pending, due]) => (
+          <tr data-ok={pending === upToDate ? '' : undefined}>
+            <th scope="row">{client}</th>
+            <td><span class:list={['acc_pending', { acc_ok: pending === upToDate }]}>{pending}</span></td>
+            <td class="mono">{due}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <section class="acc_findings" aria-labelledby="acc_findings_title" data-acc-findings hidden>
+    <h3 id="acc_findings_title" class="eyebrow">{copy.findings_title}</h3>
+    <ul role="list">
+      {copy.findings.map((f) => (
+        <li><span class:list={['acc_level', `acc_${f.tone}`]}>{f.level}</span>{f.text}</li>
+      ))}
+    </ul>
+  </section>
+  <p class="visually_hidden" aria-live="polite" data-acc-live></p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-acc-demo]').forEach((root) => {
+    const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const importBtn = $<HTMLButtonElement>('[data-acc-import]');
+    const filter = $<HTMLInputElement>('[data-acc-filter]');
+    const review = $<HTMLButtonElement>('[data-acc-review]');
+    const rows = [...root.querySelectorAll<HTMLTableRowElement>('tbody tr')];
+
+    importBtn.addEventListener('click', () => {
+      $('[data-acc-empty]').hidden = true;
+      $('[data-acc-table]').hidden = false;
+      $('[data-acc-file]').hidden = false;
+      $('[data-acc-filter-wrap]').hidden = false;
+      review.hidden = false;
+      importBtn.hidden = true;
+      $('[data-acc-live]').textContent = root.dataset.loaded ?? '';
+    });
+
+    filter.addEventListener('change', () => rows.forEach((row) => (row.hidden = filter.checked && row.hasAttribute('data-ok'))));
+    review.addEventListener('click', () => {
+      const findings = $('[data-acc-findings]');
+      findings.hidden = false;
+      $('[data-acc-live]').textContent = findings.textContent?.trim() ?? '';
+    });
+  });
+</script>
+
+<style>
+  .acc_demo {
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .acc_toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+  }
+
+  .acc_file {
+    font-size: var(--text_sm);
+    color: var(--color_accent_text);
+  }
+
+  .acc_filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: var(--tap_min);
+    font-size: var(--text_sm);
+    cursor: pointer;
+  }
+
+  .acc_filter input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color_cta);
+  }
+
+  .acc_empty {
+    padding: 28px;
+    border-radius: var(--radius_xl);
+    border: 1px dashed var(--color_line_strong);
+    color: var(--color_text_muted);
+    text-align: center;
+  }
+
+  .acc_table_wrap {
+    overflow-x: auto;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_raised);
+  }
+
+  .acc_table_wrap table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    font-size: var(--text_sm);
+  }
+
+  .acc_table_wrap th,
+  .acc_table_wrap td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color_line);
+    text-align: left;
+  }
+
+  .acc_table_wrap thead th {
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking_label);
+    text-transform: uppercase;
+    color: var(--color_text_muted);
+  }
+
+  .acc_table_wrap tbody th {
+    font-weight: 600;
+  }
+
+  .acc_pending {
+    color: var(--color_warn);
+  }
+
+  .acc_ok {
+    color: var(--color_ok);
+  }
+
+  .acc_findings {
+    display: grid;
+    gap: 12px;
+    padding: 24px;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_raised);
+  }
+
+  .acc_findings ul {
+    display: grid;
+    gap: 10px;
+  }
+
+  .acc_findings li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--text_sm);
+  }
+
+  .acc_level {
+    padding: 6px 10px;
+    border-radius: var(--radius_sm);
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+  }
+
+  .acc_bad {
+    background: var(--color_bad_bg);
+    color: var(--color_bad);
+  }
+
+  .acc_warn {
+    background: var(--color_warn_bg);
+    color: var(--color_warn);
+  }
+</style>
