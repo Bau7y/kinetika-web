@@ -33,7 +33,6 @@ const anchor = (id: string) => homeAnchor(lang, id);
   />
 
   <div class="hero_body container">
-    <p class="hero_kicker hero_in" data-i="0"><span class="hero_dot" aria-hidden="true"></span>{t('hero.kicker')}</p>
     <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
     <p class="hero_lede">
       {words.map((word, i) => <Fragment>{i > 0 && ' '}<span class="hero_word">{word}</span></Fragment>)}
@@ -122,27 +121,6 @@ const anchor = (id: string) => homeAnchor(lang, id);
   }
 
   /* What and where, in words search engines and assistants read first */
-  .hero_kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: var(--space_md);
-    padding: 8px 16px;
-    border-radius: var(--radius_full);
-    border: 1px solid var(--color_accent_border);
-    background: rgb(13 20 34 / 0.6);
-    font-size: var(--text_sm);
-    color: var(--color_text);
-  }
-
-  .hero_dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color_accent);
-    box-shadow: 0 0 10px var(--color_accent);
-  }
-
   .hero_title {
     max-width: 1040px;
     font-size: var(--text_display);

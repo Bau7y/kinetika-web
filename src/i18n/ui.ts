@@ -12,7 +12,6 @@ const es = {
   'site.description': 'Kinetika diseña sitios y sistemas web que automatizan un proceso específico de su negocio o amplían su alcance. Desde San Carlos para todo Costa Rica.',
   'meta.locale': 'es_CR',
   'home.seo_title': 'Kinetika | Automatización de procesos y sitios web en San Carlos, Costa Rica',
-  'hero.kicker': 'Automatización con web · San Carlos, Costa Rica',
   'site.knows_about': 'Automatización de procesos con web|Diseño y desarrollo web|SEO local|Formularios y validación de datos|Paneles de seguimiento|Sistemas de pedidos en línea|Accesibilidad web|Protección de datos personales (Ley 8968)',
 
   'nav.main_label': 'Principal',
@@ -281,7 +280,6 @@ const en: Strings = {
   'site.description': 'Kinetika designs websites and web systems that automate a specific process in your business or extend its reach. From San Carlos to all of Costa Rica.',
   'meta.locale': 'en_US',
   'home.seo_title': 'Kinetika | Process automation and websites in San Carlos, Costa Rica',
-  'hero.kicker': 'Automation with the web · San Carlos, Costa Rica',
   'site.knows_about': 'Process automation with the web|Web design and development|Local SEO|Forms and data validation|Tracking dashboards|Online ordering systems|Web accessibility|Personal data protection (Costa Rica Law 8968)',
 
   'nav.main_label': 'Main',
