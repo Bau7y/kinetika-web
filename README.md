@@ -2,7 +2,7 @@
 
 Sitio web de **Kinetika**, estudio de San Carlos, Costa Rica, que automatiza procesos de negocios con sitios y sistemas web y crea sitios que amplían su alcance. Funciona como landing y como portafolio: dos servicios (automatización de procesos y sitios web a la medida) y tres proyectos presentados como casos de estudio con demo funcional (pedidos para restaurantes, TramiMuniSC y la plataforma contable).
 
-- Dominio previsto: `kinetika.cr`
+- Dominio previsto: `kinetikacr.com`
 - Diseño de referencia: lienzo de diseño "Kinetika — Direcciones de landing", artboard **F · Landing v2**
 - Base técnica: [Landing_TramiMuniSC](https://github.com/Bau7y/Landing_TramiMuniSC) (requisitos no funcionales comunes de la marca)
 
