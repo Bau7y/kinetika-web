@@ -1,6 +1,6 @@
 /**
  * Lights the steps of the flow one after another while the section is on
- * screen. Pauses on hover, on focus and with the button. Reduced motion:
+ * screen. Pauses only with the button. Reduced motion:
  * nothing is enhanced, every step stays complete.
  */
 const STEP_MS = 1500;
@@ -15,7 +15,6 @@ export function initAutoFlow(root: HTMLElement) {
   let index = -1;
   let timer = 0;
   let visible = false;
-  let hovered = false;
   let userPaused = false;
 
   const paint = () => {
@@ -26,7 +25,7 @@ export function initAutoFlow(root: HTMLElement) {
     });
   };
 
-  const running = () => visible && !hovered && !userPaused;
+  const running = () => visible && !userPaused;
 
   const tick = () => {
     window.clearTimeout(timer);
@@ -55,14 +54,12 @@ export function initAutoFlow(root: HTMLElement) {
     toggle.textContent = userPaused ? toggle.dataset.labelPlay! : toggle.dataset.labelPause!;
     tick();
   });
-  root.addEventListener('pointerenter', () => { hovered = true; window.clearTimeout(timer); });
-  root.addEventListener('pointerleave', () => { hovered = false; tick(); });
 
   new IntersectionObserver(
     ([entry]) => {
       visible = entry.isIntersecting;
       tick();
     },
-    { threshold: 0.35 },
+    { threshold: 0.15 },
   ).observe(root);
 }
