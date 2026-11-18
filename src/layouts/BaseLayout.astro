@@ -37,7 +37,7 @@ const inRegistry = (await getPages()).some((p) => p.path === Astro.url.pathname)
 const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alternates[lang]), Astro.site);
 ---
 <!doctype html>
-<html lang={lang} data-intro={intro ? '' : undefined}>
+<html lang={lang} data-has-intro={intro ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
