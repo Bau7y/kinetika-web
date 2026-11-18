@@ -1,5 +1,7 @@
 ---
 // Página provisional: se reemplaza al construir el inicio.
+import '../styles/global.css';
+import Fonts from '../components/layout/Fonts.astro';
 ---
 
 <!doctype html>
@@ -7,12 +9,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Fonts />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Kinetika</title>
   </head>
   <body>
-    <main>
-      <h1>Kinetika</h1>
+    <main class="container section">
+      <h1 class="section_title">Kinetika</h1>
     </main>
   </body>
 </html>
