@@ -45,7 +45,10 @@ function fixedPages(lang: Lang): PageEntry[] {
     description,
     alternates: route,
   });
-  return [fixed('home', routes.home, t('site.tagline'), t('site.description'))];
+  return [
+    fixed('home', routes.home, t('site.tagline'), t('site.description')),
+    fixed('quote', routes.quote, t('quote.page_title'), t('quote.meta')),
+  ];
 }
 
 export async function getPages(): Promise<PageEntry[]> {
