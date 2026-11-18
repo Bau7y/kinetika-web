@@ -1,0 +1,28 @@
+---
+/**
+ * Link or button with the brand's press feedback (scale 0.97) and an
+ * optional arrow that nudges on hover (fine pointers only). Styles: global.css.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  href?: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'md' | 'sm';
+  arrow?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'class'>;
+
+const { href, variant = 'primary', size = 'md', arrow = false, type = 'button', class: className, ...rest } = Astro.props;
+const classes = ['btn', `btn_${variant}`, size === 'sm' && 'btn_sm', className];
+const Tag = href ? 'a' : 'button';
+---
+<Tag href={href} type={href ? undefined : type} class:list={classes} {...rest}>
+  <slot />
+  {arrow && (
+    <svg class="btn_icon_arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  )}
+</Tag>
