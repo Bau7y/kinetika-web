@@ -45,7 +45,6 @@ const es = {
 
   'breadcrumbs.label': 'Ruta de navegación',
   'updated.label': 'Actualizado el',
-  'label.day': 'Así funciona',
   'label.proof': 'Pruébelo',
   'label.process': 'Cómo trabajamos',
   'label.about': 'Nosotros',
@@ -139,10 +138,6 @@ const es = {
   'compare.before': 'Hoy',
   'compare.after': 'Con Kinetika',
 
-  'day.title': 'Qué pasa cuando alguien le escribe.',
-  'day.lede': 'El recorrido de un mensaje en un sitio de Kinetika, sin que nadie tenga que intervenir.',
-  'day.pause': 'Pausar la animación',
-  'day.play': 'Reanudar la animación',
 
   'proof.title': 'Arme la estructura de su página.',
   'proof.lede': 'Elija las secciones y vea cómo se arma. Siguen el orden de las preguntas que se hace quien visita un sitio.',
@@ -299,7 +294,6 @@ const en: Strings = {
 
   'breadcrumbs.label': 'Breadcrumb',
   'updated.label': 'Updated on',
-  'label.day': 'How it works',
   'label.proof': 'Try it',
   'label.process': 'How we work',
   'label.about': 'About us',
@@ -393,10 +387,6 @@ const en: Strings = {
   'compare.before': 'Today',
   'compare.after': 'With Kinetika',
 
-  'day.title': 'What happens when someone writes to you.',
-  'day.lede': 'The path of a message on a Kinetika site, with nobody needing to step in.',
-  'day.pause': 'Pause the animation',
-  'day.play': 'Resume the animation',
 
   'proof.title': 'Build the structure of your page.',
   'proof.lede': 'Pick the sections and watch it come together. They follow the order of the questions a visitor asks.',

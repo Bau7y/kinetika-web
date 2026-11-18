@@ -23,25 +23,42 @@ export function initHeroLines(hero: HTMLElement) {
     // on big screens to keep a fixed pixel budget per frame
     const dpr = Math.min(devicePixelRatio || 1, 1.25);
 
-    let width = hero.clientWidth;
-    let height = hero.clientHeight;
-    worker.postMessage({ type: 'init', canvas: offscreen, width, height, dpr }, [offscreen]);
-
     worker.addEventListener('message', (e: MessageEvent<{ type: string }>) => {
       if (e.data.type === 'ready') hero.classList.add('lines_live');
     });
 
+    // The observer hands over the size after the browser's own layout, so
+    // nothing here reads clientWidth/clientHeight (that forces a reflow right
+    // after the canvas is inserted). Its first callback also starts the worker.
+    let width = 0;
+    let height = 0;
+    let started = false;
+    // Messages that arrive before the first size are held back: the worker
+    // needs 'init' (and its canvas) before it can play, pause or steer
+    const pending: object[] = [];
+    const post = (msg: object) => {
+      if (started) worker.postMessage(msg);
+      else pending.push(msg);
+    };
     new ResizeObserver(([entry]) => {
       const box = entry.contentRect;
-      if (Math.round(box.width) === width && Math.round(box.height) === height) return;
-      width = Math.round(box.width);
-      height = Math.round(box.height);
-      worker.postMessage({ type: 'resize', width, height });
+      const w = Math.round(box.width);
+      const h = Math.round(box.height);
+      if (started && w === width && h === height) return;
+      width = w;
+      height = h;
+      if (started) {
+        post({ type: 'resize', width, height });
+        return;
+      }
+      worker.postMessage({ type: 'init', canvas: offscreen, width, height, dpr }, [offscreen]);
+      started = true;
+      pending.splice(0).forEach((msg) => worker.postMessage(msg));
     }).observe(hero);
 
     // Only runs while the hero is on screen and the tab is visible
     let onScreen = true;
-    const sync = () => worker.postMessage({ type: onScreen && !document.hidden ? 'play' : 'pause' });
+    const sync = () => post({ type: onScreen && !document.hidden ? 'play' : 'pause' });
     new IntersectionObserver(([entry]) => {
       onScreen = entry.isIntersecting;
       sync();
@@ -59,7 +76,7 @@ export function initHeroLines(hero: HTMLElement) {
       ([entry]) => {
         heroTop = entry.boundingClientRect.top;
         const leaving = heroTop < 0;
-        worker.postMessage({ type: 'progress', value: leaving ? Math.min(1, (1 - entry.intersectionRatio) * 1.6) : 0 });
+        post({ type: 'progress', value: leaving ? Math.min(1, (1 - entry.intersectionRatio) * 1.6) : 0 });
       },
       { threshold: steps },
     ).observe(hero);
@@ -70,9 +87,10 @@ export function initHeroLines(hero: HTMLElement) {
       let last = { x: 0.5, y: 0.5, inside: false };
       const send = () => {
         queued = false;
-        worker.postMessage({ type: 'pointer', ...last });
+        post({ type: 'pointer', ...last });
       };
       hero.addEventListener('pointermove', (e) => {
+        if (!width || !height) return;
         last = { x: e.clientX / width, y: (e.clientY - heroTop) / height, inside: true };
         if (!queued) {
           queued = true;
