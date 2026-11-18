@@ -171,7 +171,7 @@ describe('SEO', () => {
   it('robots.txt apunta al sitemap y bloquea las acciones', async () => {
     const text = await (await get('/robots.txt')).text();
     assert.match(text, /Disallow: \/_actions\//);
-    assert.match(text, /Sitemap: https:\/\/kinetikacr\.com\/sitemap\.xml/);
+    assert.match(text, /Sitemap: https:\/\/www\.kinetikacr\.com\/sitemap\.xml/);
   });
 
   it('cada página tiene su imagen Open Graph de 1200×630', async () => {
@@ -257,7 +257,7 @@ describe('estructura multipágina', () => {
       assert.match(html, new RegExp(`"@type":"${type}"`));
       assert.match(html, /"@type":"BreadcrumbList"/);
       assert.match(html, /<h1[^>]*>/);
-      assert.match(html, new RegExp(`hreflang="en" href="https://kinetikacr.com${alt}"`));
+      assert.match(html, new RegExp(`hreflang="en" href="https://www.kinetikacr.com${alt}"`));
       assert.equal((await get(alt)).status, 200);
     });
   }
@@ -265,7 +265,7 @@ describe('estructura multipágina', () => {
   it('el sitemap incluye las páginas nuevas y ninguna URL antigua', async () => {
     const xml = await (await get('/sitemap.xml')).text();
     for (const path of ['/soluciones', '/nosotros', '/nosotros/como-trabajamos', '/experiencia']) {
-      assert.match(xml, new RegExp(`<loc>https://kinetikacr.com${path}</loc>`));
+      assert.match(xml, new RegExp(`<loc>https://www.kinetikacr.com${path}</loc>`));
     }
     assert.doesNotMatch(xml, /\/servicios|\/proyectos|\/en\/services|\/en\/projects/);
   });
