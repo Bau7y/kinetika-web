@@ -135,11 +135,9 @@ const es = {
   'hero.cred_live': 'En producción',
 
   'compare.title': 'Antes y después de automatizar.',
-  'compare.lede': 'Deslice el control: el mismo mediodía de un restaurante, a mano y con un sistema web.',
+  'compare.lede': 'El mismo pedido de un restaurante, paso a paso: a mano y con un sistema web.',
   'compare.before': 'Hoy',
   'compare.after': 'Con Kinetika',
-  'compare.control': 'Comparar hoy con Kinetika',
-  'compare.value': '{before} % hoy, {after} % con Kinetika',
 
   'day.title': 'Un día cualquiera, con todo en movimiento.',
   'day.lede': 'Avance las horas y vea dónde entra cada servicio y proyecto.',
@@ -403,11 +401,9 @@ const en: Strings = {
   'hero.cred_live': 'In production',
 
   'compare.title': 'Before and after automating.',
-  'compare.lede': 'Drag the control: the same lunch rush at a restaurant, by hand and with a web system.',
+  'compare.lede': 'The same restaurant order, step by step: by hand and with a web system.',
   'compare.before': 'Today',
   'compare.after': 'With Kinetika',
-  'compare.control': 'Compare today with Kinetika',
-  'compare.value': '{before}% today, {after}% with Kinetika',
 
   'day.title': 'An ordinary day, with everything in motion.',
   'day.lede': 'Move through the hours and see where each service and project comes in.',

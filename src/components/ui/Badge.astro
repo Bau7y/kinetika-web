@@ -26,13 +26,16 @@ const { tone = 'neutral', class: className } = Astro.props;
     white-space: nowrap;
   }
 
+  /* Shape carries the state: solid = active, dashed = in progress,
+     plain = not started, outline = highlighted */
   .badge_ok {
     background: var(--color_ok_bg);
     color: var(--color_ok);
   }
 
   .badge_warn {
-    background: var(--color_warn_bg);
+    padding: 5px 9px;
+    border: 1px dashed var(--color_line_strong);
     color: var(--color_warn);
   }
 
@@ -42,7 +45,8 @@ const { tone = 'neutral', class: className } = Astro.props;
   }
 
   .badge_accent {
-    background: var(--color_accent_tint_strong);
+    padding: 5px 9px;
+    border: 1px solid var(--color_accent_border);
     color: var(--color_accent_text);
   }
 </style>

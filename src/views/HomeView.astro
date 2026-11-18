@@ -6,7 +6,7 @@ import StatsStrip from '../components/sections/StatsStrip.astro';
 import Testimonials from '../components/sections/Testimonials.astro';
 import ProjectsRail from '../components/sections/ProjectsRail.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
-import SwitchCompare from '../components/sections/SwitchCompare.astro';
+import BeforeAfter from '../components/sections/BeforeAfter.astro';
 import DayTimeline from '../components/sections/DayTimeline.astro';
 import Blueprint from '../components/sections/Blueprint.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
@@ -54,7 +54,7 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
   <Hero lang={lang} />
   <ProjectsRail lang={lang} number={n('projects')} />
   <ServicesSection lang={lang} number={n('services')} />
-  <SwitchCompare lang={lang} number={n('compare')} />
+  <BeforeAfter lang={lang} number={n('compare')} />
   <DayTimeline lang={lang} number={n('day')} />
   <WhyServiceArea lang={lang} number={n('about')} />
   <StatsStrip lang={lang} />
