@@ -7,6 +7,7 @@ import SwitchCompare from '../components/sections/SwitchCompare.astro';
 import DayTimeline from '../components/sections/DayTimeline.astro';
 import Blueprint from '../components/sections/Blueprint.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
+import Process from '../components/sections/Process.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
 import QuoteChat from '../components/sections/QuoteChat.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
@@ -29,6 +30,7 @@ const privacyHref = await getLegalHref('privacidad', lang);
   <SwitchCompare lang={lang} />
   <DayTimeline lang={lang} />
   <Blueprint lang={lang} />
+  <Process lang={lang} />
   <WhyServiceArea lang={lang} />
   <FaqGuides lang={lang} />
   <QuoteChat lang={lang} privacyHref={privacyHref} number="07" />

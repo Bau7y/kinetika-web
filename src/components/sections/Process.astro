@@ -1,0 +1,168 @@
+---
+/**
+ * "How we work": numbered vertical steps. The line fills as each step
+ * reaches the middle of the screen (scaleY only), and the step lights up.
+ * Without JS every step is shown lit and the line is full.
+ */
+import { process } from '../../data/process';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const steps = process[lang];
+---
+<section id="proceso" class="section container process" aria-labelledby="process_title" data-process>
+  <div class="process_head">
+    <p class="section_label" data-reveal data-i="0"><span>04</span>{t('label.process')}</p>
+    <h2 id="process_title" class="section_title" data-reveal data-i="1">{t('process.title')}</h2>
+    <p class="lede" data-reveal data-i="2">{t('process.lede')}</p>
+  </div>
+
+  <ol role="list" class="process_steps">
+    <span class="process_line" aria-hidden="true"><span class="process_fill" data-process-fill></span></span>
+    {steps.map((step, i) => (
+      <li class="process_step" data-process-step>
+        <span class="process_n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-process]').forEach((root) => {
+    const steps = [...root.querySelectorAll<HTMLElement>('[data-process-step]')];
+    const fill = root.querySelector<HTMLElement>('[data-process-fill]');
+    if (!fill || !('IntersectionObserver' in window)) return;
+    root.classList.add('is_live');
+
+    const reached = new Set<number>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const i = steps.indexOf(entry.target as HTMLElement);
+          if (entry.isIntersecting) reached.add(i);
+          else if (entry.boundingClientRect.top > 0) reached.delete(i); // scrolled back up past it
+        }
+        const last = reached.size ? Math.max(...reached) : -1;
+        steps.forEach((step, i) => step.classList.toggle('is_on', i <= last));
+        fill.style.transform = `scaleY(${steps.length > 1 ? Math.max(0, last) / (steps.length - 1) : 1})`;
+      },
+      { rootMargin: '0px 0px -50% 0px' },
+    );
+    steps.forEach((step) => io.observe(step));
+  });
+</script>
+
+<style>
+  .process {
+    display: grid;
+    gap: var(--space_xl);
+  }
+
+  .process_head {
+    align-self: start;
+  }
+
+  .process_head .lede {
+    margin-top: var(--space_sm);
+  }
+
+  .process_steps {
+    position: relative;
+    display: grid;
+    gap: var(--space_xl);
+    padding-left: 72px;
+  }
+
+  .process_line {
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    left: 21px;
+    width: 2px;
+    background: var(--color_line_strong);
+  }
+
+  .process_fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(var(--color_accent), var(--color_accent_text));
+    transform-origin: 50% 0;
+    transition: transform var(--duration_slow) var(--ease_out);
+  }
+
+  .process_step {
+    position: relative;
+  }
+
+  .process_n {
+    position: absolute;
+    top: 0;
+    left: -72px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color_bg);
+    border: 1px solid var(--color_accent_border_strong);
+    font-size: var(--text_sm);
+    color: var(--color_accent_text);
+  }
+
+  .process_step h3 {
+    padding-top: 8px;
+    font-size: var(--text_h3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .process_step p {
+    max-width: 46ch;
+    margin-top: 8px;
+    color: var(--color_text_secondary);
+  }
+
+  /* Enhanced: steps light up as they are reached */
+  .process.is_live .process_fill {
+    transform: scaleY(0);
+  }
+
+  /* Steps not reached yet use quieter colors (still WCAG AA, no fading) */
+  .process.is_live .process_step:not(.is_on) h3 {
+    color: var(--color_text_secondary);
+  }
+
+  .process.is_live .process_step:not(.is_on) p {
+    color: var(--color_text_muted);
+  }
+
+  .process.is_live .process_step:not(.is_on) .process_n {
+    border-color: var(--color_line_strong);
+    color: var(--color_text_secondary);
+  }
+
+  @media (min-width: 900px) {
+    .process {
+      grid-template-columns: 1fr 1.2fr;
+    }
+
+    .process_head {
+      position: sticky;
+      top: calc(var(--navbar_h) + var(--space_lg));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .process_fill {
+      transition: none;
+    }
+  }
+</style>
