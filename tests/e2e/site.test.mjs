@@ -81,12 +81,12 @@ describe('seguridad', () => {
 });
 
 describe('cotización', () => {
-  it('pide lo que necesitás, el negocio, el correo y el consentimiento antes de enviar', async () => {
+  it('pide lo que necesita, el negocio, el correo y el consentimiento antes de enviar', async () => {
     const page = await open('/contacto');
     await page.click('[data-contact-form] button[type="submit"]');
     const invalid = await page.$$eval('[data-contact-form] [aria-invalid="true"]', (els) => [...new Set(els.map((e) => e.getAttribute('name')))].sort());
     assert.deepEqual(invalid, ['business', 'consent', 'email', 'need']);
-    assert.equal(await page.textContent('[data-error-for="consent"]'), 'Necesitamos tu autorización para usar estos datos.');
+    assert.equal(await page.textContent('[data-error-for="consent"]'), 'Necesitamos su autorización para usar estos datos.');
     assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-error-summary')), true);
     // Choosing an option clears its error
     await page.click('.contact_card >> nth=0');
@@ -114,7 +114,7 @@ describe('cotización', () => {
   it('la lista de espera también valida', async () => {
     const page = await open('/experiencia/plataforma-contable');
     await page.click('[data-waitlist] button[type="submit"]');
-    assert.equal(await page.textContent('[data-waitlist] [data-error-for="email"]'), 'Escribí tu correo.');
+    assert.equal(await page.textContent('[data-waitlist] [data-error-for="email"]'), 'Escriba su correo.');
     await page.close();
   });
 });
@@ -123,7 +123,7 @@ describe('idioma', () => {
   it('el selector lleva a la misma página en el otro idioma', async () => {
     const page = await open('/experiencia/pedidos');
     await page.click('[data-lang-switch]');
-    await page.waitForURL(/\/en\/projects\/ordering$/);
+    await page.waitForURL(/\/en\/work\/ordering$/);
     assert.equal(await page.getAttribute('html', 'lang'), 'en');
     await page.close();
   });
@@ -241,5 +241,50 @@ describe('SEO', () => {
     assert.match(text, /## Servicios/);
     assert.match(text, /## Proyectos/);
     assert.match(text, /## Guías/);
+  });
+});
+
+describe('estructura multipágina', () => {
+  const sections = [
+    ['/soluciones', 'CollectionPage', '/en/solutions'],
+    ['/nosotros', 'AboutPage', '/en/about'],
+    ['/nosotros/como-trabajamos', 'BreadcrumbList', '/en/about/how-we-work'],
+  ];
+
+  for (const [path, type, alt] of sections) {
+    it(`${path} responde con su schema, migas y alternativa en inglés`, async () => {
+      const html = await (await get(path)).text();
+      assert.match(html, new RegExp(`"@type":"${type}"`));
+      assert.match(html, /"@type":"BreadcrumbList"/);
+      assert.match(html, /<h1[^>]*>/);
+      assert.match(html, new RegExp(`hreflang="en" href="https://kinetikacr.com${alt}"`));
+      assert.equal((await get(alt)).status, 200);
+    });
+  }
+
+  it('el sitemap incluye las páginas nuevas y ninguna URL antigua', async () => {
+    const xml = await (await get('/sitemap.xml')).text();
+    for (const path of ['/soluciones', '/nosotros', '/nosotros/como-trabajamos', '/experiencia']) {
+      assert.match(xml, new RegExp(`<loc>https://kinetikacr.com${path}</loc>`));
+    }
+    assert.doesNotMatch(xml, /\/servicios|\/proyectos|\/en\/services|\/en\/projects/);
+  });
+
+  it('las URLs de /servicios y /proyectos redirigen con 301 a su destino final', async () => {
+    const config = JSON.parse(await readFile('.vercel/output/config.json', 'utf8'));
+    const rules = config.routes.filter((r) => r.status === 301);
+    const target = (from) => rules.find((r) => new RegExp(r.src).test(from))?.headers.Location;
+    assert.equal(target('/servicios'), '/soluciones');
+    assert.equal(target('/servicios/sitios-web'), '/soluciones/$1');
+    assert.equal(target('/proyectos/pedidos'), '/experiencia/$1');
+    assert.equal(target('/en/projects'), '/en/work');
+    assert.equal(target('/productos/pedidos'), '/experiencia/pedidos');
+  });
+
+  it('la navegación marca la página actual con aria-current', async () => {
+    const page = await open('/nosotros');
+    const current = await page.$$eval('.pill_nav a[aria-current="page"]', (els) => els.map((e) => e.getAttribute('href')));
+    assert.deepEqual(current, ['/nosotros']);
+    await page.close();
   });
 });
