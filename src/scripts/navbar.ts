@@ -1,7 +1,7 @@
 /**
- * Pill navigation: solid state after scrolling, sliding highlight with
- * scroll spy (wide screens) and the panel with focus handling (narrow
- * screens). Markup in components/layout/NavBar.astro and NavPanel.astro.
+ * Pill navigation: denser glass after scrolling, sliding highlight with
+ * scroll spy and dock-style magnification (wide screens) and the panel with
+ * focus handling and a locked page behind it (narrow screens). Markup in components/layout/NavBar.astro and NavPanel.astro.
  */
 export function initNavbar() {
   const navbar = document.querySelector<HTMLElement>('[data-navbar]');
@@ -21,12 +21,16 @@ export function initNavbar() {
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   // Link boxes, measured only when the layout changes (load, resize, fonts)
-  let boxes: { left: number; right: number }[] = [];
+  let boxes: { left: number; right: number; center: number }[] = [];
   const measure = () => {
     const width = list.offsetWidth;
     boxes = links.map((a) => {
       const li = a.parentElement!;
-      return { left: li.offsetLeft, right: width - li.offsetLeft - li.offsetWidth };
+      return {
+        left: li.offsetLeft,
+        right: width - li.offsetLeft - li.offsetWidth,
+        center: li.offsetLeft + li.offsetWidth / 2,
+      };
     });
     paint(shown, false);
   };
@@ -55,6 +59,52 @@ export function initNavbar() {
     list.addEventListener('pointerleave', () => paint(active));
   }
 
+  /* ── Magnification: links grow with the pointer's distance, like a dock.
+     The scale goes in --mag on each link and on its highlight copy, so both
+     stay aligned. Positions come from measure(): nothing is read while moving. ── */
+  const marks = [...highlight.querySelectorAll<HTMLElement>('span')];
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  if (finePointer && !reduceMotion.matches) {
+    const GROW = 0.2; // largest extra scale, under the pointer
+    const REACH = 120; // px at which the effect fades out
+    let pointerX = 0;
+    let listLeft = 0;
+    let queued = false;
+
+    const setScale = (i: number, value: number) => {
+      const v = value.toFixed(3);
+      links[i].style.setProperty('--mag', v);
+      marks[i]?.style.setProperty('--mag', v);
+    };
+    const update = () => {
+      queued = false;
+      boxes.forEach((box, i) => {
+        const k = Math.max(0, 1 - Math.abs(pointerX - box.center) / REACH);
+        setScale(i, 1 + GROW * k * k * (3 - 2 * k)); // smoothstep falloff
+      });
+    };
+
+    list.addEventListener('pointerenter', (e) => {
+      listLeft = list.getBoundingClientRect().left;
+      pointerX = e.clientX - listLeft;
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    });
+    list.addEventListener('pointermove', (e) => {
+      pointerX = e.clientX - listLeft;
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    });
+    list.addEventListener('pointerleave', () => {
+      queued = false;
+      links.forEach((_, i) => setScale(i, 1));
+    });
+  }
+
   // Scroll spy: the section crossing the middle of the viewport
   const sections = links
     .map((a, i) => ({ i, el: a.dataset.section ? document.getElementById(a.dataset.section) : null }))
@@ -76,7 +126,10 @@ export function initNavbar() {
   }
 
   /* ── Panel (narrow screens). While open, everything outside the header is
-     inert: focus stays in the menu. Escape closes it and returns focus. ── */
+     inert (no taps, no focus), the page behind does not scroll (html.menu_lock)
+     and the blurred veil takes the taps: touching it closes the menu. Escape
+     closes it and returns focus. ── */
+  const scrim = navbar.querySelector<HTMLElement>('[data-menu-scrim]');
   const outside = () => document.querySelectorAll<HTMLElement>('body > :not(header):not(script)');
 
   const setMenuOpen = (isOpen: boolean) => {
@@ -87,11 +140,13 @@ export function initNavbar() {
     menuButton.setAttribute('aria-expanded', String(isOpen));
     menuButton.setAttribute('aria-label', (isOpen ? menuButton.dataset.labelClose : menuButton.dataset.labelOpen) ?? '');
     outside().forEach((el) => el.toggleAttribute('inert', isOpen));
+    document.documentElement.classList.toggle('menu_lock', isOpen);
     if (isOpen) mobileMenu.querySelector<HTMLElement>('a')?.focus();
   };
 
   menuButton.addEventListener('click', () => setMenuOpen(!mobileMenu.classList.contains('open')));
   mobileMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenuOpen(false)));
+  scrim?.addEventListener('click', () => setMenuOpen(false));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
       setMenuOpen(false);
