@@ -8,7 +8,7 @@ import ProjectsRail from '../components/sections/ProjectsRail.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
 import BeforeAfter from '../components/sections/BeforeAfter.astro';
 import AutoFlow from '../components/sections/AutoFlow.astro';
-import Blueprint from '../components/sections/Blueprint.astro';
+import PageBuilder from '../components/sections/PageBuilder.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import Process from '../components/sections/Process.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
@@ -60,7 +60,7 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
   <StatsStrip lang={lang} />
   <Testimonials lang={lang} number={n('testimonials')} />
   <Process lang={lang} number={n('process')} />
-  <Blueprint lang={lang} number={n('proof')} />
+  <PageBuilder lang={lang} number={n('proof')} />
   <FaqGuides lang={lang} number={n('faq')} />
   <ClosingCta
     id="contacto"
