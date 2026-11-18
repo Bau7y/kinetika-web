@@ -45,4 +45,15 @@ faq:
 cta:
   title: Sumate a la lista de espera.
   text: Te escribimos cuando abramos la primera versión para despachos de la zona.
+answer:
+  question: "¿Qué es la plataforma contable de Kinetika?"
+  text: "Es una plataforma en línea para despachos y contadores de Costa Rica. Reúne la cartera de clientes, un portal para recibir documentos, el calendario de obligaciones y una revisión que muestra hallazgos antes de declarar. Se suma al software que ya usás y empieza importando tu Excel. Está en lista de espera."
+comparison:
+  title: "Excel o la plataforma"
+  columns: ["Solo con Excel", "Con la plataforma"]
+  rows:
+    - ["Documentos de clientes", "Llegan por correo o WhatsApp", "Cada cliente los sube a su portal"]
+    - ["Vencimientos", "Fórmulas y colores a mano", "Calendario con recordatorios"]
+    - ["Antes de declarar", "Revisión manual", "Hallazgos ordenados por gravedad"]
+    - ["Tus datos actuales", "Siguen en la hoja", "Se importan desde tu Excel"]
 ---

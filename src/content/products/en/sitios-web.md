@@ -45,4 +45,15 @@ faq:
 cta:
   title: Tell us what you need.
   text: Three questions and we reply with a proposal and a demo.
+answer:
+  question: "What is a Kinetika custom website?"
+  text: "It is a site designed and built for your business, with no bought templates. It loads fast, is ready for Google, protects its forms from spam and can have an English version. We build it from San Carlos for businesses across Costa Rica, and you see it working before you hire us."
+comparison:
+  title: "Template or custom site"
+  columns: ["Template or site builder", "Kinetika custom site"]
+  rows:
+    - ["Design", "Shared with other sites", "Made for your business"]
+    - ["Structural changes", "Limited to what the tool allows", "Free of template limits"]
+    - ["Forms", "Depends on the plan", "Invisible captcha, submission limits and spam filters"]
+    - ["Before hiring", "A sample template", "A first version that works"]
 ---

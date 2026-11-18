@@ -43,4 +43,15 @@ faq:
 cta:
   title: ¿Querés probarlo en tu restaurante?
   text: Contanos cómo recibís pedidos hoy y te avisamos cuando haya una versión para tu negocio.
+answer:
+  question: "¿Qué es el sistema de pedidos de Kinetika?"
+  text: "Es un sistema de pedidos en línea para restaurantes y sodas que hoy atienden por WhatsApp. El cliente elige del menú y el pedido llega al panel de cocina con hora, total y estado. Está en desarrollo en San Carlos y buscamos restaurantes de la zona para probarlo."
+comparison:
+  title: "WhatsApp o sistema de pedidos"
+  columns: ["Pedidos por WhatsApp", "Sistema de pedidos"]
+  rows:
+    - ["Menú y precios", "Se preguntan en el chat", "Siempre visibles y actualizados"]
+    - ["El pedido", "Repartido en varios mensajes", "Completo en un solo lugar"]
+    - ["En la cocina", "De palabra o en papel", "En un panel con hora y estado"]
+    - ["Seguimiento", "Se responde mensaje por mensaje", "El estado dice si está en cocina o listo"]
 ---

@@ -15,7 +15,8 @@ import { render } from 'astro:content';
 import { getProducts, type Product } from '../data/products';
 import { pairHrefs } from '../data/pages';
 import { getLegalHref } from '../data/legal';
-import { routes, useTranslations, type Lang } from '../i18n/ui';
+import { formatDate, routes, useTranslations, type Lang } from '../i18n/ui';
+import { statusBadge } from '../data/product_status';
 
 interface Props {
   lang: Lang;
@@ -54,6 +55,18 @@ const crumbs = [
   />
   <ProductHero lang={lang} product={product} crumbs={crumbs} />
 
+  <!-- Short answer: quotable on its own by search engines and assistants -->
+  <section class="container product_answer" aria-labelledby="answer_title">
+    <h2 id="answer_title">{data.answer.question}</h2>
+    <p>{data.answer.text}</p>
+    <dl class="product_facts">
+      <div><dt>{t('product.facts_for')}</dt><dd>{data.audience}</dd></div>
+      <div><dt>{t('product.facts_status')}</dt><dd>{t(statusBadge[data.status].label)}</dd></div>
+      <div><dt>{t('product.facts_where')}</dt><dd>{t('product.facts_where_value')}</dd></div>
+      <div><dt>{t('updated.label')}</dt><dd><time datetime={data.updated.toISOString().slice(0, 10)}>{formatDate(data.updated, lang)}</time></dd></div>
+    </dl>
+  </section>
+
   <ProductDemo lang={lang} title={data.demo.title} text={data.demo.text}>
     <slot name="demo" />
   </ProductDemo>
@@ -71,6 +84,33 @@ const crumbs = [
       </ul>
     </div>
   </section>
+
+  {data.comparison && (
+    <section class="section container" aria-labelledby="compare_table_title">
+      <h2 id="compare_table_title" class="section_title product_h2">{data.comparison.title}</h2>
+      <div class="product_table" role="region" aria-labelledby="compare_table_title" tabindex="0">
+        <table>
+          <caption class="visually_hidden">{data.comparison.title}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t('product.compare_aspect')}</th>
+              <th scope="col">{data.comparison.columns[0]}</th>
+              <th scope="col" class="product_table_us">{data.comparison.columns[1]}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.comparison.rows.map(([aspect, a, b]) => (
+              <tr>
+                <th scope="row">{aspect}</th>
+                <td>{a}</td>
+                <td class="product_table_us">{b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )}
 
   <section class="section container" aria-labelledby="steps_title">
     <h2 id="steps_title" class="section_title product_h2">{data.steps.title}</h2>
@@ -128,6 +168,96 @@ const crumbs = [
 </BaseLayout>
 
 <style>
+  .product_answer {
+    display: grid;
+    gap: var(--space_sm);
+    padding-block: var(--space_xl) 0;
+  }
+
+  .product_answer h2 {
+    font-size: var(--text_h3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .product_answer > p {
+    max-width: 68ch;
+    padding: 20px 24px;
+    border-left: 3px solid var(--color_accent);
+    border-radius: 0 var(--radius_lg) var(--radius_lg) 0;
+    background: var(--color_accent_tint);
+    font-size: var(--text_md);
+    line-height: 1.65;
+  }
+
+  .product_facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px 24px;
+    margin-top: var(--space_xs);
+  }
+
+  .product_facts dt {
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    letter-spacing: var(--tracking_label);
+    text-transform: uppercase;
+    color: var(--color_text_muted);
+  }
+
+  .product_facts dd {
+    margin-top: 4px;
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .product_table {
+    overflow-x: auto;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+  }
+
+  .product_table table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .product_table th,
+  .product_table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color_line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .product_table tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  .product_table thead th {
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking_label);
+    text-transform: uppercase;
+    color: var(--color_text_muted);
+  }
+
+  .product_table tbody th {
+    font-weight: 600;
+  }
+
+  .product_table td {
+    color: var(--color_text_secondary);
+  }
+
+  .product_table .product_table_us {
+    background: var(--color_accent_tint);
+    color: var(--color_text);
+  }
+
   .product_h2 {
     max-width: 800px;
     margin-bottom: var(--space_lg);

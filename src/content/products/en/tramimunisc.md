@@ -44,4 +44,15 @@ faq:
 cta:
   title: Want something like this for your business?
   text: TramiMuniSC shows how we work. Tell us which process you want to organize and we will look at it together.
+answer:
+  question: "What is TramiMuniSC?"
+  text: "TramiMuniSC is the Kinetika service that helps with procedures at the Municipality of San Carlos: property declaration and exemption, business licenses, land use and questions. It helps gather requirements, fill in forms and follow up. It is a private service, already live at tramimunisc.com."
+comparison:
+  title: "On your own or with TramiMuniSC"
+  columns: ["On your own", "With TramiMuniSC"]
+  rows:
+    - ["Requirements", "Find and gather them", "Reviewed with you"]
+    - ["Form", "You fill it in", "Filled in with your details"]
+    - ["Follow-up", "Ask at the municipality", "The service tells you the result"]
+    - ["Who decides", "The municipality", "The municipality"]
 ---

@@ -43,4 +43,15 @@ faq:
 cta:
   title: Want to try it at your restaurant?
   text: Tell us how you take orders today and we will let you know when there is a version for your business.
+answer:
+  question: "What is the Kinetika ordering system?"
+  text: "It is an online ordering system for restaurants and diners that take orders on WhatsApp today. Customers pick from the menu and the order reaches the kitchen panel with its time, total and status. It is in development in San Carlos and we are looking for local restaurants to try it."
+comparison:
+  title: "WhatsApp or an ordering system"
+  columns: ["Orders on WhatsApp", "Ordering system"]
+  rows:
+    - ["Menu and prices", "Asked in the chat", "Always visible and up to date"]
+    - ["The order", "Spread across several messages", "Complete in one place"]
+    - ["In the kitchen", "By word of mouth or on paper", "On a panel with time and status"]
+    - ["Follow-up", "Answered message by message", "The status says whether it is cooking or ready"]
 ---
