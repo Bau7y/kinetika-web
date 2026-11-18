@@ -1,40 +1,48 @@
 ---
 /**
- * Product page, shared by /productos/<slug> and /en/products/<slug>.
- * Each product brings its own demo (slot "demo").
+ * Service or project page, shared by /servicios, /proyectos and their
+ * English routes. Projects add the case study (problem → solution → result);
+ * services list the projects that show them. Each entry may bring its own
+ * demo (slot "demo").
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductHero from '../components/product/ProductHero.astro';
-import ProductDemo from '../components/product/ProductDemo.astro';
+import WorkHero from '../components/work/WorkHero.astro';
+import WorkDemo from '../components/work/WorkDemo.astro';
 import Prose from '../components/ui/Prose.astro';
 import Button from '../components/ui/Button.astro';
-import WaitlistForm from '../components/product/WaitlistForm.astro';
+import WaitlistForm from '../components/work/WaitlistForm.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/structured_data';
 import { render } from 'astro:content';
-import { getProducts, type Product } from '../data/products';
+import { getProjects, getWork, type Work } from '../data/work';
 import { pairHrefs } from '../data/pages';
 import { getLegalHref } from '../data/legal';
 import { formatDate, routes, useTranslations, type Lang } from '../i18n/ui';
-import { statusBadge } from '../data/product_status';
+import { homeAnchor } from '../i18n/routes';
+import { statusBadge } from '../data/work_status';
 
 interface Props {
   lang: Lang;
-  product: Product;
+  work: Work;
 }
-const { lang, product } = Astro.props;
+const { lang, work } = Astro.props;
+const isProject = work.data.kind === 'project';
 const t = useTranslations(lang);
 const privacyHref = await getLegalHref('privacidad', lang);
-const { data } = product;
-const { Content } = await render(product);
-const hasBody = Boolean(product.body?.trim());
+const { data } = work;
+const { Content } = await render(work);
+const hasBody = Boolean(work.body?.trim());
 
-const alternates = pairHrefs({ es: await getProducts('es'), en: await getProducts('en') })(product.key, lang);
-const others = (await getProducts(lang)).filter((p) => p.key !== product.key);
+const alternates = pairHrefs({ es: await getWork('es'), en: await getWork('en') })(work.key, lang);
+const others = (await getWork(lang)).filter((w) => w.key !== work.key && w.data.kind === data.kind);
+// Services point to the projects that put them into practice
+const showcase = isProject ? [] : await getProjects(lang);
 const crumbs = [
   { name: t('nav.home'), href: routes.home[lang] },
-  { name: t('nav.products'), href: `${routes.home[lang] === '/' ? '' : routes.home[lang]}/#interruptor` },
-  { name: data.name, href: product.href },
+  isProject
+    ? { name: t('nav.projects'), href: homeAnchor(lang, 'proyectos') }
+    : { name: t('nav.services'), href: homeAnchor(lang, 'servicios') },
+  { name: data.name, href: work.href },
 ];
 ---
 <BaseLayout lang={lang} title={data.seo_title} description={data.meta_description} alternates={alternates}>
@@ -45,7 +53,7 @@ const crumbs = [
         name: data.name,
         type: data.service_type,
         description: data.meta_description,
-        path: product.href,
+        path: work.href,
         audience: data.audience,
         url: data.external_url,
       }),
@@ -53,7 +61,7 @@ const crumbs = [
       ...(data.faq.length > 0 ? [faqSchema(data.faq)] : []),
     ]}
   />
-  <ProductHero lang={lang} product={product} crumbs={crumbs} />
+  <WorkHero lang={lang} work={work} crumbs={crumbs} />
 
   <!-- Short answer: quotable on its own by search engines and assistants -->
   <section class="container product_answer" aria-labelledby="answer_title">
@@ -67,9 +75,26 @@ const crumbs = [
     </dl>
   </section>
 
-  <ProductDemo lang={lang} title={data.demo.title} text={data.demo.text}>
-    <slot name="demo" />
-  </ProductDemo>
+  {data.case && (
+    <section class="section container work_case" aria-labelledby="case_title">
+      <p class="section_label"><span>01</span>{t('case.label')}</p>
+      <h2 id="case_title" class="section_title product_h2">{t('case.title')}</h2>
+      <ol role="list" class="work_case_steps">
+        <li data-reveal data-i="0"><h3 class="eyebrow">{t('case.problem')}</h3><p>{data.case.problem}</p></li>
+        <li data-reveal data-i="1"><h3 class="eyebrow">{t('case.solution')}</h3><p>{data.case.solution}</p></li>
+        <li data-reveal data-i="2" class="work_case_result"><h3 class="eyebrow">{t('case.result')}</h3><p>{data.case.result}</p></li>
+      </ol>
+      <ul role="list" class="work_tags" aria-label={t('case.tags')}>
+        {data.case.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {data.demo && (
+    <WorkDemo lang={lang} title={data.demo.title} text={data.demo.text}>
+      <slot name="demo" />
+    </WorkDemo>
+  )}
 
   <section class="section section_band" aria-labelledby="highlights_title">
     <div class="container">
@@ -128,8 +153,26 @@ const crumbs = [
 
   <slot />
 
+  {showcase.length > 0 && (
+    <section class="section container" aria-labelledby="showcase_title">
+      <h2 id="showcase_title" class="section_title product_h2">{t('service.showcase')}</h2>
+      <ul role="list" class="work_showcase">
+        {showcase.map((p, i) => (
+          <li data-reveal data-i={i}>
+            <a href={p.href}>
+              <span class="mono work_showcase_n">{String(i + 1).padStart(2, '0')}</span>
+              <strong>{p.data.name}</strong>
+              <span>{p.data.case?.solution}</span>
+              <span class="work_showcase_more">{t('projects.view_case')} <span aria-hidden="true">→</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   {data.status === 'waitlist' && (
-    <WaitlistForm lang={lang} product={product.key} privacyHref={privacyHref} />
+    <WaitlistForm lang={lang} product={work.key} privacyHref={privacyHref} />
   )}
 
   {data.faq.length > 0 && (
@@ -158,7 +201,7 @@ const crumbs = [
     )}
     {others.length > 0 && (
       <nav class="product_others" aria-labelledby="product_others_title">
-        <h3 id="product_others_title" class="eyebrow">{t('product.others')}</h3>
+        <h3 id="product_others_title" class="eyebrow">{t(isProject ? 'case.others' : 'service.others')}</h3>
         <ul role="list">
           {others.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
         </ul>
@@ -168,6 +211,90 @@ const crumbs = [
 </BaseLayout>
 
 <style>
+  .work_case_steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--color_line);
+    border-radius: var(--radius_xl);
+    background: var(--color_line);
+  }
+
+  .work_case_steps li {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    padding: clamp(20px, 3vw, 32px);
+    background: var(--color_surface);
+  }
+
+  .work_case_steps p {
+    color: var(--color_text_secondary);
+  }
+
+  .work_case_steps .work_case_result p {
+    color: var(--color_text);
+  }
+
+  .work_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space_md);
+  }
+
+  .work_tags li {
+    padding: 6px 12px;
+    border: 1px solid var(--color_line_strong);
+    border-radius: var(--radius_full);
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .work_showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space_sm);
+  }
+
+  .work_showcase a {
+    display: grid;
+    gap: 10px;
+    height: 100%;
+    padding: 24px;
+    border: 1px solid var(--color_line);
+    border-radius: var(--radius_xl);
+    background: var(--color_surface);
+    color: var(--color_text_secondary);
+    text-decoration: none;
+    transition: border-color var(--duration_fast) ease;
+  }
+
+  .work_showcase strong {
+    font-size: var(--text_lg);
+    font-weight: 600;
+    color: var(--color_text);
+  }
+
+  .work_showcase_n {
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  .work_showcase_more {
+    align-self: end;
+    color: var(--color_accent_text);
+    font-weight: 500;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .work_showcase a:hover {
+      border-color: var(--color_line_strong);
+      color: var(--color_text_secondary);
+    }
+  }
+
   .product_answer {
     display: grid;
     gap: var(--space_sm);

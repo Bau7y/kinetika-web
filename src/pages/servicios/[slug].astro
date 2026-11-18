@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import WorkView from '../../views/WorkView.astro';
+import { getServices, type Work } from '../../data/work';
+import { demos } from '../../components/work/demos';
+
+export const getStaticPaths = (async () =>
+  (await getServices('es')).map((work) => ({ params: { slug: work.data.url_slug }, props: { work } }))) satisfies GetStaticPaths;
+
+const { work } = Astro.props as { work: Work };
+const Demo = demos[work.key];
+---
+<WorkView lang="es" work={work}>
+  {Demo && <Demo slot="demo" lang="es" />}
+</WorkView>

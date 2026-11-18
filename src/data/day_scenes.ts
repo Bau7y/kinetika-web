@@ -1,17 +1,17 @@
 /**
- * "A day in your business": one scene per product, in the order of a work
+ * "A day in your business": one scene per service or project, in the order of a work
  * day. The rows are sample data for the demo cards.
  */
 import type { Lang } from '../i18n/routes';
-import type { ProductStatus } from './product_status';
+import type { WorkStatus } from './work_status';
 
 export interface DayScene {
   hour: string;
   moment: string;
-  /** Product key (file name in src/content/products/es). */
+  /** Work key (file name in src/content/work/es). */
   product: string;
   name: string;
-  status: ProductStatus;
+  status: WorkStatus;
   text: string;
   rows: [string, string][];
 }

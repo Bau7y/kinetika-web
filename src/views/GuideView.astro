@@ -7,7 +7,7 @@ import Prose from '../components/ui/Prose.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import Button from '../components/ui/Button.astro';
 import { getGuides, type Guide } from '../data/guides';
-import { getProducts } from '../data/products';
+import { getWork } from '../data/work';
 import { pairHrefs } from '../data/pages';
 import { articleSchema, breadcrumbSchema, faqSchema } from '../lib/structured_data';
 import { formatDate, routes, useTranslations, type Lang } from '../i18n/ui';
@@ -23,7 +23,7 @@ const { Content } = await render(guide);
 
 const all = { es: await getGuides('es'), en: await getGuides('en') };
 const alternates = pairHrefs(all)(guide.key, lang);
-const product = (await getProducts(lang)).find((p) => p.key === data.product);
+const product = (await getWork(lang)).find((p) => p.key === data.product);
 const others = all[lang].filter((g) => g.key !== guide.key);
 const crumbs = [
   { name: t('nav.home'), href: routes.home[lang] },

@@ -1,7 +1,7 @@
 ---
 import Logo from '../brand/Logo.astro';
 import { site } from '../../data/site';
-import { getProducts } from '../../data/products';
+import { getProjects, getServices } from '../../data/work';
 import { getLegalPages } from '../../data/legal';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
@@ -13,11 +13,12 @@ interface Props {
 const { lang, replayIntro = false } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
-const products = await getProducts(lang);
+const services = await getServices(lang);
+const projects = await getProjects(lang);
 const legalPages = await getLegalPages(lang);
 
 const company = [
-  { href: homeAnchor(lang, 'dia'), label: t('nav.day') },
+  { href: homeAnchor(lang, 'nosotros'), label: t('nav.about') },
   { href: homeAnchor(lang, 'plano'), label: t('nav.proof') },
   { href: homeAnchor(lang, 'preguntas'), label: t('nav.faq') },
   { href: routes.guides[lang], label: t('nav.guides') },
@@ -34,10 +35,17 @@ const company = [
         <p>{t('site.description')}</p>
       </div>
 
-      <nav class="footer_col" aria-labelledby="footer_products">
-        <h2 id="footer_products">{t('footer.products')}</h2>
+      <nav class="footer_col" aria-labelledby="footer_services">
+        <h2 id="footer_services">{t('footer.services')}</h2>
         <ul role="list">
-          {products.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
+          {services.map((s) => <li><a href={s.href}>{s.data.name}</a></li>)}
+        </ul>
+      </nav>
+
+      <nav class="footer_col" aria-labelledby="footer_projects">
+        <h2 id="footer_projects">{t('footer.projects')}</h2>
+        <ul role="list">
+          {projects.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
         </ul>
       </nav>
 

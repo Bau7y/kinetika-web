@@ -2,7 +2,7 @@
 order: 2
 url_slug: legal-notice
 title: Legal notice
-meta_description: Who Kinetika is, the scope of its products and demos, and the terms for using the information on this site.
+meta_description: Who Kinetika is, the scope of its services, projects and demos, and the terms for using the information on this site.
 updated: 2026-11-17
 ---
 
@@ -10,9 +10,9 @@ updated: 2026-11-17
 
 Kinetika is the trade name of a software development venture based in San Carlos, Alajuela, Costa Rica. It designs and builds websites and software for businesses.
 
-## Products and demos
+## Services, projects and demos
 
-Each product shows its status: available, in production, in development or waitlist. The demos on this site are trimmed-down versions that run on sample data; they do not process real information or represent the final product. Products in development or on the waitlist may change before launch.
+Each service and project shows its status: available, in production, in development or waitlist. The demos on this site are trimmed-down versions that run on sample data; they do not process real information or represent the final system. Projects in development or on the waitlist may change before launch.
 
 ## TramiMuniSC
 

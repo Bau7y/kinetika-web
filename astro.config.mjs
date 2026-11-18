@@ -20,6 +20,17 @@ export default defineConfig({
   // (instead of a <meta>), so frame-ancestors also applies.
   adapter: vercel({ staticHeaders: true }),
   trailingSlash: 'never',
+  // Old product URLs: services and projects now have their own sections
+  redirects: {
+    '/productos/sitios-web': { status: 301, destination: '/servicios/sitios-web' },
+    '/productos/pedidos': { status: 301, destination: '/proyectos/pedidos' },
+    '/productos/tramimunisc': { status: 301, destination: '/proyectos/tramimunisc' },
+    '/productos/plataforma-contable': { status: 301, destination: '/proyectos/plataforma-contable' },
+    '/en/products/websites': { status: 301, destination: '/en/services/websites' },
+    '/en/products/ordering': { status: 301, destination: '/en/projects/ordering' },
+    '/en/products/tramimunisc': { status: 301, destination: '/en/projects/tramimunisc' },
+    '/en/products/accounting-platform': { status: 301, destination: '/en/projects/accounting-platform' },
+  },
   // All CSS goes inside each HTML page: no render-blocking request and no
   // unstyled page if a separate stylesheet fails to load.
   build: { inlineStylesheets: 'always' },

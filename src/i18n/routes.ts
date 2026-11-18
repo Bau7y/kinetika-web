@@ -1,7 +1,7 @@
 /**
  * Localized routes. Spanish is the default language and has no prefix;
  * English lives under /en with translated segments. Entries of the content
- * collections (products, guides, legal) build their own paths from these bases.
+ * collections (work, guides, legal) build their own paths from these bases.
  */
 export const languages = { es: 'Español', en: 'English' } as const;
 export type Lang = keyof typeof languages;
@@ -11,7 +11,8 @@ export const LANGS = Object.keys(languages) as Lang[];
 export const routes = {
   home: { es: '/', en: '/en' },
   quote: { es: '/cotizar', en: '/en/quote' },
-  productsBase: { es: '/productos', en: '/en/products' },
+  servicesBase: { es: '/servicios', en: '/en/services' },
+  projectsBase: { es: '/proyectos', en: '/en/projects' },
   guides: { es: '/guias', en: '/en/guides' },
   legalBase: { es: '', en: '/en' },
 } as const satisfies Record<string, Record<Lang, string>>;

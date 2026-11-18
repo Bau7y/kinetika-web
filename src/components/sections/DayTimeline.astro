@@ -1,13 +1,13 @@
 ---
 /**
- * A work day in four scenes, one per product. With JS the track moves one
+ * A work day in four scenes, one per service or project. With JS the track moves one
  * card at a time (transform only); without it, it is a horizontal list that
  * scrolls with snap points.
  */
 import Badge from '../ui/Badge.astro';
 import { dayScenes } from '../../data/day_scenes';
-import { statusBadge } from '../../data/product_status';
-import { getProducts } from '../../data/products';
+import { statusBadge } from '../../data/work_status';
+import { getWork } from '../../data/work';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
@@ -16,13 +16,13 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const scenes = dayScenes[lang];
-const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
+const hrefs = new Map((await getWork(lang)).map((p) => [p.key, p.href]));
 ---
 <section id="dia" class="section section_blue day" aria-labelledby="day_title" data-day>
   <div class="container">
     <div class="day_head">
       <div>
-        <p class="section_label" data-reveal data-i="0"><span>02</span>{t('label.day')}</p>
+        <p class="section_label" data-reveal data-i="0"><span>04</span>{t('label.day')}</p>
         <h2 id="day_title" class="section_title" data-reveal data-i="1">{t('day.title')}</h2>
         <p class="lede day_lede" data-reveal data-i="2">{t('day.lede')}</p>
       </div>

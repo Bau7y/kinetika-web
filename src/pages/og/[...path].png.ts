@@ -14,7 +14,8 @@ export const getStaticPaths = (async () =>
 const eyebrowOf = ({ section, lang }: PageEntry) => {
   const t = useTranslations(lang);
   if (section === 'guide' || section === 'guides') return t('nav.guides');
-  if (section === 'product') return t('footer.products');
+  if (section === 'service') return t('footer.services');
+  if (section === 'project') return t('footer.projects');
   if (section === 'legal') return t('footer.legal');
   if (section === 'quote') return t('nav.quote');
   return t('footer.location');

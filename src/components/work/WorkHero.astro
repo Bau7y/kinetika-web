@@ -1,20 +1,20 @@
 ---
-/** Top of a product page: status, name, summary and the next step. */
+/** Top of a service or project page: status, name, summary and the next step. */
 import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
 import Breadcrumbs, { type Crumb } from '../ui/Breadcrumbs.astro';
-import { statusBadge } from '../../data/product_status';
-import type { Product } from '../../data/products';
+import { statusBadge } from '../../data/work_status';
+import type { Work } from '../../data/work';
 import { routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
-  product: Product;
+  work: Work;
   crumbs: Crumb[];
 }
-const { lang, product, crumbs } = Astro.props;
+const { lang, work, crumbs } = Astro.props;
 const t = useTranslations(lang);
-const { data } = product;
+const { data } = work;
 const badge = statusBadge[data.status];
 const waitlist = data.status === 'waitlist';
 ---
@@ -58,7 +58,7 @@ const waitlist = data.status === 'waitlist';
 
   .product_title {
     font-size: clamp(2.25rem, 5vw, 4rem);
-    font-weight: 700;
+    font-weight: 500;
     line-height: var(--leading_tight);
     letter-spacing: -0.035em;
   }

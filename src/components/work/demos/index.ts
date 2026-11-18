@@ -1,6 +1,6 @@
 /**
- * Working demo of each product, by product key. A product without an entry
- * shows only its description.
+ * Working demo of each service or project, by entry key. An entry without
+ * a demo shows only its description.
  */
 import type { Lang } from '../../../i18n/routes';
 import WebsiteDemo from './WebsiteDemo.astro';

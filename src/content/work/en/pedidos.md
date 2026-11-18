@@ -1,5 +1,6 @@
 ---
-order: 2
+kind: project
+order: 1
 url_slug: ordering
 status: in_development
 name: Restaurant ordering
@@ -54,4 +55,9 @@ comparison:
     - ["The order", "Spread across several messages", "Complete in one place"]
     - ["In the kitchen", "By word of mouth or on paper", "On a panel with time and status"]
     - ["Follow-up", "Answered message by message", "The status says whether it is cooking or ready"]
+case:
+  problem: "Orders arrive on WhatsApp split across several messages; prices and availability are answered one by one and the kitchen writes orders down by hand."
+  solution: "An online menu where customers build their order and a kitchen panel where each order arrives with its time, total and status."
+  result: "In development. The demo already works and we are looking for local restaurants to try it."
+  tags: ["Online menu", "Kitchen panel", "Order status"]
 ---

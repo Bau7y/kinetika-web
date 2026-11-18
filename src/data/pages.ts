@@ -2,15 +2,15 @@
  * Registry of every indexable page in both languages: the single source of
  * truth for the sitemap, hreflang, the Open Graph images and llms.txt.
  * Pages built from content collections are added from their own loaders, so
- * a new product or guide only needs its Markdown file.
+ * a new service, project or guide only needs its Markdown file.
  */
 import { LANGS, routes, type Lang } from '../i18n/routes';
 import { useTranslations } from '../i18n/ui';
-import { getProducts } from './products';
+import { getWork } from './work';
 import { getGuides } from './guides';
 import { getLegalPages } from './legal';
 
-export type PageSection = 'home' | 'quote' | 'product' | 'guides' | 'guide' | 'legal';
+export type PageSection = 'home' | 'quote' | 'service' | 'project' | 'guides' | 'guide' | 'legal';
 
 export interface PageEntry {
   path: string;
@@ -56,8 +56,8 @@ function fixedPages(lang: Lang): PageEntry[] {
 }
 
 export async function getPages(): Promise<PageEntry[]> {
-  const products = { es: await getProducts('es'), en: await getProducts('en') };
-  const productAlt = pairHrefs(products);
+  const work = { es: await getWork('es'), en: await getWork('en') };
+  const workAlt = pairHrefs(work);
   const guides = { es: await getGuides('es'), en: await getGuides('en') };
   const guideAlt = pairHrefs(guides);
   const legal = { es: await getLegalPages('es'), en: await getLegalPages('en') };
@@ -65,15 +65,15 @@ export async function getPages(): Promise<PageEntry[]> {
 
   return LANGS.flatMap((lang) => [
     ...fixedPages(lang),
-    ...products[lang].map(
-      (p): PageEntry => ({
-        path: p.href,
+    ...work[lang].map(
+      (w): PageEntry => ({
+        path: w.href,
         lang,
-        section: 'product',
-        title: p.data.title,
-        description: p.data.meta_description,
-        alternates: productAlt(p.key, lang),
-        updated: p.data.updated,
+        section: w.data.kind,
+        title: w.data.title,
+        description: w.data.meta_description,
+        alternates: workAlt(w.key, lang),
+        updated: w.data.updated,
       }),
     ),
     ...guides[lang].map(

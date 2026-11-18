@@ -1,20 +1,21 @@
 import type { APIRoute } from 'astro';
-import { getProducts } from '../data/products';
+import { getProjects, getServices } from '../data/work';
 import { getGuides } from '../data/guides';
 import { faq } from '../data/faq';
 import { districts } from '../data/service_area';
 import { site } from '../data/site';
 import { useTranslations } from '../i18n/ui';
-import { faqMarkdown, guideMarkdown, productMarkdown } from '../lib/llms';
+import { faqMarkdown, guideMarkdown, workMarkdown } from '../lib/llms';
 
 /**
  * The full content of the Spanish site in one Markdown file (llmstxt.org
- * convention): products, guides and answers, without layout or scripts.
+ * convention): services, projects, guides and answers, without layout or scripts.
  * English pages mirror it under /en.
  */
 export const GET: APIRoute = async ({ site: base }) => {
   const t = useTranslations('es');
-  const products = await getProducts('es');
+  const services = await getServices('es');
+  const projects = await getProjects('es');
   const guides = await getGuides('es');
 
   const body = [
@@ -26,9 +27,12 @@ export const GET: APIRoute = async ({ site: base }) => {
     `Idiomas del sitio: español (${new URL('/', base!)}) e inglés (${new URL('/en', base!)}).`,
     'Precios: no se publican; cada proyecto se cotiza sin costo después de una primera conversación.',
     '',
-    '# Productos',
+    '# Servicios',
     '',
-    ...products.map((p) => productMarkdown(base!, p, t(`status.${p.data.status}`)) + '\n'),
+    ...services.map((s) => workMarkdown(base!, s, t(`status.${s.data.status}`)) + '\n'),
+    '# Proyectos (casos de estudio)',
+    '',
+    ...projects.map((p) => workMarkdown(base!, p, t(`status.${p.data.status}`)) + '\n'),
     '# Preguntas frecuentes',
     '',
     faqMarkdown(faq.es),

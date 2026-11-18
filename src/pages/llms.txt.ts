@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getPages, type PageEntry } from '../data/pages';
-import { getProducts } from '../data/products';
+import { getProjects, getServices } from '../data/work';
 import { getGuides } from '../data/guides';
 import { faq } from '../data/faq';
 import { districts } from '../data/service_area';
@@ -9,13 +9,14 @@ import { useTranslations } from '../i18n/ui';
 
 /**
  * Summary of the site for AI assistants (llmstxt.org): what Kinetika does,
- * its products with their status, the guides and the short answers, so they
+ * its services, its projects (case studies) with their status, the guides and the short answers, so they
  * can cite the right page.
  */
 export const GET: APIRoute = async ({ site: base }) => {
   const t = useTranslations('es');
   const pages = await getPages();
-  const products = await getProducts('es');
+  const services = await getServices('es');
+  const projects = await getProjects('es');
   const guides = await getGuides('es');
   const abs = (path: string) => new URL(path, base).toString();
   const list = (filter: (p: PageEntry) => boolean) =>
@@ -31,8 +32,11 @@ export const GET: APIRoute = async ({ site: base }) => {
     '',
     `Atiende en persona en los distritos de ${site.locality} (${districts.join(', ')}) y en línea en todo Costa Rica.`,
     '',
-    '## Productos',
-    ...products.map((p) => `- [${p.data.name}](${abs(p.href)}) (${t(`status.${p.data.status}`)}): ${p.data.summary}`),
+    '## Servicios',
+    ...services.map((s) => `- [${s.data.name}](${abs(s.href)}): ${s.data.summary}`),
+    '',
+    '## Proyectos (casos de estudio)',
+    ...projects.map((p) => `- [${p.data.name}](${abs(p.href)}) (${t(`status.${p.data.status}`)}): ${p.data.case?.solution} ${p.data.case?.result}`),
     '',
     '## Guías',
     ...guides.map((g) => `- [${g.data.title}](${abs(g.href)}): ${g.data.summary}`),

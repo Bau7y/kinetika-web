@@ -1,12 +1,13 @@
 ---
-order: 3
+kind: project
+order: 2
 url_slug: tramimunisc
 status: in_production
 name: TramiMuniSC
 title: TramiMuniSC, acompañamiento en trámites municipales de San Carlos
 seo_title: TramiMuniSC, trámites municipales en San Carlos
 meta_description: TramiMuniSC es el servicio de Kinetika que acompaña trámites ante la Municipalidad de San Carlos. Ya está en producción en tramimunisc.com.
-summary: Nuestro producto en producción. Ayuda a reunir requisitos, llenar formularios y dar seguimiento a trámites ante la Municipalidad de San Carlos, sin filas ni idas y vueltas.
+summary: Nuestro primer proyecto en producción. Ayuda a reunir requisitos, llenar formularios y dar seguimiento a trámites ante la Municipalidad de San Carlos, sin filas ni idas y vueltas.
 service_type: Acompañamiento en trámites municipales
 audience: Propietarios, comercios y productores de San Carlos
 external_url: https://www.tramimunisc.com
@@ -55,4 +56,9 @@ comparison:
     - ["Formulario", "Lo llenás vos", "Se llena con tus datos"]
     - ["Seguimiento", "Consultar en la municipalidad", "El servicio te avisa el resultado"]
     - ["Quién decide", "La municipalidad", "La municipalidad"]
+case:
+  problem: "Declarar una propiedad, pedir una exoneración o sacar una patente obliga a averiguar requisitos, llenar formularios y volver varias veces a la municipalidad."
+  solution: "Un sitio con guías por trámite y un formulario de contacto que valida los datos y filtra el spam, para que cada consulta llegue clara desde el inicio."
+  result: "En producción en tramimunisc.com."
+  tags: ["Guías por trámite", "Formularios validados", "Anti-spam", "SEO"]
 ---

@@ -1,12 +1,13 @@
 ---
-order: 3
+kind: project
+order: 2
 url_slug: tramimunisc
 status: in_production
 name: TramiMuniSC
 title: TramiMuniSC, help with municipal procedures in San Carlos
 seo_title: TramiMuniSC, municipal procedures in San Carlos
 meta_description: TramiMuniSC is Kinetika’s service that helps people with procedures at the Municipality of San Carlos. Already live at tramimunisc.com.
-summary: Our product in production. It helps gather requirements, fill in forms and follow up on procedures at the Municipality of San Carlos, without lines or back-and-forth.
+summary: Our first project in production. It helps gather requirements, fill in forms and follow up on procedures at the Municipality of San Carlos, without lines or back-and-forth.
 service_type: Assistance with municipal procedures
 audience: Property owners, shops and farmers in San Carlos
 external_url: https://www.tramimunisc.com
@@ -55,4 +56,9 @@ comparison:
     - ["Form", "You fill it in", "Filled in with your details"]
     - ["Follow-up", "Ask at the municipality", "The service tells you the result"]
     - ["Who decides", "The municipality", "The municipality"]
+case:
+  problem: "Declaring a property, requesting an exemption or getting a business license means finding out the requirements, filling in forms and going back to the municipality several times."
+  solution: "A site with a guide for each procedure and a contact form that validates the data and filters spam, so every request is clear from the start."
+  result: "Live at tramimunisc.com."
+  tags: ["Procedure guides", "Validated forms", "Anti-spam", "SEO"]
 ---
