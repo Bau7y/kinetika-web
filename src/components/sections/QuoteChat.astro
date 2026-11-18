@@ -118,8 +118,13 @@ const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiK
 </section>
 
 <script>
+  import { actions } from 'astro:actions';
   import { initQuoteChat } from '../../scripts/quote_chat';
-  document.querySelectorAll<HTMLFormElement>('[data-quote]').forEach((form) => initQuoteChat(form));
+  import { toErrorCode } from '../../scripts/quote_sender';
+
+  document.querySelectorAll<HTMLFormElement>('[data-quote]').forEach((form) =>
+    initQuoteChat(form, async (data) => toErrorCode((await actions.sendQuote(data)).error)),
+  );
 </script>
 
 <style>

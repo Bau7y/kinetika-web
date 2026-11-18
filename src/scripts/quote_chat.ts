@@ -26,7 +26,7 @@ export function validateQuote(data: FormData): Record<string, ErrorCode> {
   return errors;
 }
 
-export function initQuoteChat(form: HTMLFormElement, send: QuoteSender = async () => null) {
+export function initQuoteChat(form: HTMLFormElement, send: QuoteSender) {
   const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
   const messages = JSON.parse(form.dataset.errors ?? '{}') as Record<string, string>;
   const summary = form.querySelector<HTMLElement>('[data-error-summary]')!;
