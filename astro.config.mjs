@@ -15,7 +15,7 @@ const isDev = process.argv.includes('dev');
 const themeInitHash = `sha256-${createHash('sha256').update(THEME_INIT).digest('base64')}`;
 
 export default defineConfig({
-  site: 'https://kinetikacr.com',
+  site: 'https://www.kinetikacr.com',
   // staticHeaders: the CSP below is sent as an HTTP header for every page
   // (instead of a <meta>), so frame-ancestors also applies.
   adapter: vercel({ staticHeaders: true }),

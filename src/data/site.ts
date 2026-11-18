@@ -7,6 +7,7 @@
  */
 export const site = {
   name: 'Kinetika',
+  /** Display name of the domain (OG images). The canonical URL is in astro.config.mjs. */
   domain: 'kinetikacr.com',
   locality: 'San Carlos',
   region: 'Alajuela',
