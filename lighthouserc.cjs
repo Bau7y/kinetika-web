@@ -12,7 +12,8 @@ module.exports = {
         'http://localhost/servicios/automatizacion-de-procesos/index.html',
         'http://localhost/proyectos/pedidos/index.html',
       ],
-      numberOfRuns: 2,
+      // Three runs: the median ignores one cold start of the CI machine
+      numberOfRuns: 3,
       settings: {
         chromeFlags: '--no-sandbox',
         onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
