@@ -1,0 +1,218 @@
+---
+/**
+ * Home FAQ as a list of questions with one answer panel. Every answer stays
+ * in the HTML (search engines, FAQPage data). Without JS the answers are
+ * shown one after another; with JS one is open at a time: beside the list on
+ * wide screens, under its question on narrow ones. Arrow keys move through
+ * the questions.
+ */
+interface Item {
+  q: string;
+  a: string;
+  link?: { text: string; href: string };
+}
+interface Props {
+  items: Item[];
+}
+const { items } = Astro.props;
+
+const parts = (item: Item) => {
+  if (!item.link) return { before: item.a, link: undefined, after: '' };
+  const [before, ...rest] = item.a.split(item.link.text);
+  return { before, link: item.link, after: rest.join(item.link.text) };
+};
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+<div class="fp" data-faq-panel style={`--n:${items.length}`} data-reveal>
+  {items.map((item, i) => {
+    const { before, link, after } = parts(item);
+    return (
+      <div class="fp_item" data-faq-item>
+        <button type="button" class="fp_tab" id={`fp_tab_${i}`} aria-controls={`fp_panel_${i}`} aria-expanded={i === 0 ? 'true' : 'false'} hidden data-faq-tab>
+          <span class="fp_num mono" aria-hidden="true">{pad(i + 1)}</span>
+          <span class="fp_tab_q">{item.q}</span>
+        </button>
+        <div class="fp_panel" id={`fp_panel_${i}`} role="region" aria-labelledby={`fp_tab_${i}`} data-faq-panel-body>
+          <h3 class="fp_q">{item.q}</h3>
+          <p class="fp_a">{before}{link && <a href={link.href}>{link.text}</a>}{after}</p>
+          <span class="fp_meta mono" aria-hidden="true">{pad(i + 1)} / {pad(items.length)}</span>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+<script>
+  import { initFaqPanel } from '../../scripts/faq_panel';
+  document.querySelectorAll<HTMLElement>('[data-faq-panel]').forEach(initFaqPanel);
+</script>
+
+<style>
+  .fp_item {
+    border-bottom: 1px solid var(--color_line);
+  }
+
+  .fp_item:first-child {
+    border-top: 1px solid var(--color_line);
+  }
+
+  .fp_panel {
+    padding-block: 20px 22px;
+  }
+
+  .fp_q {
+    margin-bottom: 8px;
+    font-size: var(--text_lg);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .fp_a {
+    max-width: 62ch;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color_text_secondary);
+  }
+
+  .fp_meta {
+    display: none;
+  }
+
+  /* ── Enhanced ─────────────────────────────────── */
+  .fp[data-ready] .fp_tab {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    width: 100%;
+    min-height: var(--tap_min);
+    padding: 18px 12px 18px 16px;
+    text-align: left;
+    color: var(--color_text_secondary);
+    transition: color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+  }
+
+  .fp[data-ready] .fp_tab:active {
+    transform: scale(0.99);
+  }
+
+  /* Active marker: a bar that scales in (transform only) */
+  .fp[data-ready] .fp_tab::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    border-radius: 1px;
+    background: var(--color_accent);
+    transform: scaleY(0);
+    transition: transform var(--duration_base) var(--ease_out);
+  }
+
+  .fp[data-ready] .fp_tab[aria-expanded='true'] {
+    color: var(--color_text);
+  }
+
+  .fp[data-ready] .fp_tab[aria-expanded='true']::before {
+    transform: scaleY(1);
+  }
+
+  .fp_num {
+    flex: none;
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  .fp[data-ready] .fp_tab[aria-expanded='true'] .fp_num {
+    color: var(--color_accent_text);
+  }
+
+  .fp_tab_q {
+    font-size: var(--text_md);
+    font-weight: 600;
+    line-height: var(--leading_snug);
+    letter-spacing: -0.01em;
+  }
+
+  .fp[data-ready] .fp_tab:focus-visible {
+    outline: 2px solid var(--color_accent);
+    outline-offset: -2px;
+    border-radius: var(--radius_md);
+  }
+
+  .fp[data-ready] .fp_panel[hidden] {
+    display: none;
+  }
+
+  .fp[data-ready] .fp_q {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .fp[data-ready] .fp_panel {
+    padding-inline: 16px;
+    padding-top: 4px;
+  }
+
+  @media (min-width: 900px) {
+    .fp[data-ready] {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) 1.3fr;
+      column-gap: var(--space_xl);
+      align-items: start;
+    }
+
+    .fp[data-ready] .fp_item {
+      display: contents;
+    }
+
+    .fp[data-ready] .fp_tab {
+      grid-column: 1;
+      border-bottom: 1px solid var(--color_line);
+    }
+
+    .fp[data-ready] .fp_item:first-child .fp_tab {
+      border-top: 1px solid var(--color_line);
+    }
+
+    .fp[data-ready] .fp_panel {
+      grid-column: 2;
+      grid-row: 1 / span var(--n);
+      position: sticky;
+      top: 120px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      padding: var(--space_lg);
+      border-radius: var(--radius_xl);
+      border: 1px solid var(--color_line);
+      background: var(--color_surface);
+    }
+
+    .fp[data-ready] .fp_panel[hidden] {
+      display: none;
+    }
+
+    .fp[data-ready] .fp_a {
+      font-size: var(--text_md);
+    }
+
+    .fp[data-ready] .fp_meta {
+      display: block;
+      font-size: var(--text_xs);
+      letter-spacing: var(--tracking_label);
+      color: var(--color_text_muted);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fp[data-ready] .fp_tab,
+    .fp[data-ready] .fp_tab::before {
+      transition: none;
+    }
+  }
+</style>
