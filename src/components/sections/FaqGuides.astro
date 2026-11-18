@@ -1,6 +1,7 @@
 ---
 /** Frequent questions (FAQPage) and a preview of the guides (Article). */
-import { faq, type FaqItem } from '../../data/faq';
+import { faq } from '../../data/faq';
+import Faq from '../ui/Faq.astro';
 import GuideCards from '../ui/GuideCards.astro';
 import { getGuides } from '../../data/guides';
 import { routes, useTranslations, type Lang } from '../../i18n/ui';
@@ -13,27 +14,11 @@ const t = useTranslations(lang);
 const items = faq[lang];
 const guides = (await getGuides(lang)).slice(0, 3);
 
-/** Splits an answer around its link text, if any. */
-const parts = (item: FaqItem) => {
-  if (!item.link) return { before: item.a, link: undefined, after: '' };
-  const [before, ...rest] = item.a.split(item.link.text);
-  return { before, link: item.link, after: rest.join(item.link.text) };
-};
 ---
 <section id="preguntas" class="section container" aria-labelledby="faq_title">
   <p class="section_label" data-reveal data-i="0"><span>08</span>{t('label.faq')}</p>
   <h2 id="faq_title" class="section_title faq_title" data-reveal data-i="1">{t('faq.title')}</h2>
-  <dl class="faq_list">
-    {items.map((item, i) => {
-      const { before, link, after } = parts(item);
-      return (
-        <div class="faq_item" data-reveal data-i={i % 2}>
-          <dt>{item.q}</dt>
-          <dd>{before}{link && <a href={link.href}>{link.text}</a>}{after}</dd>
-        </div>
-      );
-    })}
-  </dl>
+  <Faq items={items} columns />
 
   <div class="guides_head">
     <h3>{t('guides.preview_title')}</h3>
@@ -46,29 +31,6 @@ const parts = (item: FaqItem) => {
   .faq_title {
     max-width: 800px;
     margin-bottom: var(--space_lg);
-  }
-
-  .faq_list {
-    display: grid;
-    column-gap: var(--space_xl);
-  }
-
-  .faq_item {
-    padding-block: var(--space_md);
-    border-top: 1px solid var(--color_line);
-  }
-
-  .faq_item dt {
-    font-size: var(--text_xl);
-    font-weight: 600;
-    line-height: var(--leading_snug);
-  }
-
-  .faq_item dd {
-    margin-top: 10px;
-    font-size: 0.9375rem;
-    line-height: 1.65;
-    color: var(--color_text_secondary);
   }
 
   .guides_head {
@@ -98,12 +60,4 @@ const parts = (item: FaqItem) => {
     font-weight: 500;
   }
 
-
-
-  @media (min-width: 760px) {
-    .faq_list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-  }
 </style>

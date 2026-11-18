@@ -6,6 +6,8 @@ import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import Prose from '../components/ui/Prose.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import Button from '../components/ui/Button.astro';
+import Faq from '../components/ui/Faq.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
 import { getGuides, type Guide } from '../data/guides';
 import { getWork } from '../data/work';
 import { pairHrefs } from '../data/pages';
@@ -57,14 +59,7 @@ const base = Astro.site!;
     {data.faq.length > 0 && (
       <section class="guide_faq" aria-labelledby="guide_faq_title">
         <h2 id="guide_faq_title">{t('guides.faq')}</h2>
-        <dl>
-          {data.faq.map((item) => (
-            <div>
-              <dt>{item.q}</dt>
-              <dd>{item.a}</dd>
-            </div>
-          ))}
-        </dl>
+        <Faq items={data.faq} />
       </section>
     )}
 
@@ -95,6 +90,14 @@ const base = Astro.site!;
       </nav>
     )}
   </article>
+
+  <ClosingCta
+    eyebrow={t('closing.eyebrow')}
+    title={t('closing.title')}
+    text={t('closing.text')}
+    primary={{ href: routes.quote[lang], label: t('nav.quote') }}
+    secondary={{ href: routes.projectsBase[lang], label: t('hero.cta_secondary') }}
+  />
 </BaseLayout>
 
 <style>
@@ -147,19 +150,6 @@ const base = Astro.site!;
     letter-spacing: -0.02em;
   }
 
-  .guide_faq dl > div {
-    padding-block: var(--space_sm);
-    border-top: 1px solid var(--color_line);
-  }
-
-  .guide_faq dt {
-    font-weight: 600;
-  }
-
-  .guide_faq dd {
-    margin-top: 6px;
-    color: var(--color_text_secondary);
-  }
 
   .guide_sources ol {
     display: grid;
