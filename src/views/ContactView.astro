@@ -1,0 +1,191 @@
+---
+/**
+ * Contact page, shared by /contacto and /en/contact: the quote form next to
+ * the public email and what happens after sending.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import ContactForm from '../components/contact/ContactForm.astro';
+import { breadcrumbSchema, contactPageSchema } from '../lib/structured_data';
+import { getLegalHref } from '../data/legal';
+import { site } from '../data/site';
+import { districts } from '../data/service_area';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const privacyHref = await getLegalHref('privacidad', lang);
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.contact'), href: routes.quote[lang] },
+];
+const next = [t('contact.next_1'), t('contact.next_2'), t('contact.next_3')];
+---
+<BaseLayout lang={lang} title={t('quote.page_title')} description={t('quote.meta')} alternates={routes.quote}>
+  <JsonLd slot="head" data={[breadcrumbSchema(Astro.site!, crumbs), contactPageSchema(Astro.site!, lang, routes.quote[lang], t('quote.page_title'))]} />
+
+  <section class="contact" aria-labelledby="contact_title">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+
+      <div class="contact_grid">
+        <div class="contact_head">
+          <p class="contact_kicker"><span aria-hidden="true"></span>{t('closing.eyebrow')}</p>
+          <h1 id="contact_title" class="contact_title">{t('contact.title')}</h1>
+          <p class="lede">{t('contact.lede')}</p>
+        </div>
+
+        <div class="contact_panel">
+          <ContactForm lang={lang} privacyHref={privacyHref} />
+        </div>
+
+        <div class="contact_aside">
+          {site.email && (
+            <div class="contact_mail">
+              <h2 class="eyebrow">{t('contact.email_title')}</h2>
+              <a href={`mailto:${site.email}`} class="contact_mail_link">{site.email}</a>
+              <p>{t('contact.email_text')}</p>
+            </div>
+          )}
+
+          <div class="contact_next">
+            <h2 class="eyebrow">{t('contact.next_title')}</h2>
+            <ol role="list">
+              {next.map((step, i) => (
+                <li>
+                  <span class="mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <p>{step}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <p class="contact_area">{t('contact.area').replace('{n}', String(districts.length))}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding: calc(var(--navbar_h) + var(--space_sm)) 0 var(--section_py);
+    background: radial-gradient(70% 60% at 85% 0%, rgb(47 111 235 / 0.16), transparent 70%);
+  }
+
+  /* Phones: title, form, then the rest. Wide screens: text left, form right */
+  .contact_grid {
+    display: grid;
+    gap: var(--space_lg);
+    margin-top: var(--space_lg);
+    grid-template-areas: 'head' 'panel' 'aside';
+  }
+
+  .contact_head {
+    grid-area: head;
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .contact_panel {
+    grid-area: panel;
+  }
+
+  .contact_aside {
+    grid-area: aside;
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  @media (min-width: 1000px) {
+    .contact_grid {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: 'head panel' 'aside panel';
+      column-gap: var(--space_xl);
+      align-items: start;
+    }
+  }
+
+  .contact_kicker {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_accent_border);
+    background: var(--color_accent_tint);
+    font-size: var(--text_sm);
+  }
+
+  .contact_kicker span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color_ok);
+  }
+
+  .contact_title {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+  }
+
+  .contact_mail,
+  .contact_next {
+    display: grid;
+    gap: 10px;
+    padding-top: var(--space_md);
+    border-top: 1px solid var(--color_line);
+  }
+
+  .contact_mail_link {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    font-size: var(--text_lg);
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  .contact_mail p,
+  .contact_area {
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  .contact_next ol {
+    display: grid;
+    gap: 12px;
+  }
+
+  .contact_next li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: baseline;
+  }
+
+  .contact_next .mono {
+    font-size: var(--text_xs);
+    color: var(--color_accent_text);
+  }
+
+  .contact_next p {
+    color: var(--color_text_secondary);
+  }
+
+  .contact_panel {
+    padding: clamp(22px, 4vw, 40px);
+    border-radius: var(--radius_2xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+  }
+</style>

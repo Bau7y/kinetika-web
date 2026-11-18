@@ -12,7 +12,7 @@ Sitio web de **Kinetika**, estudio de San Carlos, Costa Rica, que automatiza pro
 |---|---|---|
 | Framework | [Astro](https://astro.build) 7 + TypeScript | Páginas estáticas, islas de JS solo donde hay interacción |
 | Estilos | CSS nativo con variables (`snake_case`) | Sin frameworks CSS; CSS crítico dentro del HTML |
-| Interacción | JavaScript nativo (Web APIs) | Comparador, línea de tiempo, plano, chat de cotización |
+| Interacción | JavaScript nativo (Web APIs) | Comparador, línea de tiempo, plano, formulario de contacto |
 | Animación | CSS (`@keyframes`, `animation-timeline: view()`) + WAAPI | Solo `transform`, `opacity` y `clip-path`; respeta `prefers-reduced-motion` |
 | Tipografía | `@fontsource-variable/plus-jakarta-sans`, `@fontsource-variable/geist-mono` | Fuentes autoalojadas, `woff2` variable |
 | Hosting | Vercel (`@astrojs/vercel`) | Encabezados de seguridad, Web Analytics y Speed Insights |
@@ -55,7 +55,6 @@ kinetika-web/
 │   │   │   ├── Process.astro        # Cómo trabajamos
 │   │   │   ├── WhyServiceArea.astro
 │   │   │   ├── FaqGuides.astro
-│   │   │   └── QuoteChat.astro
 │   │   ├── work/                 # bloques de las páginas de servicio y proyecto
 │   │   │   ├── WorkHero.astro
 │   │   │   ├── WorkDemo.astro
@@ -88,7 +87,7 @@ kinetika-web/
 │   │   ├── service_area.ts       # 13 distritos de San Carlos
 │   │   ├── faq.ts
 │   │   ├── process.ts            # pasos de Cómo trabajamos
-│   │   └── quote_options.ts      # opciones del chat de cotización
+│   │   └── quote_options.ts      # opciones del formulario de contacto
 │   ├── i18n/
 │   │   ├── ui.ts                 # textos de interfaz ES / EN
 │   │   └── routes.ts             # rutas traducidas y equivalencias entre idiomas
@@ -114,7 +113,7 @@ kinetika-web/
 │   │   ├── proyectos/[slug].astro          # /proyectos/pedidos, /tramimunisc, /plataforma-contable
 │   │   ├── guias/index.astro               # /guias
 │   │   ├── guias/[slug].astro
-│   │   ├── cotizar.astro                   # /cotizar
+│   │   ├── contacto.astro                  # /contacto (formulario de cotización; /cotizar redirige aquí)
 │   │   ├── [legal].astro                   # /privacidad, /aviso-legal
 │   │   ├── en/
 │   │   │   ├── index.astro                 # /en
@@ -137,7 +136,8 @@ kinetika-web/
 │   │   ├── switch_compare.ts
 │   │   ├── day_timeline.ts
 │   │   ├── blueprint.ts
-│   │   ├── quote_chat.ts
+│   │   ├── quote_rules.ts        # reglas del formulario (iguales al servidor)
+│   │   ├── contact_form.ts       # validación, errores y envío del formulario de contacto
 │   │   ├── quote_sender.ts       # respuesta de una acción → código de error
 │   │   └── waitlist.ts
 │   └── styles/
@@ -280,6 +280,7 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 - **Capturas del portafolio:** las tarjetas de proyecto usan `src/assets/work/<clave>.png`, tomadas de la demo de cada proyecto. Si una demo cambia: `yarn build && yarn capture:work`. En CI, `yarn check:captures` falla si alguna quedó desactualizada.
 - **Presupuesto de rendimiento:** `yarn test:perf` (Lighthouse CI) corre en CI sobre la portada, un servicio y un proyecto: LCP menor a 2,5 s, CLS menor a 0,01, TBT menor a 200 ms y 100 en accesibilidad y SEO.
 - **Paleta:** azul empresarial. De Portfolite se toma la estructura (pastilla, scroll, franja, casos), los titulares en peso 500 y el brillo de los botones, no los colores.
+- **Contacto:** `/contacto` y `/en/contact` reemplazan al chat de cotización. Es un formulario de una sola página con tarjetas para elegir lo que se necesita y el tipo de negocio, junto al correo público y qué pasa después de enviar. En el celular, el formulario va justo después del título. Mismas capas anti-spam y consentimiento. `/cotizar` y `/en/quote` redirigen con 301, y la portada cierra con un llamado a /contacto.
 - **Testimonios:** `src/data/testimonials.ts` empieza vacío y la sección no se muestra. Cada testimonio necesita el permiso escrito del cliente (campo `consent` con fecha), y una prueba unitaria lo exige.
 - **Índice de proyectos:** `/proyectos` y `/en/projects` listan todos los casos, con filtro por estado. Sin JavaScript se ven todos.
 - **Hitos:** `case.milestones` (fecha y hecho) es opcional; si un proyecto los tiene, aparecen en su caso y en `llms-full.txt`.
@@ -315,7 +316,7 @@ Fuera del código: Search Console con el sitemap, perfil de empresa en Google, p
 
 ## Pendientes de contenido
 
-- Correo público de contacto (`src/data/site.ts → email`): hoy la política de privacidad indica el formulario como canal.
+- Correo público: `kinetikacr.sc@gmail.com` (`src/data/site.ts`). Aparece en /contacto, el pie, la política de privacidad y los datos estructurados.
 - Teléfono y perfiles públicos (`phone`, `profiles`): se publican en los datos estructurados solo cuando tengan valor.
 - Precios: no se publican hasta definirlos.
 - Autor de las guías (nombre y credenciales): pendiente para agregar autoría visible y `author` en `Article`.

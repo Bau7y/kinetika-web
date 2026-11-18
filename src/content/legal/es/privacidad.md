@@ -3,14 +3,14 @@ order: 1
 url_slug: privacidad
 title: Política de privacidad
 meta_description: Qué datos recoge Kinetika en sus formularios, para qué los usa, con quién los comparte y cómo ejercer tus derechos según la Ley 8968.
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 Esta política explica cómo Kinetika trata los datos personales que recibe a través de este sitio, conforme a la Ley N.° 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales.
 
 ## Responsable
 
-Kinetika, nombre comercial de un emprendimiento de desarrollo de software con sede en San Carlos, Alajuela, Costa Rica. Para cualquier gestión sobre tus datos podés escribirnos desde el [formulario de cotización](/cotizar) o responder el correo con el que te contactamos. Si necesitás la identificación completa de la persona responsable para ejercer tus derechos, pedínosla por esos mismos medios.
+Kinetika, nombre comercial de un emprendimiento de desarrollo de software con sede en San Carlos, Alajuela, Costa Rica. Para cualquier gestión sobre tus datos podés escribirnos a [kinetikacr.sc@gmail.com](mailto:kinetikacr.sc@gmail.com), usar el [formulario de contacto](/contacto) o responder el correo con el que te contactamos. Si necesitás la identificación completa de la persona responsable para ejercer tus derechos, pedínosla por esos mismos medios.
 
 Los mensajes de los formularios se guardan en nuestro buzón de correo, que funciona como el registro de consultas.
 

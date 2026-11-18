@@ -12,9 +12,8 @@ import Blueprint from '../components/sections/Blueprint.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import Process from '../components/sections/Process.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
-import QuoteChat from '../components/sections/QuoteChat.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
-import { getLegalHref } from '../data/legal';
 import { faq } from '../data/faq';
 import { businessSchema, faqSchema, websiteSchema } from '../lib/structured_data';
 import { getServices } from '../data/work';
@@ -25,7 +24,6 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const privacyHref = await getLegalHref('privacidad', lang);
 const services = await getServices(lang);
 const business = businessSchema(Astro.site!, lang, {
   description: t('site.description'),
@@ -37,7 +35,7 @@ const business = businessSchema(Astro.site!, lang, {
 // Story order of the home page: each numbered section takes its place here
 import { testimonials } from '../data/testimonials';
 // Testimonials take a number only once there are real ones
-type Chapter = 'projects' | 'services' | 'compare' | 'day' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq' | 'quote';
+type Chapter = 'projects' | 'services' | 'compare' | 'day' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq';
 const chapters: Chapter[] = [
   'projects',
   'services',
@@ -48,7 +46,6 @@ const chapters: Chapter[] = [
   'process',
   'proof',
   'faq',
-  'quote',
 ];
 const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
 ---
@@ -65,5 +62,12 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
   <Process lang={lang} number={n('process')} />
   <Blueprint lang={lang} number={n('proof')} />
   <FaqGuides lang={lang} number={n('faq')} />
-  <QuoteChat lang={lang} privacyHref={privacyHref} number={n('quote')} />
+  <ClosingCta
+    id="contacto"
+    eyebrow={t('closing.eyebrow')}
+    title={t('closing.title')}
+    text={t('closing.text')}
+    primary={{ href: routes.quote[lang], label: t('nav.quote') }}
+    secondary={{ href: routes.projectsBase[lang], label: t('hero.cta_secondary') }}
+  />
 </BaseLayout>

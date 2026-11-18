@@ -22,6 +22,9 @@ export default defineConfig({
   trailingSlash: 'never',
   // Old product URLs: services and projects now have their own sections
   redirects: {
+    // The quote chat became the contact page
+    '/cotizar': { status: 301, destination: '/contacto' },
+    '/en/quote': { status: 301, destination: '/en/contact' },
     '/productos/sitios-web': { status: 301, destination: '/servicios/sitios-web' },
     '/productos/pedidos': { status: 301, destination: '/proyectos/pedidos' },
     '/productos/tramimunisc': { status: 301, destination: '/proyectos/tramimunisc' },

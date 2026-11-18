@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateQuote } from '../../src/scripts/quote_chat';
+import { validateQuote } from '../../src/scripts/quote_rules';
 import { validateWaitlist } from '../../src/scripts/waitlist';
 
 const form = (fields: Record<string, string>) => {

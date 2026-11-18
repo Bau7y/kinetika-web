@@ -3,14 +3,14 @@ order: 1
 url_slug: privacy
 title: Privacy policy
 meta_description: What data Kinetika collects through its forms, what it is used for, who it is shared with and how to exercise your rights under Costa Rica’s Law 8968.
-updated: 2026-11-17
+updated: 2026-11-18
 ---
 
 This policy explains how Kinetika handles the personal data it receives through this site, under Costa Rica’s Law No. 8968 on the Protection of Individuals with regard to the Processing of their Personal Data.
 
 ## Data controller
 
-Kinetika, the trade name of a software development venture based in San Carlos, Alajuela, Costa Rica. For any request about your data you can write to us through the [quote form](/en/quote) or reply to the email we contacted you from. If you need the full identification of the person responsible in order to exercise your rights, ask for it through those same channels.
+Kinetika, the trade name of a software development venture based in San Carlos, Alajuela, Costa Rica. For any request about your data you can write to us at [kinetikacr.sc@gmail.com](mailto:kinetikacr.sc@gmail.com), use the [contact form](/en/contact) or reply to the email we contacted you from. If you need the full identification of the person responsible in order to exercise your rights, ask for it through those same channels.
 
 Form messages are kept in our email inbox, which serves as the record of requests.
 

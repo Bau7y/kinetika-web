@@ -22,7 +22,7 @@ const company = [
   { href: homeAnchor(lang, 'plano'), label: t('nav.proof') },
   { href: homeAnchor(lang, 'preguntas'), label: t('nav.faq') },
   { href: routes.guides[lang], label: t('nav.guides') },
-  { href: routes.quote[lang], label: t('nav.quote') },
+  { href: routes.quote[lang], label: t('nav.contact') },
 ];
 ---
 <footer class="footer">
@@ -33,6 +33,7 @@ const company = [
           <Logo />
         </a>
         <p>{t('site.description')}</p>
+        {site.email && <a href={`mailto:${site.email}`} class="footer_mail">{site.email}</a>}
       </div>
 
       <nav class="footer_col" aria-labelledby="footer_services">
@@ -80,6 +81,15 @@ const company = [
     padding-block: var(--space_2xl) var(--space_lg);
     font-size: var(--text_sm);
     color: var(--color_text_muted);
+  }
+
+  .footer_mail {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    margin-top: 6px;
+    font-weight: 500;
+    word-break: break-all;
   }
 
   .footer_grid {
