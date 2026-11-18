@@ -15,7 +15,8 @@
     "astro": "astro",
     "test": "vitest run",
     "test:e2e": "node --test tests/e2e/*.test.mjs",
-    "test:a11y": "node scripts/a11y.mjs"
+    "test:a11y": "node scripts/a11y.mjs",
+    "capture:work": "node scripts/capture_work.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.22",
