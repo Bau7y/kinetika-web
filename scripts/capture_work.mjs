@@ -36,7 +36,7 @@ try {
       localStorage.setItem('kinetika_lang_dismissed', '1');
     });
     await page.goto(`${server.base}/proyectos/${slug}`);
-    const stage = page.locator('.product_demo_stage').first();
+    const stage = page.locator('.work_demo_stage').first();
     if (!(await stage.count())) {
       console.warn(`sin demo: ${slug}`);
       continue;

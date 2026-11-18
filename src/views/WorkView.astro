@@ -67,13 +67,13 @@ const crumbs = [
   <WorkHero lang={lang} work={work} crumbs={crumbs} />
 
   <!-- Short answer: quotable on its own by search engines and assistants -->
-  <section class="container product_answer" aria-labelledby="answer_title">
+  <section class="container work_answer" aria-labelledby="answer_title">
     <h2 id="answer_title">{data.answer.question}</h2>
     <p>{data.answer.text}</p>
-    <dl class="product_facts">
-      <div><dt>{t('product.facts_for')}</dt><dd>{data.audience}</dd></div>
-      <div><dt>{t('product.facts_status')}</dt><dd>{t(statusBadge[data.status].label)}</dd></div>
-      <div><dt>{t('product.facts_where')}</dt><dd>{t('product.facts_where_value')}</dd></div>
+    <dl class="work_facts">
+      <div><dt>{t('work.facts_for')}</dt><dd>{data.audience}</dd></div>
+      <div><dt>{t('work.facts_status')}</dt><dd>{t(statusBadge[data.status].label)}</dd></div>
+      <div><dt>{t('work.facts_where')}</dt><dd>{t('work.facts_where_value')}</dd></div>
       <div><dt>{t('updated.label')}</dt><dd><time datetime={data.updated.toISOString().slice(0, 10)}>{formatDate(data.updated, lang)}</time></dd></div>
     </dl>
   </section>
@@ -81,7 +81,7 @@ const crumbs = [
   {data.case && (
     <section class="section container work_case" aria-labelledby="case_title">
       <p class="section_label"><span>01</span>{t('case.label')}</p>
-      <h2 id="case_title" class="section_title product_h2">{t('case.title')}</h2>
+      <h2 id="case_title" class="section_title work_h2">{t('case.title')}</h2>
       <ol role="list" class="work_case_steps">
         <li data-reveal data-i="0"><h3 class="eyebrow">{t('case.problem')}</h3><p>{data.case.problem}</p></li>
         <li data-reveal data-i="1"><h3 class="eyebrow">{t('case.solution')}</h3><p>{data.case.solution}</p></li>
@@ -99,8 +99,8 @@ const crumbs = [
 
   <section class="section section_band" aria-labelledby="highlights_title">
     <div class="container">
-      <h2 id="highlights_title" class="section_title product_h2">{data.highlights.title}</h2>
-      <ul role="list" class="product_highlights">
+      <h2 id="highlights_title" class="section_title work_h2">{data.highlights.title}</h2>
+      <ul role="list" class="work_highlights">
         {data.highlights.items.map((item, i) => (
           <li data-reveal data-i={i % 2} data-spotlight>
             <h3>{item.title}</h3>
@@ -113,15 +113,15 @@ const crumbs = [
 
   {data.comparison && (
     <section class="section container" aria-labelledby="compare_table_title">
-      <h2 id="compare_table_title" class="section_title product_h2">{data.comparison.title}</h2>
-      <div class="product_table" role="region" aria-labelledby="compare_table_title" tabindex="0">
+      <h2 id="compare_table_title" class="section_title work_h2">{data.comparison.title}</h2>
+      <div class="work_table" role="region" aria-labelledby="compare_table_title" tabindex="0">
         <table role="table">
           <caption class="visually_hidden">{data.comparison.title}</caption>
           <thead role="rowgroup">
             <tr role="row">
-              <th scope="col" role="columnheader">{t('product.compare_aspect')}</th>
+              <th scope="col" role="columnheader">{t('work.compare_aspect')}</th>
               <th scope="col" role="columnheader">{data.comparison.columns[0]}</th>
-              <th scope="col" role="columnheader" class="product_table_us">{data.comparison.columns[1]}</th>
+              <th scope="col" role="columnheader" class="work_table_us">{data.comparison.columns[1]}</th>
             </tr>
           </thead>
           <tbody role="rowgroup">
@@ -129,7 +129,7 @@ const crumbs = [
               <tr role="row">
                 <th scope="row" role="rowheader">{aspect}</th>
                 <td role="cell" data-label={data.comparison!.columns[0]}>{a}</td>
-                <td role="cell" class="product_table_us" data-label={data.comparison!.columns[1]}>{b}</td>
+                <td role="cell" class="work_table_us" data-label={data.comparison!.columns[1]}>{b}</td>
               </tr>
             ))}
           </tbody>
@@ -139,24 +139,24 @@ const crumbs = [
   )}
 
   <section class="section container" aria-labelledby="steps_title">
-    <h2 id="steps_title" class="section_title product_h2">{data.steps.title}</h2>
-    <ol role="list" class="product_steps">
+    <h2 id="steps_title" class="section_title work_h2">{data.steps.title}</h2>
+    <ol role="list" class="work_steps">
       {data.steps.items.map((step, i) => (
         <li data-reveal>
-          <span class="mono product_step_n">{String(i + 1).padStart(2, '0')}</span>
+          <span class="mono work_step_n">{String(i + 1).padStart(2, '0')}</span>
           <h3>{step.title}</h3>
           <p>{step.text}</p>
         </li>
       ))}
     </ol>
-    {hasBody && <div class="product_body"><Prose><Content /></Prose></div>}
+    {hasBody && <div class="work_body"><Prose><Content /></Prose></div>}
   </section>
 
   <slot />
 
   {showcase.length > 0 && (
     <section class="section container" aria-labelledby="showcase_title">
-      <h2 id="showcase_title" class="section_title product_h2">{t('service.showcase')}</h2>
+      <h2 id="showcase_title" class="section_title work_h2">{t('service.showcase')}</h2>
       <ul role="list" class="work_showcase">
         {showcase.map((p, i) => (
           <li data-reveal data-i={i}>
@@ -177,9 +177,9 @@ const crumbs = [
   )}
 
   {data.faq.length > 0 && (
-    <section class:list={['section', data.status !== 'waitlist' && 'section_band']} aria-labelledby="product_faq_title">
+    <section class:list={['section', data.status !== 'waitlist' && 'section_band']} aria-labelledby="work_faq_title">
       <div class="container">
-        <h2 id="product_faq_title" class="section_title product_h2">{t('product.faq_title')}</h2>
+        <h2 id="work_faq_title" class="section_title work_h2">{t('work.faq_title')}</h2>
         <Faq items={data.faq} />
       </div>
     </section>
@@ -190,13 +190,13 @@ const crumbs = [
     title={data.cta.title}
     text={data.cta.text}
     primary={data.status === 'waitlist'
-      ? { href: '#lista-de-espera', label: t('product.cta_waitlist') }
-      : { href: routes.quote[lang], label: t('product.cta_quote') }}
+      ? { href: '#lista-de-espera', label: t('work.cta_waitlist') }
+      : { href: routes.quote[lang], label: t('work.cta_quote') }}
     secondary={{ href: routes.projectsBase[lang], label: t('hero.cta_secondary') }}
   >
     {others.length > 0 && (
-      <nav class="product_others" aria-labelledby="product_others_title">
-        <h3 id="product_others_title" class="eyebrow">{t(isProject ? 'case.others' : 'service.others')}</h3>
+      <nav class="work_others" aria-labelledby="work_others_title">
+        <h3 id="work_others_title" class="eyebrow">{t(isProject ? 'case.others' : 'service.others')}</h3>
         <ul role="list">
           {others.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
         </ul>
@@ -280,19 +280,19 @@ const crumbs = [
     }
   }
 
-  .product_answer {
+  .work_answer {
     display: grid;
     gap: var(--space_sm);
     padding-block: var(--space_xl) 0;
   }
 
-  .product_answer h2 {
+  .work_answer h2 {
     font-size: var(--text_h3);
     font-weight: 600;
     letter-spacing: -0.02em;
   }
 
-  .product_answer > p {
+  .work_answer > p {
     max-width: 68ch;
     padding: 20px 24px;
     border-left: 3px solid var(--color_accent);
@@ -302,14 +302,14 @@ const crumbs = [
     line-height: 1.65;
   }
 
-  .product_facts {
+  .work_facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px 24px;
     margin-top: var(--space_xs);
   }
 
-  .product_facts dt {
+  .work_facts dt {
     font-family: var(--font_mono);
     font-size: var(--text_xs);
     letter-spacing: var(--tracking_label);
@@ -317,38 +317,38 @@ const crumbs = [
     color: var(--color_text_muted);
   }
 
-  .product_facts dd {
+  .work_facts dd {
     margin-top: 4px;
     font-size: var(--text_sm);
     color: var(--color_text_secondary);
   }
 
-  .product_table {
+  .work_table {
     overflow-x: auto;
     border-radius: var(--radius_xl);
     border: 1px solid var(--color_line);
   }
 
-  .product_table table {
+  .work_table table {
     width: 100%;
     min-width: 560px;
     border-collapse: collapse;
     font-size: 0.9375rem;
   }
 
-  .product_table th,
-  .product_table td {
+  .work_table th,
+  .work_table td {
     padding: 16px 20px;
     border-bottom: 1px solid var(--color_line);
     text-align: left;
     vertical-align: top;
   }
 
-  .product_table tbody tr:last-child > * {
+  .work_table tbody tr:last-child > * {
     border-bottom: 0;
   }
 
-  .product_table thead th {
+  .work_table thead th {
     font-family: var(--font_mono);
     font-size: var(--text_xs);
     font-weight: 500;
@@ -357,15 +357,15 @@ const crumbs = [
     color: var(--color_text_muted);
   }
 
-  .product_table tbody th {
+  .work_table tbody th {
     font-weight: 600;
   }
 
-  .product_table td {
+  .work_table td {
     color: var(--color_text_secondary);
   }
 
-  .product_table .product_table_us {
+  .work_table .work_table_us {
     background: var(--color_accent_tint);
     color: var(--color_text);
   }
@@ -373,15 +373,15 @@ const crumbs = [
   /* Narrow screens: each row becomes a card with labelled cells, no sideways scroll.
      Explicit roles keep the table semantics that display:block would drop. */
   @media (max-width: 639px) {
-    .product_table {
+    .work_table {
       overflow: visible;
     }
 
-    .product_table table {
+    .work_table table {
       min-width: 0;
     }
 
-    .product_table thead {
+    .work_table thead {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -389,32 +389,32 @@ const crumbs = [
       clip-path: inset(50%);
     }
 
-    .product_table tbody,
-    .product_table tr,
-    .product_table th,
-    .product_table td {
+    .work_table tbody,
+    .work_table tr,
+    .work_table th,
+    .work_table td {
       display: block;
     }
 
-    .product_table tbody tr {
+    .work_table tbody tr {
       border-bottom: 1px solid var(--color_line);
     }
 
-    .product_table tbody tr:last-child {
+    .work_table tbody tr:last-child {
       border-bottom: 0;
     }
 
-    .product_table tbody th,
-    .product_table td {
+    .work_table tbody th,
+    .work_table td {
       border-bottom: 0;
       padding: 12px 16px 0;
     }
 
-    .product_table tbody tr > :last-child {
+    .work_table tbody tr > :last-child {
       padding-bottom: 14px;
     }
 
-    .product_table td::before {
+    .work_table td::before {
       content: attr(data-label);
       display: block;
       margin-bottom: 2px;
@@ -425,75 +425,75 @@ const crumbs = [
       color: var(--color_text_muted);
     }
 
-    .product_table td.product_table_us {
+    .work_table td.work_table_us {
       margin: 8px 16px 0;
       padding: 10px 12px 12px;
       border-radius: var(--radius_md);
     }
 
-    .product_table tbody tr > td.product_table_us:last-child {
+    .work_table tbody tr > td.work_table_us:last-child {
       margin-bottom: 14px;
       padding-bottom: 12px;
     }
   }
 
-  .product_h2 {
+  .work_h2 {
     max-width: 800px;
     margin-bottom: var(--space_lg);
   }
 
-  .product_highlights {
+  .work_highlights {
     display: grid;
     gap: var(--space_sm);
   }
 
-  .product_highlights li {
+  .work_highlights li {
     padding: 28px;
     border-radius: var(--radius_xl);
     background: var(--color_raised);
     border: 1px solid var(--color_line);
   }
 
-  .product_highlights h3,
-  .product_steps h3 {
+  .work_highlights h3,
+  .work_steps h3 {
     font-size: var(--text_xl);
     font-weight: 700;
   }
 
-  .product_highlights p,
-  .product_steps p {
+  .work_highlights p,
+  .work_steps p {
     margin-top: 8px;
     font-size: 0.9375rem;
     color: var(--color_text_secondary);
   }
 
-  .product_steps {
+  .work_steps {
     display: grid;
     gap: var(--space_md);
   }
 
-  .product_steps li {
+  .work_steps li {
     padding-top: var(--space_sm);
     border-top: 1px solid var(--color_line_strong);
   }
 
-  .product_step_n {
+  .work_step_n {
     display: block;
     margin-bottom: 8px;
     font-size: var(--text_xs);
     color: var(--color_accent_text);
   }
 
-  .product_body {
+  .work_body {
     margin-top: var(--space_xl);
   }
 
 
-  .product_others {
+  .work_others {
     margin-top: var(--space_lg);
   }
 
-  .product_others ul {
+  .work_others ul {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -501,7 +501,7 @@ const crumbs = [
     margin-top: var(--space_xs);
   }
 
-  .product_others a {
+  .work_others a {
     display: inline-flex;
     align-items: center;
     min-height: var(--tap_min);
@@ -509,11 +509,11 @@ const crumbs = [
   }
 
   @media (min-width: 760px) {
-    .product_highlights {
+    .work_highlights {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .product_steps {
+    .work_steps {
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
   }

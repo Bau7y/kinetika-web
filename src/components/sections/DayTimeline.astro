@@ -60,7 +60,7 @@ const hrefs = new Map((await getWork(lang)).map((p) => [p.key, p.href]));
                 ))}
                 {hrefs.get(scene.product) && (
                   <a href={hrefs.get(scene.product)} class="day_link">
-                    {t('product.see')}<span class="visually_hidden">: {scene.name}</span> <span aria-hidden="true">→</span>
+                    {t('work.see')}<span class="visually_hidden">: {scene.name}</span> <span aria-hidden="true">→</span>
                   </a>
                 )}
               </article>
