@@ -52,4 +52,27 @@ const products = defineCollection({
   }),
 });
 
-export const collections = { products };
+/**
+ * Practical guides: they answer one question in depth and link to the
+ * product that solves it (`product` key).
+ */
+const guides = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/guides' }),
+  schema: z.object({
+    order: z.number().int(),
+    url_slug: slug,
+    /** Short label of the audience, shown above the title. */
+    topic: z.string(),
+    product: z.string(),
+    title: z.string(),
+    seo_title: z.string(),
+    meta_description: z.string().max(160),
+    /** Direct answer shown first on the page and reused by llms.txt. */
+    summary: z.string(),
+    /** Law the guide is about, when there is one (e.g. "Ley 7509"). */
+    law: z.string().optional(),
+    updated: z.coerce.date(),
+  }),
+});
+
+export const collections = { products, guides };

@@ -7,6 +7,7 @@
 import { LANGS, routes, type Lang } from '../i18n/routes';
 import { useTranslations } from '../i18n/ui';
 import { getProducts } from './products';
+import { getGuides } from './guides';
 
 export type PageSection = 'home' | 'quote' | 'product' | 'guides' | 'guide' | 'legal';
 
@@ -49,12 +50,15 @@ function fixedPages(lang: Lang): PageEntry[] {
   return [
     fixed('home', routes.home, t('site.tagline'), t('site.description')),
     fixed('quote', routes.quote, t('quote.page_title'), t('quote.meta')),
+    fixed('guides', routes.guides, t('guides.title'), t('guides.meta')),
   ];
 }
 
 export async function getPages(): Promise<PageEntry[]> {
   const products = { es: await getProducts('es'), en: await getProducts('en') };
   const productAlt = pairHrefs(products);
+  const guides = { es: await getGuides('es'), en: await getGuides('en') };
+  const guideAlt = pairHrefs(guides);
 
   return LANGS.flatMap((lang) => [
     ...fixedPages(lang),
@@ -67,6 +71,17 @@ export async function getPages(): Promise<PageEntry[]> {
         description: p.data.meta_description,
         alternates: productAlt(p.key, lang),
         updated: p.data.updated,
+      }),
+    ),
+    ...guides[lang].map(
+      (g): PageEntry => ({
+        path: g.href,
+        lang,
+        section: 'guide',
+        title: g.data.title,
+        description: g.data.meta_description,
+        alternates: guideAlt(g.key, lang),
+        updated: g.data.updated,
       }),
     ),
   ]);

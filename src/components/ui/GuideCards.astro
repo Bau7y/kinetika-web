@@ -1,0 +1,71 @@
+---
+/** Grid of guide cards (home preview and guides index). */
+import type { Guide } from '../../data/guides';
+
+interface Props {
+  guides: Guide[];
+  /** Heading level of each card title. */
+  as?: 'h2' | 'h3';
+}
+const { guides, as: Title = 'h3' } = Astro.props;
+---
+<ul role="list" class="guide_cards">
+  {guides.map((g) => (
+    <li data-reveal>
+      <a href={g.href} class="guide_card">
+        <span class="eyebrow">{g.data.topic}</span>
+        <Title class="guide_card_title">{g.data.title}</Title>
+        <span class="guide_card_text">{g.data.summary}</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .guide_cards {
+    display: grid;
+    gap: var(--space_sm);
+  }
+
+  .guide_card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    padding: 28px;
+    border-radius: 18px;
+    background: var(--color_raised);
+    border: 1px solid var(--color_line);
+    color: var(--color_text);
+    text-decoration: none;
+    transition: border-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+  }
+
+  .guide_card:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .guide_card:hover {
+      border-color: var(--color_accent_border_strong);
+      color: var(--color_text);
+    }
+  }
+
+  .guide_card_title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: var(--leading_snug);
+  }
+
+  .guide_card_text {
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  @media (min-width: 760px) {
+    .guide_cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

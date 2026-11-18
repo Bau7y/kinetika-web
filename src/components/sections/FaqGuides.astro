@@ -1,8 +1,9 @@
 ---
 /** Frequent questions (FAQPage) and a preview of the guides (Article). */
 import { faq, type FaqItem } from '../../data/faq';
-import { guidesPreview } from '../../data/guides_preview';
-import { joinPath, routes, useTranslations, type Lang } from '../../i18n/ui';
+import GuideCards from '../ui/GuideCards.astro';
+import { getGuides } from '../../data/guides';
+import { routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -10,7 +11,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const items = faq[lang];
-const guides = guidesPreview[lang];
+const guides = (await getGuides(lang)).slice(0, 3);
 
 /** Splits an answer around its link text, if any. */
 const parts = (item: FaqItem) => {
@@ -37,17 +38,7 @@ const parts = (item: FaqItem) => {
     <h3>{t('guides.preview_title')}</h3>
     <a href={routes.guides[lang]}>{t('guides.see_all')}</a>
   </div>
-  <ul role="list" class="guides_grid">
-    {guides.map((g) => (
-      <li data-reveal>
-        <a href={joinPath(routes.guides[lang], g.slug)} class="guide_card">
-          <span class="eyebrow">{g.topic}</span>
-          <span class="guide_card_title">{g.title}</span>
-          <span class="guide_card_text">{g.summary}</span>
-        </a>
-      </li>
-    ))}
-  </ul>
+  <GuideCards guides={guides} />
 </section>
 
 <style>
@@ -94,6 +85,10 @@ const parts = (item: FaqItem) => {
     letter-spacing: -0.02em;
   }
 
+  .guides_head + :global(.guide_cards) {
+    margin-top: var(--space_md);
+  }
+
   .guides_head a {
     display: inline-flex;
     align-items: center;
@@ -102,55 +97,12 @@ const parts = (item: FaqItem) => {
     font-weight: 500;
   }
 
-  .guides_grid {
-    display: grid;
-    gap: var(--space_sm);
-    margin-top: var(--space_md);
-  }
 
-  .guide_card {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    height: 100%;
-    padding: 28px;
-    border-radius: 18px;
-    background: var(--color_raised);
-    border: 1px solid var(--color_line);
-    color: var(--color_text);
-    text-decoration: none;
-    transition: border-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
-  }
-
-  .guide_card:active {
-    transform: scale(0.97);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .guide_card:hover {
-      border-color: var(--color_accent_border_strong);
-      color: var(--color_text);
-    }
-  }
-
-  .guide_card_title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: var(--leading_snug);
-  }
-
-  .guide_card_text {
-    font-size: 0.9375rem;
-    color: var(--color_text_secondary);
-  }
 
   @media (min-width: 760px) {
     .faq_list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .guides_grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
   }
 </style>
