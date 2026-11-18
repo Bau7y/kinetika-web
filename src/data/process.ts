@@ -8,10 +8,10 @@ export interface ProcessStep {
 
 export const process: Record<Lang, ProcessStep[]> = {
   es: [
-    { title: 'Conversación', text: 'Entendemos tu negocio, tus clientes y lo que querés resolver primero.' },
-    { title: 'Demo funcional', text: 'Te mostramos una primera versión que funciona antes de cualquier contrato.' },
-    { title: 'Construcción por etapas', text: 'Avanzamos por partes y revisás cada entrega antes de seguir.' },
-    { title: 'Publicación', text: 'Lo publicamos en tu dominio y lo dejamos listo para que te encuentren en Google.' },
+    { title: 'Conversación', text: 'Entendemos su negocio, sus clientes y lo que quiere resolver primero.' },
+    { title: 'Demo funcional', text: 'Le mostramos una primera versión que funciona antes de cualquier contrato.' },
+    { title: 'Construcción por etapas', text: 'Avanzamos por partes y usted revisa cada entrega antes de seguir.' },
+    { title: 'Publicación', text: 'Lo publicamos en su dominio y lo dejamos listo para que lo encuentren en Google.' },
   ],
   en: [
     { title: 'Conversation', text: 'We learn about your business, your customers and what you want to solve first.' },

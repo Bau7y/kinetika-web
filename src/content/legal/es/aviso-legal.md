@@ -20,7 +20,7 @@ TramiMuniSC es un servicio privado de acompañamiento en trámites. **No es la M
 
 ## Información del sitio
 
-Las guías y preguntas frecuentes son información general a la fecha indicada en cada página. No sustituyen una asesoría legal, contable o tributaria para tu caso. Las leyes y los requisitos pueden cambiar.
+Las guías y preguntas frecuentes son información general a la fecha indicada en cada página. No sustituyen una asesoría legal, contable o tributaria para su caso. Las leyes y los requisitos pueden cambiar.
 
 ## Propiedad intelectual
 

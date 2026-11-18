@@ -6,7 +6,7 @@ product: plataforma-contable
 title: Cómo organizar la cartera de clientes con Excel
 seo_title: Cómo organizar la cartera de clientes de un despacho contable en Excel
 meta_description: Una plantilla y un método para llevar la cartera de clientes, documentos pendientes y vencimientos de un despacho contable en Excel, mes a mes.
-summary: Una fila por cliente, columnas fijas para lo que pedís cada mes y fórmulas simples que marcan lo atrasado. Con eso el cierre deja de depender de la memoria.
+summary: Una fila por cliente, columnas fijas para lo que pide cada mes y fórmulas simples que marcan lo atrasado. Con eso el cierre deja de depender de la memoria.
 updated: 2026-11-17
 faq:
   - q: "¿Estas fórmulas funcionan en Excel 2019?"
@@ -17,7 +17,7 @@ faq:
 
 ## Una fila por cliente
 
-El error más común es repartir la información en varias hojas o libros. Empezá con una sola tabla donde cada fila sea un cliente y cada columna un dato que se repite todos los meses:
+El error más común es repartir la información en varias hojas o libros. Empiece con una sola tabla donde cada fila sea un cliente y cada columna un dato que se repite todos los meses:
 
 | Columna | Para qué sirve |
 | --- | --- |
@@ -29,7 +29,7 @@ El error más común es repartir la información en varias hojas o libros. Empez
 | Fecha límite | El vencimiento más cercano |
 | Estado | Al día, pendiente o atrasado |
 
-Convertí el rango en **tabla** (Insertar → Tabla): los filtros y las fórmulas se extienden solos cuando agregás clientes.
+Convierta el rango en **tabla** (Insertar → Tabla): los filtros y las fórmulas se extienden solos cuando agrega clientes.
 
 ## Listas para no escribir distinto cada vez
 
@@ -54,4 +54,4 @@ Con **Formato condicional** pintá en rojo las filas atrasadas y en amarillo las
 
 ## Cuando la hoja se queda corta
 
-Excel funciona bien hasta que tus clientes tienen que mandarte documentos por varios canales o hay más de una persona actualizando el mismo archivo. Ahí sirve un portal donde cada cliente sube lo suyo y una cartera que se importa directo desde esta misma hoja.
+Excel funciona bien hasta que sus clientes tienen que mandarle documentos por varios canales o hay más de una persona actualizando el mismo archivo. Ahí sirve un portal donde cada cliente sube lo suyo y una cartera que se importa directo desde esta misma hoja.
