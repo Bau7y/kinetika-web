@@ -23,7 +23,7 @@ const parts = (item: Item) => {
 };
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
-<div class="fp" data-faq-panel style={`--n:${items.length}`} data-reveal>
+<div class="fp" data-faq-panel data-reveal>
   {items.map((item, i) => {
     const { before, link, after } = parts(item);
     return (
@@ -181,7 +181,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
     .fp[data-ready] .fp_panel {
       grid-column: 2;
-      grid-row: 1 / span var(--n);
+      grid-row: 1 / span var(--n, 12);
       position: sticky;
       top: 120px;
       display: grid;

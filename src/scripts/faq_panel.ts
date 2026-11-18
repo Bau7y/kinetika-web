@@ -24,6 +24,8 @@ export function initFaqPanel(root: HTMLElement) {
     if (focus) tabs[index].focus();
   };
 
+  // Row span of the answer panel; set through CSSOM because the CSP blocks style attributes
+  root.style.setProperty('--n', String(tabs.length));
   root.dataset.ready = '';
   tabs.forEach((tab) => (tab.hidden = false));
   panels.forEach((panel, i) => (panel.hidden = i !== 0));
