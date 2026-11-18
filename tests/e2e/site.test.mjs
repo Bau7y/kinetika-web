@@ -141,7 +141,7 @@ describe('SEO', () => {
   it('robots.txt apunta al sitemap y bloquea las acciones', async () => {
     const text = await (await get('/robots.txt')).text();
     assert.match(text, /Disallow: \/_actions\//);
-    assert.match(text, /Sitemap: https:\/\/kinetika\.cr\/sitemap\.xml/);
+    assert.match(text, /Sitemap: https:\/\/kinetikacr\.com\/sitemap\.xml/);
   });
 
   it('cada página tiene su imagen Open Graph de 1200×630', async () => {
