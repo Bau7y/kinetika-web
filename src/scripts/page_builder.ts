@@ -66,7 +66,10 @@ export function initPageBuilder(root: HTMLElement) {
     el.hidden = false;
     enter(el);
     flip(first, el);
-    el.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    // Scroll only the preview, never the page
+    const top = el.getBoundingClientRect().top - plan.getBoundingClientRect().top + plan.scrollTop;
+    const outOfView = top < plan.scrollTop || top + el.offsetHeight > plan.scrollTop + plan.clientHeight;
+    if (outOfView) plan.scrollTo({ top: Math.max(0, top - 12), behavior: reduce ? 'auto' : 'smooth' });
   };
 
   const hide = (id: string) => {
