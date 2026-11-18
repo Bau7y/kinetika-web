@@ -1,6 +1,7 @@
 ---
 import Logo from '../brand/Logo.astro';
 import { site } from '../../data/site';
+import { getProducts } from '../../data/products';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 const { lang, replayIntro = false } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
+const products = await getProducts(lang);
 
 const company = [
   { href: homeAnchor(lang, 'dia'), label: t('nav.day') },
@@ -25,12 +27,17 @@ const company = [
     <div class="footer_grid">
       <div class="footer_brand">
         <a href={routes.home[lang]} class="footer_logo" aria-label={t('nav.home_label')} translate="no">
-      <Logo />
+          <Logo />
         </a>
         <p>{t('site.description')}</p>
       </div>
 
-      <slot />
+      <nav class="footer_col" aria-labelledby="footer_products">
+        <h2 id="footer_products">{t('footer.products')}</h2>
+        <ul role="list">
+          {products.map((p) => <li><a href={p.href}>{p.data.name}</a></li>)}
+        </ul>
+      </nav>
 
       <nav class="footer_col" aria-labelledby="footer_company">
         <h2 id="footer_company">{t('footer.company')}</h2>
