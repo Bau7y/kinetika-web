@@ -85,7 +85,9 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   .day {
     --card_w: min(420px, 82vw);
     --gap: 24px;
-    overflow: hidden;
+    /* clip, not hidden: a clipped box cannot be scrolled, so focusing a
+       link in a scene off to the side never shifts the section */
+    overflow: clip;
   }
 
   .day_head {
