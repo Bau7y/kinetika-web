@@ -1,8 +1,15 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro/zod';
 import { Resend } from 'resend';
-import { RESEND_API_KEY, CONTACT_TO, CONTACT_FROM, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } from 'astro:env/server';
-import { isBotSubmission, isRateLimited } from '../lib/spam';
+import {
+  RESEND_API_KEY,
+  CONTACT_TO,
+  CONTACT_FROM,
+  TURNSTILE_SECRET_KEY,
+  UPSTASH_REDIS_REST_URL,
+  UPSTASH_REDIS_REST_TOKEN,
+} from 'astro:env/server';
+import { analyzeMessage, isBotSubmission, isRateLimited, verifyTurnstile } from '../lib/spam';
 import { useTranslations, type UiKey } from '../i18n/ui';
 import { canReceiveEmail } from '../lib/email';
 import { BUSINESS_TYPES, MESSAGE_MAX, NEEDS } from '../data/quote_options';
@@ -41,6 +48,10 @@ const protection = {
     .number()
     .nullish()
     .transform((v) => v ?? 0),
+  'cf-turnstile-response': z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
 };
 
 export const quoteSchema = z.object({
@@ -97,19 +108,41 @@ const RATE_LIMIT = { limit: 5, windowSeconds: 3600 };
 const redis =
   UPSTASH_REDIS_REST_URL && UPSTASH_REDIS_REST_TOKEN ? { url: UPSTASH_REDIS_REST_URL, token: UPSTASH_REDIS_REST_TOKEN } : undefined;
 
-type Protected = { website: string; loaded_at: number };
+interface Screened {
+  website: string;
+  loaded_at: number;
+  'cf-turnstile-response': string;
+  email: string;
+  message: string;
+  onTopic: boolean;
+}
 
 /**
- * Runs the anti-spam layers in order. Returns false when the submission must
- * be dropped silently (the caller still answers "sent"); throws when the
- * visitor has to be told.
+ * Runs the anti-spam layers in order: honeypot and minimum time, limit per
+ * IP, Turnstile (when configured) and content analysis.
+ * Returns null when the submission must be dropped silently (the caller
+ * still answers "sent"), or the review reasons ([] when clean). Throws when
+ * the visitor has to be told.
  */
-async function screen(input: Protected, ip: string): Promise<boolean> {
-  if (isBotSubmission({ website: input.website, loadedAt: input.loaded_at })) return false;
+async function screen(input: Screened, ip: string): Promise<string[] | null> {
+  if (isBotSubmission({ website: input.website, loadedAt: input.loaded_at })) return null;
+
   if (await isRateLimited(ip, { ...RATE_LIMIT, redis })) {
     throw new ActionError({ code: 'TOO_MANY_REQUESTS', message: 'rate_limited' });
   }
-  return true;
+
+  if (TURNSTILE_SECRET_KEY && !(await verifyTurnstile(input['cf-turnstile-response'], TURNSTILE_SECRET_KEY, ip))) {
+    throw new ActionError({ code: 'FORBIDDEN', message: 'captcha_failed' });
+  }
+
+  const analysis = analyzeMessage({ email: input.email, message: input.message, onTopic: input.onTopic });
+  if (analysis.verdict === 'offensive') throw new ActionError({ code: 'BAD_REQUEST', message: 'offensive' });
+  if (analysis.verdict === 'spam') {
+    // Logged so the lists can be tuned; the sender sees a normal "sent".
+    console.warn('[screen] spam descartado:', analysis.reasons.join(', '));
+    return null;
+  }
+  return analysis.reasons;
 }
 
 // The email to the office is always in Spanish.
@@ -120,13 +153,15 @@ export const server = {
     accept: 'form',
     input: quoteSchema,
     handler: async (input, context) => {
-      if (!(await screen(input, context.clientAddress))) return { sent: true };
+      const review = await screen({ ...input, onTopic: true }, context.clientAddress);
+      if (!review) return { sent: true };
 
       const business = es(`quote.business.${input.business}` as UiKey);
       const need = es(`quote.need.${input.need}` as UiKey);
 
       await deliver({
-        subject: `[Cotización] ${business} · ${need}`,
+        // [Revisar] lets a mail filter route doubtful messages to their own label
+        subject: `${review.length ? '[Revisar] ' : ''}[Cotización] ${business} · ${need}`,
         replyTo: input.email,
         rows: [
           ['Negocio', business],
@@ -134,6 +169,7 @@ export const server = {
           ['Correo', input.email],
           ['Idioma', input.lang === 'en' ? 'Inglés' : 'Español'],
           ['Consentimiento', 'Aceptó la política de privacidad'],
+          ...(review.length ? [['Revisar', review.join(', ')] as [string, string]] : []),
         ],
         message: input.message,
       });

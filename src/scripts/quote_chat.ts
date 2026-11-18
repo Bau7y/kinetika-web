@@ -41,7 +41,11 @@ export function initQuoteChat(form: HTMLFormElement, send: QuoteSender) {
 
   // Load time for the minimum-time check on the server
   const loadedAt = form.querySelector<HTMLInputElement>('[data-loaded-at]');
-  if (loadedAt) loadedAt.value = String(Date.now());
+  const stamp = () => loadedAt && (loadedAt.value = String(Date.now()));
+  stamp();
+
+  /** A Turnstile token is single use: get a fresh one after each attempt. */
+  const resetCaptcha = () => (window as { turnstile?: { reset: () => void } }).turnstile?.reset();
 
   const setProgress = (reached: number) => {
     bars.forEach((bar, i) => bar.classList.toggle('is_on', i < reached));
@@ -123,6 +127,7 @@ export function initQuoteChat(form: HTMLFormElement, send: QuoteSender) {
     submit.textContent = submit.dataset.label ?? '';
 
     if (code) {
+      resetCaptcha();
       const field = code.startsWith('email') ? 'email' : code === 'offensive' || code === 'message_max' ? 'message' : 'form';
       showErrors({ [field]: code });
       return;
@@ -136,6 +141,8 @@ export function initQuoteChat(form: HTMLFormElement, send: QuoteSender) {
 
   restart.addEventListener('click', () => {
     form.reset();
+    stamp();
+    resetCaptcha();
     clearErrors();
     steps.forEach((step) => {
       step.hidden = false;
