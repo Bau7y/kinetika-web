@@ -96,7 +96,8 @@ kinetika-web/
 │   │   └── BaseLayout.astro
 │   ├── lib/
 │   │   ├── email.ts              # el dominio del correo recibe correo (MX/A)
-│   │   ├── structured_data.ts    # ProfessionalService, Service, FAQPage, Article, BreadcrumbList
+│   │   ├── structured_data.ts    # ProfessionalService, WebSite, Service, FAQPage, Article, BreadcrumbList
+│   │   ├── llms.ts               # productos, guías y preguntas en Markdown para asistentes de IA
 │   │   ├── og_image.ts
 │   │   ├── theme_init.mjs        # clase js e intro antes del primer pintado (hash en la CSP)
 │   │   └── spam/                 # campo trampa, tiempo mínimo, límite por IP, Turnstile, análisis
@@ -125,7 +126,8 @@ kinetika-web/
 │   │   ├── og/[...path].png.ts
 │   │   ├── robots.txt.ts
 │   │   ├── sitemap.xml.ts
-│   │   └── llms.txt.ts
+│   │   ├── llms.txt.ts
+│   │   └── llms-full.txt.ts      # contenido completo en Markdown
 │   ├── scripts/                  # JS de cliente por sección
 │   │   ├── hero_lines.ts         # arranca las líneas del hero cuando la página está libre
 │   │   ├── hero_lines.worker.ts  # dibuja las líneas en un OffscreenCanvas (fuera del hilo principal)
@@ -268,6 +270,21 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 | `yarn test:e2e` | Pruebas de humo sobre el build |
 | `yarn test:a11y` | Accesibilidad con axe (escritorio y móvil) |
 
+## SEO, AEO y GEO
+
+Cómo el sitio se deja encontrar por buscadores y citar por asistentes de IA (ChatGPT, Perplexity, AI Overviews):
+
+- **Título y portada:** servicio y ubicación en el `title` del inicio y en una etiqueta sobre el `h1`.
+- **Respuestas directas:** un bloque "¿Qué es Kinetika?" en el inicio y uno "¿Qué es…?" por producto (40 a 60 palabras, comprensible sin el resto de la página), con datos de ficha: para quién, estado, dónde y fecha de actualización.
+- **Comparaciones:** cada producto trae una tabla (frontmatter `comparison`) que en móvil se apila como tarjetas.
+- **Preguntas frecuentes:** en el inicio, en cada producto y en las guías (frontmatter `faq`), todas con `FAQPage`.
+- **Fuentes:** las guías citan la norma con enlace al texto oficial (frontmatter `sources`, publicado también como `citation` en `Article`).
+- **Datos estructurados:** `ProfessionalService` con catálogo de servicios, temas (`knowsAbout`), logo y zona atendida; `WebSite`; `Service`, `Article` y `BreadcrumbList`.
+- **Para asistentes de IA:** `/llms.txt` (resumen con enlaces) y `/llms-full.txt` (productos, preguntas y guías completas en Markdown). Ambos se generan del contenido.
+- **Meta robots:** `max-snippet:-1` y `max-image-preview:large` en las páginas indexables.
+
+Fuera del código: Search Console con el sitemap, perfil de empresa en Google, perfiles en directorios con la misma descripción y una revisión mensual de cómo responden los asistentes a las preguntas clave.
+
 ## Variables de entorno
 
 | Variable | Uso | Obligatoria |
@@ -283,3 +300,4 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 - Correo público de contacto (`src/data/site.ts → email`): hoy la política de privacidad indica el formulario como canal.
 - Teléfono y perfiles públicos (`phone`, `profiles`): se publican en los datos estructurados solo cuando tengan valor.
 - Precios: no se publican hasta definirlos.
+- Autor de las guías (nombre y credenciales): pendiente para agregar autoría visible y `author` en `Article`.
