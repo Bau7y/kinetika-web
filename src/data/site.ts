@@ -11,8 +11,8 @@ export const site = {
   locality: 'San Carlos',
   region: 'Alajuela',
   country: 'CR',
-  /** Public contact email (privacy requests, footer, schema.org). Pending. */
-  email: '' as string,
+  /** Public contact email (contact page, privacy requests, footer, schema.org). */
+  email: 'kinetikacr.sc@gmail.com' as string,
   /** International format, e.g. '+506 8888 8888'. Pending. */
   phone: '' as string,
   /** Public profiles (Google Business Profile, Facebook, Instagram…), used as `sameAs`. */
