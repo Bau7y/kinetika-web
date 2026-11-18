@@ -104,6 +104,9 @@ const es = {
   'day.prev': 'Hora anterior',
   'day.next': 'Hora siguiente',
   'day.scenes_label': 'Escenas de un día de trabajo',
+  'day.pause': 'Pausar el recorrido automático',
+  'day.play': 'Reanudar el recorrido automático',
+  'day.go': 'Ir a las {hour}: {name}',
 
   'proof.title': 'Este sitio es la prueba.',
   'proof.lede': 'Lo mismo que construimos para vos. Elegí una pieza para verla en el plano.',
@@ -282,6 +285,9 @@ const en: Strings = {
   'day.prev': 'Previous hour',
   'day.next': 'Next hour',
   'day.scenes_label': 'Scenes from a work day',
+  'day.pause': 'Pause the automatic tour',
+  'day.play': 'Resume the automatic tour',
+  'day.go': 'Go to {hour}: {name}',
 
   'proof.title': 'This site is the proof.',
   'proof.lede': 'The same thing we build for you. Pick a piece to see it on the blueprint.',
