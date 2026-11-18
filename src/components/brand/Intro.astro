@@ -44,22 +44,35 @@
   const root = document.documentElement;
   const intro = document.querySelector<HTMLElement>('[data-intro]');
 
+  /** When the curtain starts lifting by itself (ms after start). */
+  const LIFT_AT = 1550;
+  let startedAt = 0;
+
   const finish = () => {
-    root.classList.remove('intro');
-    removeEventListener('pointerdown', finish);
-    removeEventListener('keydown', finish);
+    root.classList.remove('intro', 'intro_skip');
+    removeEventListener('pointerdown', skip);
+    removeEventListener('keydown', skip);
   };
+
+  /** A click or key lifts the curtain quickly instead of cutting to the page. */
+  function skip() {
+    removeEventListener('pointerdown', skip);
+    removeEventListener('keydown', skip);
+    // Already lifting: let it finish on its own
+    if (performance.now() - startedAt < LIFT_AT) root.classList.add('intro_skip');
+  }
 
   const start = () => {
     try {
       sessionStorage.setItem('kinetika_intro', '1');
     } catch {}
-    addEventListener('pointerdown', finish, { once: true });
-    addEventListener('keydown', finish, { once: true });
+    startedAt = performance.now();
+    addEventListener('pointerdown', skip);
+    addEventListener('keydown', skip);
   };
 
   if (intro) {
-    // The curtain is the last animation: when it ends, the intro is over.
+    // The curtain (normal or fast) is the last animation: when it ends, the intro is over.
     intro.addEventListener('animationend', (e) => e.target === intro && finish());
     if (root.classList.contains('intro')) start();
 
@@ -67,7 +80,7 @@
     document.querySelectorAll('[data-intro-replay]').forEach((button) =>
       button.addEventListener('click', (e) => {
         e.stopPropagation();
-        root.classList.remove('intro');
+        root.classList.remove('intro', 'intro_skip');
         void intro.offsetWidth; // restart CSS animations (only on this explicit click)
         root.classList.add('intro');
         start();
@@ -93,6 +106,12 @@
     background: radial-gradient(60% 60% at 50% 45%, #0f1a30, var(--color_bg) 70%);
     cursor: pointer;
     animation: intro_lift 640ms var(--ease_in_out) 1550ms both;
+  }
+
+  /* Skipped: the same curtain, lifted right away and fast. A different
+     keyframe name restarts it instead of retiming the running one. */
+  :global(html.intro.intro_skip) .intro {
+    animation: intro_lift_fast 200ms var(--ease_out) both;
   }
 
   :global(html.intro) {
@@ -166,6 +185,11 @@
   }
 
   @keyframes intro_lift {
+    from { clip-path: inset(0 0 0 0); }
+    to { clip-path: inset(0 0 100% 0); }
+  }
+
+  @keyframes intro_lift_fast {
     from { clip-path: inset(0 0 0 0); }
     to { clip-path: inset(0 0 100% 0); }
   }
