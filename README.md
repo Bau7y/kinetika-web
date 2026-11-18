@@ -26,10 +26,9 @@ Sitio web de **Kinetika**, estudio de software de San Carlos, Costa Rica. Funcio
 ```text
 kinetika-web/
 ├── public/
-│   ├── favicon.svg
-│   └── fonts/                    # solo si alguna fuente no viene de @fontsource
+│   └── favicon.svg
 ├── scripts/
-│   └── a11y.mjs                  # axe sobre el build local
+│   └── a11y.mjs                  # axe sobre el build local, en ambos idiomas
 ├── src/
 │   ├── actions/
 │   │   └── index.ts              # acción del chat de cotización (servidor)
@@ -39,44 +38,72 @@ kinetika-web/
 │   │   │   └── Intro.astro       # la K se arma al cargar
 │   │   ├── layout/
 │   │   │   ├── NavBar.astro
+│   │   │   ├── LangSwitch.astro
+│   │   │   ├── LangSuggest.astro # sugerencia de idioma no intrusiva
 │   │   │   ├── SkipLink.astro
 │   │   │   └── Footer.astro
-│   │   ├── sections/             # una sección = un commit
-│   │   │   ├── Hero.astro              # 01
-│   │   │   ├── SwitchCompare.astro     # 02 el interruptor (antes / después)
-│   │   │   ├── DayTimeline.astro       # 03 un día en tu negocio
-│   │   │   ├── Blueprint.astro         # 04 este sitio es la prueba
-│   │   │   ├── WhyServiceArea.astro    # 05 por qué existimos + dónde atendemos
-│   │   │   ├── FaqGuides.astro         # 06 preguntas frecuentes y guías
-│   │   │   └── QuoteChat.astro         # 07 cotización conversacional
+│   │   ├── sections/             # secciones del inicio, una por commit
+│   │   │   ├── Hero.astro
+│   │   │   ├── SwitchCompare.astro
+│   │   │   ├── DayTimeline.astro
+│   │   │   ├── Blueprint.astro
+│   │   │   ├── WhyServiceArea.astro
+│   │   │   ├── FaqGuides.astro
+│   │   │   └── QuoteChat.astro
+│   │   ├── product/              # bloques de las páginas de producto
+│   │   │   ├── ProductHero.astro
+│   │   │   ├── ProductDemo.astro
+│   │   │   └── WaitlistForm.astro
 │   │   └── ui/
 │   │       ├── Badge.astro
 │   │       ├── Button.astro
+│   │       ├── Breadcrumbs.astro
+│   │       ├── Prose.astro
 │   │       └── JsonLd.astro
-│   ├── content/
-│   │   ├── guides/               # guías en Markdown (Article)
-│   │   └── legal/                # privacidad y aviso legal
+│   ├── content/                  # un archivo por idioma y entrada
+│   │   ├── guides/{es,en}/
+│   │   ├── products/{es,en}/
+│   │   └── legal/{es,en}/
 │   ├── content.config.ts
 │   ├── data/
 │   │   ├── site.ts               # nombre, dominio, contacto, redes
 │   │   ├── products.ts           # productos y su estado
-│   │   ├── day_scenes.ts         # escenas de la línea de tiempo
+│   │   ├── day_scenes.ts
 │   │   ├── service_area.ts       # 13 distritos de San Carlos
-│   │   ├── faq.ts                # preguntas frecuentes
-│   │   └── pages.ts              # registro único de páginas (sitemap, OG, llms.txt)
+│   │   ├── faq.ts
+│   │   └── pages.ts              # registro único de páginas (sitemap, OG, llms.txt, hreflang)
+│   ├── i18n/
+│   │   ├── ui.ts                 # textos de interfaz ES / EN
+│   │   └── routes.ts             # rutas traducidas y equivalencias entre idiomas
 │   ├── layouts/
 │   │   └── BaseLayout.astro
 │   ├── lib/
 │   │   ├── email.ts
-│   │   ├── structured_data.ts    # ProfessionalService, FAQPage, Article
+│   │   ├── structured_data.ts    # ProfessionalService, Service, FAQPage, Article, BreadcrumbList
 │   │   ├── og_image.ts
+│   │   ├── theme_init.mjs
 │   │   └── spam/                 # honeypot, tiempo mínimo, límite por IP, Turnstile, análisis
+│   ├── views/                    # vistas compartidas por ES y EN
+│   │   ├── HomeView.astro
+│   │   ├── ProductView.astro
+│   │   ├── GuidesIndexView.astro
+│   │   ├── GuideView.astro
+│   │   ├── QuoteView.astro
+│   │   └── LegalView.astro
 │   ├── pages/
-│   │   ├── index.astro
-│   │   ├── guias/
-│   │   │   ├── index.astro
-│   │   │   └── [slug].astro
-│   │   ├── [legal].astro
+│   │   ├── index.astro                     # /
+│   │   ├── productos/[slug].astro          # /productos/sitios-web, /pedidos, /tramimunisc, /plataforma-contable
+│   │   ├── guias/index.astro               # /guias
+│   │   ├── guias/[slug].astro
+│   │   ├── cotizar.astro                   # /cotizar
+│   │   ├── [legal].astro                   # /privacidad, /aviso-legal
+│   │   ├── en/
+│   │   │   ├── index.astro                 # /en
+│   │   │   ├── products/[slug].astro
+│   │   │   ├── guides/index.astro
+│   │   │   ├── guides/[slug].astro
+│   │   │   ├── quote.astro
+│   │   │   └── [legal].astro               # /en/privacy, /en/legal-notice
 │   │   ├── 404.astro
 │   │   ├── og/[...slug].png.ts
 │   │   ├── robots.txt.ts
@@ -94,6 +121,7 @@ kinetika-web/
 ├── tests/
 │   ├── unit/
 │   └── e2e/
+├── .github/workflows/ci.yml
 ├── .env.example
 ├── astro.config.mjs
 ├── package.json
@@ -104,22 +132,81 @@ kinetika-web/
 
 ## Plan de trabajo (un commit por sección)
 
-| # | Commit | Contenido |
-|---|---|---|
-| 0 | `docs: definir stack y estructura del proyecto` | Este README |
-| 1 | `chore: configurar Astro, TypeScript y Vercel` | Proyecto base, encabezados, scripts |
-| 2 | `feat(ui): agregar tokens de diseño y estilos globales` | Paleta azul empresarial y tipografía |
-| 3 | `feat(layout): agregar BaseLayout, navegación y pie` | Esqueleto de la página |
-| 4 | `feat(brand): agregar logo e intro de la K` | Animación de carga |
-| 5 | `feat(home): agregar hero` | Sección 01 |
-| 6 | `feat(home): agregar comparador antes y después` | Sección 02 |
-| 7 | `feat(home): agregar línea de tiempo de un día` | Sección 03 |
-| 8 | `feat(home): agregar plano anotado del sitio` | Sección 04 |
-| 9 | `feat(home): agregar por qué existimos y zonas de atención` | Sección 05 |
-| 10 | `feat(home): agregar preguntas frecuentes y guías` | Sección 06 |
-| 11 | `feat(contact): agregar cotización conversacional` | Sección 07 y acción de servidor |
-| 12 | `feat(seo): agregar datos estructurados, sitemap y OG` | SEO técnico |
-| 13 | `test: agregar pruebas unitarias, de humo y accesibilidad` | Calidad |
+Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traducidas y `hreflang` recíproco.
+
+### Base
+
+| # | Commit |
+|---|---|
+| 0 | `docs: definir stack y estructura del proyecto` |
+| 1 | `docs: ampliar plan de commits y soporte bilingüe` |
+| 2 | `chore: inicializar Astro con TypeScript y adaptador de Vercel` |
+| 3 | `chore: agregar encabezados de seguridad, CSP y caché` |
+| 4 | `chore: agregar esquema de variables de entorno y .env.example` |
+| 5 | `feat(ui): agregar tokens de diseño, fuentes y estilos globales` |
+| 6 | `feat(i18n): agregar textos de interfaz y rutas traducidas` |
+| 7 | `feat(data): agregar configuración del sitio y registro de páginas` |
+
+### Esqueleto y marca
+
+| # | Commit |
+|---|---|
+| 8 | `feat(layout): agregar BaseLayout con metadatos y hreflang` |
+| 9 | `feat(layout): agregar navegación y selector de idioma` |
+| 10 | `feat(layout): agregar pie de página y enlace para saltar al contenido` |
+| 11 | `feat(brand): agregar logo de la K en SVG` |
+| 12 | `feat(brand): agregar intro animada de la K` |
+| 13 | `feat(ui): agregar componentes Button, Badge y Breadcrumbs` |
+
+### Inicio (ES y EN)
+
+| # | Commit |
+|---|---|
+| 14 | `feat(home): agregar hero con "Elegí tu caso" y credenciales` |
+| 15 | `feat(home): agregar comparador antes y después` |
+| 16 | `feat(home): agregar línea de tiempo de un día` |
+| 17 | `feat(home): agregar plano anotado del sitio` |
+| 18 | `feat(home): agregar por qué existimos y zonas de atención` |
+| 19 | `feat(home): agregar preguntas frecuentes y avance de guías` |
+| 20 | `feat(home): agregar cotización conversacional (interfaz)` |
+| 21 | `feat(home): agregar versión en inglés del inicio` |
+
+### Cotización y anti-spam
+
+| # | Commit |
+|---|---|
+| 22 | `feat(contact): agregar validación del formulario en el servidor` |
+| 23 | `feat(contact): agregar envío de correo con Resend` |
+| 24 | `feat(spam): agregar campo trampa, tiempo mínimo y límite por IP` |
+| 25 | `feat(spam): agregar Turnstile y análisis del contenido` |
+| 26 | `feat(contact): agregar páginas /cotizar y /en/quote` |
+
+### Páginas internas
+
+| # | Commit |
+|---|---|
+| 27 | `feat(products): agregar plantilla de página de producto` |
+| 28 | `feat(products): agregar página de sitios web a la medida` |
+| 29 | `feat(products): agregar página de pedidos para restaurantes` |
+| 30 | `feat(products): agregar página de TramiMuniSC` |
+| 31 | `feat(products): agregar página de la plataforma contable con lista de espera` |
+| 32 | `feat(guides): agregar colección de guías e índice` |
+| 33 | `feat(guides): agregar página de guía con Article y migas de pan` |
+| 34 | `docs(guides): agregar las tres primeras guías` |
+| 35 | `feat(legal): agregar política de privacidad y aviso legal` |
+| 36 | `feat: agregar página 404` |
+
+### SEO y calidad
+
+| # | Commit |
+|---|---|
+| 37 | `feat(seo): agregar datos estructurados JSON-LD` |
+| 38 | `feat(seo): agregar sitemap, robots.txt y llms.txt` |
+| 39 | `feat(seo): agregar imágenes Open Graph por página` |
+| 40 | `feat: agregar Vercel Analytics y Speed Insights` |
+| 41 | `test: agregar pruebas unitarias de anti-spam y validación` |
+| 42 | `test: agregar pruebas de humo y de accesibilidad` |
+| 43 | `ci: agregar flujo de integración continua` |
 
 ## Paleta
 
@@ -155,7 +242,7 @@ kinetika-web/
 | `yarn typecheck` | `astro check` |
 | `yarn test` | Pruebas unitarias |
 | `yarn test:e2e` | Pruebas de humo sobre el build |
-| `yarn test:a11y` | Accesibilidad con axe |
+| `yarn test:a11y` | Accesibilidad con axe (ES y EN) |
 
 ## Variables de entorno
 
