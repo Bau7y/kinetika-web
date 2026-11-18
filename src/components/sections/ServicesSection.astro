@@ -3,7 +3,6 @@
  * The two services: automating a process and extending a business's reach
  * with a website. Each card links to its service page.
  */
-import Chips from '../ui/Chips.astro';
 import { getServices } from '../../data/work';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
@@ -14,7 +13,8 @@ interface Props {
 const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 const services = await getServices(lang);
-const capabilities = t('services.capabilities').split('|');
+const rows = t('services.demo_rows').split('|');
+const states = t('services.demo_states').split('|');
 ---
 <section id="servicios" class="section section_band" aria-labelledby="services_title">
   <div class="container">
@@ -25,7 +25,6 @@ const capabilities = t('services.capabilities').split('|');
       </div>
       <div class="services_intro" data-reveal data-i="2">
         <p class="lede">{t('services.lede')}</p>
-        <Chips items={capabilities} label={t('services.capabilities_label')} />
       </div>
     </div>
 
@@ -36,6 +35,34 @@ const capabilities = t('services.capabilities').split('|');
             <span class="mono service_n">{String(i + 1).padStart(2, '0')}</span>
             <h3 id={`service_${s.key}`}>{s.data.name}</h3>
             <p>{s.data.summary}</p>
+            <div class="demo" aria-hidden="true">
+              <span class="demo_cap mono">{t('services.demo_example')}</span>
+              {i === 0 ? (
+                <ul class="flow">
+                  {rows.map((name) => (
+                    <li class="flow_row">
+                      <span class="flow_name">{name}</span>
+                      <span class="flow_state">
+                        {states.map((label) => <span>{label}</span>)}
+                      </span>
+                      <span class="flow_bar"></span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div class="site">
+                  <div class="site_bar"><span class="site_url mono">{t('services.demo_site')}</span></div>
+                  <div class="site_load"></div>
+                  <div class="site_page">
+                    <span class="site_title"></span>
+                    <span class="site_line site_line_a"></span>
+                    <span class="site_line site_line_b"></span>
+                    <span class="site_btn"></span>
+                    <span class="site_tile"></span>
+                  </div>
+                </div>
+              )}
+            </div>
             <ul role="list" class="service_points">
               {s.data.highlights.items.map((h) => <li>{h.title}</li>)}
             </ul>
@@ -46,6 +73,11 @@ const capabilities = t('services.capabilities').split('|');
     </ul>
   </div>
 </section>
+
+<script>
+  import { initServiceDemos } from '../../scripts/service_demos';
+  initServiceDemos();
+</script>
 
 <style>
   .services_head {
@@ -60,13 +92,6 @@ const capabilities = t('services.capabilities').split('|');
       align-items: end;
     }
   }
-
-  .services_intro {
-    display: grid;
-    gap: var(--space_md);
-  }
-
-
 
   .services_grid {
     display: grid;
@@ -89,7 +114,9 @@ const capabilities = t('services.capabilities').split('|');
     background: var(--color_bg);
     color: var(--color_text_secondary);
     text-decoration: none;
-    transition: border-color var(--duration_fast) ease;
+    transition:
+      border-color var(--duration_fast) ease,
+      transform var(--duration_base) var(--ease_out);
   }
 
   .service_n {
@@ -104,6 +131,193 @@ const capabilities = t('services.capabilities').split('|');
     color: var(--color_text);
   }
 
+  /* ---- Mini demos: a sample of what each service delivers ---- */
+  .demo {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 10px;
+    height: 11.5rem;
+    padding: 14px 16px;
+    border-radius: var(--radius_lg);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+    overflow: hidden;
+    transition: border-color var(--duration_fast) ease;
+  }
+
+  .demo_cap {
+    font-size: var(--text_xs);
+    letter-spacing: var(--tracking_label);
+    text-transform: uppercase;
+    color: var(--color_text_muted);
+  }
+
+  /* Automation: requests moving through their states */
+  .flow {
+    display: grid;
+    gap: 8px;
+    align-content: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .flow_row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0 8px;
+    font-size: var(--text_sm);
+  }
+
+  .flow_row::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    background: var(--color_line);
+  }
+
+  .flow_name {
+    color: var(--color_text);
+  }
+
+  .flow_state {
+    display: grid;
+    justify-items: end;
+    font-size: var(--text_xs);
+    color: var(--color_text_secondary);
+  }
+
+  .flow_state > span {
+    grid-area: 1 / 1;
+    opacity: 0;
+  }
+
+  .flow_bar {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    height: 2px;
+    background: var(--color_accent);
+    transform-origin: left;
+    transform: scaleX(0.2);
+  }
+
+  /* Still frame (no JS, off screen, reduced motion): one state per row */
+  .flow_row:nth-child(1) .flow_state > span:nth-child(1),
+  .flow_row:nth-child(2) .flow_state > span:nth-child(2),
+  .flow_row:nth-child(3) .flow_state > span:nth-child(3) {
+    opacity: 1;
+  }
+  .flow_row:nth-child(2) .flow_bar { transform: scaleX(0.6); }
+  .flow_row:nth-child(3) .flow_bar { transform: scaleX(1); }
+
+  /* Websites: a page that loads and fills in */
+  .site {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    border: 1px solid var(--color_line);
+    border-radius: var(--radius_md);
+    background: var(--color_bg);
+    overflow: hidden;
+  }
+
+  .site_bar {
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--color_line);
+  }
+
+  .site_url {
+    font-size: 0.6875rem;
+    color: var(--color_text_muted);
+  }
+
+  .site_load {
+    height: 2px;
+    background: var(--color_accent);
+    transform-origin: left;
+    opacity: 0;
+  }
+
+  .site_page {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-auto-rows: min-content;
+    gap: 6px 14px;
+    padding: 10px 12px;
+  }
+
+  .site_page > span {
+    display: block;
+    border-radius: 4px;
+    background: var(--color_line_strong);
+  }
+
+  .site_page > .site_title { grid-column: 1; height: 10px; width: 62%; background: var(--color_text_muted); }
+  .site_page > .site_line { grid-column: 1; height: 6px; }
+  .site_page > .site_line_a { width: 92%; }
+  .site_page > .site_line_b { width: 70%; }
+  .site_page > .site_btn { grid-column: 1; height: 14px; width: 34%; margin-top: 4px; border-radius: var(--radius_full); background: var(--color_accent); }
+  .site_page > .site_tile { grid-column: 2; grid-row: 1 / span 5; height: 100%; min-height: 50px; background: var(--color_line); }
+
+  /* Animations run only while the card is on screen ([data-live]) */
+  @media (prefers-reduced-motion: no-preference) {
+    .service[data-live] .flow_state > span {
+      animation: 9s linear infinite;
+      animation-delay: var(--phase, 0s);
+    }
+    .service[data-live] .flow_state > span:nth-child(1) { animation-name: flow_s1; }
+    .service[data-live] .flow_state > span:nth-child(2) { animation-name: flow_s2; }
+    .service[data-live] .flow_state > span:nth-child(3) { animation-name: flow_s3; }
+    .service[data-live] .flow_bar {
+      animation: flow_bar 9s var(--ease_out) infinite;
+      animation-delay: var(--phase, 0s);
+    }
+    .flow_row:nth-child(2) { --phase: -3s; }
+    .flow_row:nth-child(3) { --phase: -6s; }
+
+    .service[data-live] .site_load { animation: site_load 7s var(--ease_out) infinite; }
+    .service[data-live] .site_title,
+    .service[data-live] .site_line { animation: site_in_1 7s var(--ease_out) infinite; }
+    .service[data-live] .site_btn { animation: site_in_2 7s var(--ease_out) infinite; }
+    .service[data-live] .site_tile { animation: site_in_3 7s var(--ease_out) infinite; }
+  }
+
+  @keyframes flow_s1 { 0%, 28% { opacity: 1; } 33%, 96% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes flow_s2 { 0%, 28% { opacity: 0; } 33%, 61% { opacity: 1; } 66%, 100% { opacity: 0; } }
+  @keyframes flow_s3 { 0%, 61% { opacity: 0; } 66%, 94% { opacity: 1; } 99%, 100% { opacity: 0; } }
+  @keyframes flow_bar {
+    0%, 28% { transform: scaleX(0.2); }
+    38%, 61% { transform: scaleX(0.6); }
+    71%, 94% { transform: scaleX(1); }
+    100% { transform: scaleX(0.2); }
+  }
+
+  @keyframes site_load {
+    0% { transform: scaleX(0); opacity: 1; }
+    8% { transform: scaleX(1); opacity: 1; }
+    14%, 100% { transform: scaleX(1); opacity: 0; }
+  }
+  @keyframes site_in_1 {
+    0%, 4% { opacity: 0; transform: translateY(4px); }
+    12%, 88% { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; transform: none; }
+  }
+  @keyframes site_in_2 {
+    0%, 10% { opacity: 0; transform: translateY(4px); }
+    18%, 88% { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; transform: none; }
+  }
+  @keyframes site_in_3 {
+    0%, 16% { opacity: 0; transform: translateY(4px); }
+    24%, 88% { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; transform: none; }
+  }
+
+  /* ---- Highlights and link ---- */
   .service_points {
     display: grid;
     gap: 8px;
@@ -114,7 +328,12 @@ const capabilities = t('services.capabilities').split('|');
     color: var(--color_text);
   }
 
-  .service_points li::before {
+  .service_points li {
+    position: relative;
+  }
+
+  .service_points li::before,
+  .service_points li::after {
     content: '';
     display: inline-block;
     width: 6px;
@@ -125,6 +344,20 @@ const capabilities = t('services.capabilities').split('|');
     vertical-align: middle;
   }
 
+  /* The accent dot sits over the muted one and lights up on hover/focus */
+  .service_points li::after {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin: -3px 0 0;
+    background: var(--color_accent);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity var(--duration_fast) ease,
+      transform var(--duration_base) var(--ease_out);
+  }
+
   .service_more {
     align-self: end;
     margin-top: 8px;
@@ -132,10 +365,47 @@ const capabilities = t('services.capabilities').split('|');
     color: var(--color_text);
   }
 
+  .service_more > span {
+    display: inline-block;
+    transition: transform var(--duration_base) var(--ease_out);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .service:hover {
       border-color: var(--color_line_strong);
       color: var(--color_text_secondary);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .service:hover { transform: translateY(-3px); }
+  }
+
+  .service:is(:hover, :focus-visible) .demo {
+    border-color: var(--color_accent_border);
+  }
+
+  .service:is(:hover, :focus-visible) .service_points li::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(2)::after { transition-delay: 50ms; }
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(3)::after { transition-delay: 100ms; }
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(4)::after { transition-delay: 150ms; }
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(5)::after { transition-delay: 200ms; }
+
+  .service:is(:hover, :focus-visible) .service_more > span {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service_points li::after,
+    .service_more > span {
+      transition: none;
+    }
+    .service:is(:hover, :focus-visible) .service_more > span {
+      transform: none;
     }
   }
 </style>
