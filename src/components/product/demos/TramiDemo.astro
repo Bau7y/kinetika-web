@@ -1,0 +1,191 @@
+---
+/**
+ * TramiMuniSC demo: the checklist and progress of a property declaration,
+ * as the person using the service sees it. Sample data only.
+ */
+import type { Lang } from '../../../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+const copy = {
+  es: {
+    title: 'Declaración de bienes inmuebles',
+    docs_label: 'Documentos',
+    docs: ['Formulario de declaración lleno', 'Documento de identidad', 'Datos de la propiedad'],
+    steps: ['Documentos recibidos', 'En revisión', 'Presentado', 'Resuelto por la municipalidad'],
+    advance: 'Avanzar trámite',
+    restart: 'Reiniciar demo',
+    missing: 'Faltan documentos para avanzar.',
+    status: 'Estado',
+  },
+  en: {
+    title: 'Property declaration',
+    docs_label: 'Documents',
+    docs: ['Declaration form filled in', 'ID document', 'Property details'],
+    steps: ['Documents received', 'Under review', 'Filed', 'Decided by the municipality'],
+    advance: 'Move forward',
+    restart: 'Restart demo',
+    missing: 'Some documents are missing.',
+    status: 'Status',
+  },
+}[Astro.props.lang];
+---
+<div class="tram_demo" data-tram-demo data-advance={copy.advance} data-restart={copy.restart} data-missing={copy.missing}>
+  <fieldset class="tram_docs">
+    <legend class="eyebrow">{copy.docs_label}</legend>
+    {copy.docs.map((doc) => (
+      <label><input type="checkbox" data-doc /> <span>{doc}</span></label>
+    ))}
+  </fieldset>
+
+  <div class="tram_track">
+    <p class="tram_title">{copy.title}</p>
+    <ol role="list" class="tram_steps" aria-label={copy.status}>
+      {copy.steps.map((step) => <li data-tram-step>{step}</li>)}
+    </ol>
+    <p class="tram_msg" aria-live="polite" data-tram-msg></p>
+    <button type="button" class="btn btn_primary btn_sm" data-tram-advance>{copy.advance}</button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tram-demo]').forEach((root) => {
+    const docs = [...root.querySelectorAll<HTMLInputElement>('[data-doc]')];
+    const steps = [...root.querySelectorAll<HTMLElement>('[data-tram-step]')];
+    const button = root.querySelector<HTMLButtonElement>('[data-tram-advance]')!;
+    const msg = root.querySelector<HTMLElement>('[data-tram-msg]')!;
+    let reached = -1;
+
+    const paint = () => {
+      steps.forEach((step, i) => {
+        step.toggleAttribute('data-done', i <= reached);
+        if (i === reached) step.setAttribute('aria-current', 'step');
+        else step.removeAttribute('aria-current');
+      });
+      button.textContent = reached === steps.length - 1 ? root.dataset.restart ?? '' : root.dataset.advance ?? '';
+    };
+
+    button.addEventListener('click', () => {
+      if (reached === steps.length - 1) {
+        reached = -1;
+        docs.forEach((d) => (d.checked = false));
+        msg.textContent = '';
+        paint();
+        return;
+      }
+      if (reached === -1 && docs.some((d) => !d.checked)) {
+        msg.textContent = root.dataset.missing ?? '';
+        return;
+      }
+      msg.textContent = steps[reached + 1].textContent ?? '';
+      reached++;
+      paint();
+    });
+
+    paint();
+  });
+</script>
+
+<style>
+  .tram_demo {
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .tram_docs,
+  .tram_track {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    margin: 0;
+    padding: 24px;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_raised);
+  }
+
+  .tram_docs legend {
+    float: left;
+    margin-bottom: 4px;
+  }
+
+  .tram_docs legend + * {
+    clear: both;
+  }
+
+  .tram_docs label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: var(--tap_min);
+    padding: 8px 14px;
+    border-radius: var(--radius_lg);
+    background: var(--color_surface);
+    border: 1px solid var(--color_line);
+    cursor: pointer;
+  }
+
+  .tram_docs input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color_cta);
+  }
+
+  .tram_title {
+    font-size: var(--text_xl);
+    font-weight: 700;
+  }
+
+  .tram_steps {
+    display: grid;
+    gap: 0;
+  }
+
+  .tram_steps li {
+    position: relative;
+    padding: 10px 0 10px 28px;
+    color: var(--color_text_muted);
+  }
+
+  .tram_steps li::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border-radius: 50%;
+    border: 2px solid var(--color_line_strong);
+  }
+
+  .tram_steps li[data-done] {
+    color: var(--color_text);
+  }
+
+  .tram_steps li[data-done]::before {
+    border-color: var(--color_ok);
+    background: var(--color_ok);
+  }
+
+  .tram_steps li[aria-current] {
+    font-weight: 600;
+  }
+
+  .tram_msg {
+    min-height: 1.5em;
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .tram_track button {
+    justify-self: start;
+  }
+
+  @media (min-width: 860px) {
+    .tram_demo {
+      grid-template-columns: 1fr 1.2fr;
+    }
+  }
+</style>
