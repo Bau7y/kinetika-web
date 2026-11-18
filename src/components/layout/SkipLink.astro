@@ -1,0 +1,31 @@
+---
+/** First focusable element: jumps over the navigation to <main>. */
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const t = useTranslations(Astro.props.lang);
+---
+<a href="#contenido" class="skip_link">{t('nav.skip')}</a>
+
+<style>
+  .skip_link {
+    position: fixed;
+    top: -64px;
+    left: 16px;
+    z-index: var(--z_skip);
+    padding: 12px 16px;
+    border-radius: var(--radius_md);
+    background: var(--color_cta);
+    color: var(--color_on_cta);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform var(--duration_base) var(--ease_out);
+  }
+
+  .skip_link:focus {
+    transform: translateY(80px);
+    color: var(--color_on_cta);
+  }
+</style>
