@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import Fonts from '../components/layout/Fonts.astro';
 import NavBar from '../components/layout/NavBar.astro';
 import LangSuggest from '../components/layout/LangSuggest.astro';
@@ -79,5 +81,9 @@ const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alterna
     </main>
     <Footer lang={lang} replayIntro={intro} />
     <LangSuggest lang={lang} altHref={alternates[otherLang]} />
+    <!-- Vercel Web Analytics: no cookies; only records in production -->
+    <Analytics />
+    <!-- Vercel Speed Insights: real-user Core Web Vitals; only records in production -->
+    <SpeedInsights />
   </body>
 </html>

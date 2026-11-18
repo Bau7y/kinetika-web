@@ -958,6 +958,11 @@
   optionalDependencies:
     ajv "^6.12.3"
 
+"@vercel/speed-insights@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@vercel/speed-insights/-/speed-insights-2.1.0.tgz#3b7fe1facc2ad6e25507ed4a335910811f830c08"
+  integrity sha512-tkDiIEjjmlwPpTFnOK14hBhsRLMo5yoCeK2Er3AHWlL7WTzHgFSyItps3TOW0HukErUlYlaUeHiVLCyfiE4WAA==
+
 "@volar/kit@~2.4.28":
   version "2.4.31"
   resolved "https://registry.yarnpkg.com/@volar/kit/-/kit-2.4.31.tgz#69c11771c2cb73ce2ece3bd2fd924f322fa29be0"
