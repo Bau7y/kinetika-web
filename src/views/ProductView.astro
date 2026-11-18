@@ -62,8 +62,8 @@ const crumbs = [
     <div class="container">
       <h2 id="highlights_title" class="section_title product_h2">{data.highlights.title}</h2>
       <ul role="list" class="product_highlights">
-        {data.highlights.items.map((item) => (
-          <li data-reveal>
+        {data.highlights.items.map((item, i) => (
+          <li data-reveal data-i={i % 2} data-spotlight>
             <h3>{item.title}</h3>
             <p>{item.text}</p>
           </li>

@@ -21,12 +21,13 @@ const parts = (item: FaqItem) => {
 };
 ---
 <section id="preguntas" class="section container" aria-labelledby="faq_title">
-  <h2 id="faq_title" class="section_title faq_title" data-reveal>{t('faq.title')}</h2>
+  <p class="section_label" data-reveal data-i="0"><span>06</span>{t('label.faq')}</p>
+  <h2 id="faq_title" class="section_title faq_title" data-reveal data-i="1">{t('faq.title')}</h2>
   <dl class="faq_list">
-    {items.map((item) => {
+    {items.map((item, i) => {
       const { before, link, after } = parts(item);
       return (
-        <div class="faq_item" data-reveal>
+        <div class="faq_item" data-reveal data-i={i % 2}>
           <dt>{item.q}</dt>
           <dd>{before}{link && <a href={link.href}>{link.text}</a>}{after}</dd>
         </div>

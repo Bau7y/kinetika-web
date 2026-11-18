@@ -16,15 +16,15 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const scenes = dayScenes[lang];
-const last = scenes[scenes.length - 1].hour;
 const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
 ---
-<section id="dia" class="section section_band day" aria-labelledby="day_title" data-day>
+<section id="dia" class="section section_blue day" aria-labelledby="day_title" data-day>
   <div class="container">
     <div class="day_head">
       <div>
-        <h2 id="day_title" class="section_title" data-reveal>{t('day.title')}</h2>
-        <p class="lede day_lede" data-reveal>{t('day.lede')}</p>
+        <p class="section_label" data-reveal data-i="0"><span>02</span>{t('label.day')}</p>
+        <h2 id="day_title" class="section_title" data-reveal data-i="1">{t('day.title')}</h2>
+        <p class="lede day_lede" data-reveal data-i="2">{t('day.lede')}</p>
       </div>
       <div class="day_controls">
         <button type="button" class="day_btn" aria-label={t('day.prev')} data-day-prev>
@@ -47,7 +47,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
                 <span class="day_hour">{scene.hour}</span>
                 <span class="eyebrow day_moment">{scene.moment}</span>
               </div>
-              <article class="day_card">
+              <article class="day_card" data-spotlight>
                 <div class="day_card_head">
                   <h3>{scene.name}</h3>
                   <Badge tone={badge.tone}>{t(badge.label)}</Badge>
@@ -68,9 +68,29 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
       </ol>
     </div>
 
-    <div class="day_progress" aria-hidden="true">
-      <div class="day_bar"><div class="day_fill" data-day-fill></div></div>
-      <span class="mono" data-day-label>{scenes[0].hour} / {last}</span>
+    <!-- Auto tour: one segment per hour fills up, then the next scene comes.
+         Pauses on hover, on focus, off screen and with the button. -->
+    <div class="day_progress">
+      <button type="button" class="day_play" data-day-play aria-pressed="false" data-label-pause={t('day.pause')} data-label-play={t('day.play')} aria-label={t('day.pause')}>
+        <svg class="day_icon_pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+        <svg class="day_icon_play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.9l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 8 5.5z" /></svg>
+      </button>
+      <ol role="list" class="day_segments">
+        {scenes.map((scene, i) => (
+          <li>
+            <button
+              type="button"
+              class="day_seg"
+              data-day-seg={i}
+              aria-current={i === 0 ? 'step' : undefined}
+              aria-label={t('day.go').replace('{hour}', scene.hour).replace('{name}', scene.name)}
+            >
+              <span class="day_seg_bar"><span class="day_seg_fill"></span></span>
+              <span class="mono day_seg_hour">{scene.hour}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
     </div>
     <p class="visually_hidden" aria-live="polite" data-day-live></p>
   </div>
@@ -83,6 +103,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
 
 <style>
   .day {
+    --day_interval: 6s;
     --card_w: min(420px, 82vw);
     --gap: 24px;
     /* clip, not hidden: a clipped box cannot be scrolled, so focusing a
@@ -255,26 +276,96 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     display: none;
     align-items: center;
     gap: 16px;
-    max-width: 560px;
     margin-top: var(--space_lg);
-    font-size: var(--text_xs);
-    color: var(--color_text_muted);
   }
 
-  .day_bar {
+  .day_play {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--tap_min);
+    height: var(--tap_min);
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_line_strong);
+    color: var(--color_text);
+    transition: transform var(--duration_press) var(--ease_out);
+  }
+
+  .day_play:active {
+    transform: scale(0.95);
+  }
+
+  .day_icon_play,
+  .day[data-paused] .day_icon_pause {
+    display: none;
+  }
+
+  .day[data-paused] .day_icon_play {
+    display: block;
+  }
+
+  .day_segments {
     flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    max-width: 640px;
+  }
+
+  .day_seg {
+    display: grid;
+    gap: 8px;
+    width: 100%;
+    min-height: var(--tap_min);
+    align-content: center;
+    text-align: left;
+  }
+
+  .day_seg_bar {
+    display: block;
     height: 3px;
     border-radius: 3px;
     background: var(--color_line_strong);
     overflow: hidden;
   }
 
-  .day_fill {
-    height: 3px;
+  .day_seg_fill {
+    display: block;
+    height: 100%;
     background: var(--color_accent);
-    transform: scaleX(0.25);
+    transform: scaleX(0);
     transform-origin: 0 50%;
-    transition: transform var(--duration_move) var(--ease_in_out);
+  }
+
+  .day_seg[data-done] .day_seg_fill {
+    transform: scaleX(1);
+  }
+
+  /* The current segment fills over the scene's time; paused freezes it */
+  .day_seg[aria-current] .day_seg_fill {
+    animation: day_run var(--day_interval) linear forwards;
+  }
+
+  .day[data-paused] .day_seg[aria-current] .day_seg_fill {
+    animation-play-state: paused;
+  }
+
+  .day_seg_hour {
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  .day_seg[aria-current] .day_seg_hour {
+    color: var(--color_text);
+  }
+
+  @keyframes day_run {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
   }
 
   /* ── Enhanced: buttons move the track ── */
@@ -303,8 +394,13 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   }
 
   @media (prefers-reduced-motion: reduce) {
+    /* No auto tour: the current segment is simply full */
+    .day_seg[aria-current] .day_seg_fill {
+      animation: none;
+      transform: scaleX(1);
+    }
+
     .day_track,
-    .day_fill,
     .day_card::after {
       transition: none !important;
     }

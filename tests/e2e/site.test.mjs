@@ -50,6 +50,19 @@ describe('páginas clave', () => {
 });
 
 describe('seguridad', () => {
+  it('ningún HTML usa atributos style (la CSP los bloquea en producción)', async () => {
+    const { readdir } = await import('node:fs/promises');
+    const root = '.vercel/output/static';
+    const files = (await readdir(root, { recursive: true })).filter((f) => f.endsWith('.html'));
+    const offenders = [];
+    for (const file of files) {
+      const html = await readFile(`${root}/${file}`, 'utf8');
+      // Skip <svg> presentation markup: only HTML style="" attributes matter
+      if (/<[a-z][^>]*\sstyle=["']/i.test(html.replace(/<svg[\s\S]*?<\/svg>/g, ''))) offenders.push(file);
+    }
+    assert.deepEqual(offenders, []);
+  });
+
   it('la CSP se envía como encabezado, sin unsafe-inline en scripts', async () => {
     const config = await readFile('.vercel/output/config.json', 'utf8');
     const csp = config.match(/"content-security-policy":\s*"([^"]+)"/i)?.[1] ?? '';

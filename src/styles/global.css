@@ -109,6 +109,25 @@ main:focus {
   color: var(--color_text);
 }
 
+/* ── Stagger index ────────────────────────────────── */
+/*
+ * Position in a staggered sequence, as data-i. Inline style attributes are
+ * blocked by the CSP (style-src uses hashes), so --i cannot come from style="".
+ */
+[data-i='0'] { --i: 0; }
+[data-i='1'] { --i: 1; }
+[data-i='2'] { --i: 2; }
+[data-i='3'] { --i: 3; }
+[data-i='4'] { --i: 4; }
+[data-i='5'] { --i: 5; }
+[data-i='6'] { --i: 6; }
+[data-i='7'] { --i: 7; }
+[data-i='8'] { --i: 8; }
+[data-i='9'] { --i: 9; }
+[data-i='10'] { --i: 10; }
+[data-i='11'] { --i: 11; }
+[data-i='12'] { --i: 12; }
+
 /* ── Layout helpers ───────────────────────────────── */
 .container {
   width: 100%;
@@ -126,6 +145,15 @@ main:focus {
   border-block: 1px solid var(--color_line);
 }
 
+/* Blue band: the rhythm accent between plain sections */
+.section_blue {
+  background:
+    radial-gradient(70% 110% at 88% 0%, rgb(47 111 235 / 0.22), transparent 62%),
+    radial-gradient(50% 80% at 0% 100%, rgb(61 139 255 / 0.1), transparent 70%),
+    linear-gradient(180deg, #0a1428, #0b1631);
+  border-block: 1px solid rgb(61 139 255 / 0.18);
+}
+
 .visually_hidden {
   position: absolute;
   width: 1px;
@@ -141,9 +169,37 @@ main:focus {
 /* ── Type helpers ─────────────────────────────────── */
 .section_title {
   font-size: var(--text_h2);
-  font-weight: 700;
-  line-height: var(--leading_tight);
-  letter-spacing: var(--tracking_tight);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+/* Numbered label above section titles: "01 — Productos" */
+.section_label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--space_md);
+  font-family: var(--font_mono);
+  font-size: var(--text_xs);
+  font-weight: 500;
+  letter-spacing: var(--tracking_label);
+  text-transform: uppercase;
+  color: var(--color_text_secondary);
+}
+
+.section_label span {
+  color: var(--color_accent_text);
+}
+
+.section_label span::after {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  margin-left: 12px;
+  vertical-align: middle;
+  background: var(--color_accent_border_strong);
 }
 
 .lede {
@@ -168,24 +224,29 @@ main:focus {
 
 /* ── Scroll reveal ────────────────────────────────── */
 /*
- * Progressive enhancement: everything is visible by default. Where the
- * browser supports scroll-driven animations, [data-reveal] rises in as it
- * enters the viewport. Only opacity and transform: compositor only, no JS.
+ * Progressive enhancement: without JS everything is visible. With JS,
+ * [data-reveal] rises in once when it enters the viewport (see BaseLayout),
+ * eased and staggered by --i. Only opacity and transform: compositor only.
  */
-@keyframes reveal_up {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--duration_slow) var(--ease_out),
+    transform var(--duration_slow) var(--ease_out);
+  transition-delay: calc(var(--i, 0) * 80ms);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    [data-reveal] {
-      animation: reveal_up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 26%;
-    }
+.js [data-reveal].is_visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
@@ -273,4 +334,63 @@ main:focus {
   .btn:hover .btn_icon_arrow {
     transform: translateX(3px);
   }
+}
+
+/* ── Page transitions ─────────────────────────────── */
+/*
+ * Native cross-document View Transitions: no JS, no router. The old page
+ * fades out quickly and the new one rises in; the navigation pill keeps its
+ * own name, so it stays in place between pages. Browsers without support
+ * simply navigate as usual.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: page_out var(--duration_exit) var(--ease_out) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page_in var(--duration_base) var(--ease_out) both;
+  }
+}
+
+@keyframes page_out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page_in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ── Spotlight (scripts/spotlight.ts) ─────────────── */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.spotlight {
+  position: absolute;
+  top: -180px;
+  left: -180px;
+  z-index: -1;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(61 139 255 / 0.16), rgb(61 139 255 / 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration_base) ease;
+}
+
+.spotlight_on .spotlight {
+  opacity: 1;
 }

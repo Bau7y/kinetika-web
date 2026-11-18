@@ -1,0 +1,106 @@
+---
+/**
+ * Facts in big type, right after the hero. Every number comes from the
+ * site's own data (products, districts), never typed by hand.
+ * The figures count up once when they appear (not with reduced motion).
+ */
+import { getProducts } from '../../data/products';
+import { districts } from '../../data/service_area';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const products = await getProducts(lang);
+
+const stats = [
+  { value: products.length, text: t('stats.products') },
+  { value: products.filter((p) => p.data.status === 'in_production').length, text: t('stats.live') },
+  { value: districts.length, text: t('stats.districts') },
+  { value: 2, text: t('stats.languages') },
+];
+---
+<section class="stats container" aria-labelledby="stats_title">
+  <h2 id="stats_title" class="visually_hidden">{t('stats.title')}</h2>
+  <ul role="list" class="stats_grid" data-stats>
+    {stats.map((s, i) => (
+      <li class="stat" data-reveal data-i={i} data-spotlight>
+        <span class="stat_value" data-count={s.value}>{s.value}</span>
+        <span class="stat_text">{s.text}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<script>
+  /* Count up from 0 when the strip comes into view (text only, no layout:
+     tabular figures keep the width stable). */
+  const strip = document.querySelector<HTMLElement>('[data-stats]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (strip && !reduce && 'IntersectionObserver' in window) {
+    const values = [...strip.querySelectorAll<HTMLElement>('[data-count]')];
+    values.forEach((el) => (el.textContent = '0'));
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const DURATION = 1100;
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - start) / DURATION);
+        const eased = 1 - Math.pow(1 - p, 3);
+        values.forEach((el) => (el.textContent = String(Math.round(Number(el.dataset.count) * eased))));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.4 });
+    io.observe(strip);
+  }
+</script>
+
+<style>
+  .stats {
+    position: relative;
+    padding-block: var(--space_xl) 0;
+  }
+
+  .stats_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 24px;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+    overflow: hidden;
+  }
+
+  .stat_value {
+    font-size: clamp(2.75rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color_text);
+  }
+
+  .stat_text {
+    font-size: var(--text_sm);
+    line-height: 1.45;
+    color: var(--color_text_secondary);
+  }
+
+  @media (min-width: 900px) {
+    .stats_grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

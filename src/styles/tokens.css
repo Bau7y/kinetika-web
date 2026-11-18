@@ -67,7 +67,7 @@
   --container_max: 1240px;
   --container_px: 24px;
   --section_py: clamp(5rem, 10vw, 8.5rem);
-  --navbar_h: 84px;
+  --navbar_h: 88px;
 
   --space_2xs: 0.5rem;
   --space_xs: 0.75rem;
