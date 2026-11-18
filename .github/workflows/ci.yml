@@ -29,3 +29,7 @@ jobs:
           CONTACT_FROM: Kinetika <ci@example.com>
       - run: yarn test:e2e
       - run: yarn test:a11y
+      # The portfolio cards must show the current demos
+      - run: yarn check:captures
+      # Performance budget: LCP, CLS, TBT and full accessibility/SEO scores
+      - run: yarn test:perf

@@ -24,3 +24,4 @@ coverage/
 # sistema
 .DS_Store
 Thumbs.db
+.lighthouseci/
