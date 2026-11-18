@@ -1,12 +1,4 @@
 ---
-// Página provisional: se reemplaza al construir el inicio.
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { routes, useTranslations } from '../i18n/ui';
-
-const t = useTranslations('es');
+import HomeView from '../views/HomeView.astro';
 ---
-<BaseLayout intro lang="es" title={t('site.tagline')} alternates={routes.home}>
-  <div class="container section">
-    <h1 class="section_title">{t('site.tagline')}</h1>
-  </div>
-</BaseLayout>
+<HomeView lang="es" />

@@ -46,6 +46,23 @@ const es = {
 
   'breadcrumbs.label': 'Ruta de navegación',
   'updated.label': 'Actualizado el',
+
+  'hero.title_a': 'Software empresarial para negocios que',
+  'hero.title_b': 'no se detienen.',
+  'hero.lede': 'Sitios web, pedidos en línea, trámites y gestión contable en San Carlos y todo Costa Rica.',
+  'hero.cases_label': 'Elegí tu caso',
+  'hero.case_restaurant': 'Tengo un restaurante',
+  'hero.case_accounting': 'Llevo contabilidades',
+  'hero.case_website': 'Necesito un sitio web',
+  'hero.case_procedures': 'Hago trámites municipales',
+  'hero.credentials_label': 'Lo que respalda el trabajo',
+  'hero.cred_accounting': 'Contaduría',
+  'hero.cred_accounting_text': 'Procesos y números claros',
+  'hero.cred_projects': 'Administración de proyectos',
+  'hero.cred_projects_text': 'Entregas por etapas',
+  'hero.cred_software': 'Ingeniería de software',
+  'hero.cred_software_text': 'Código propio, no plantillas',
+  'hero.cred_live': 'En producción',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -89,6 +106,23 @@ const en: Strings = {
 
   'breadcrumbs.label': 'Breadcrumb',
   'updated.label': 'Updated on',
+
+  'hero.title_a': 'Business software for companies that',
+  'hero.title_b': 'never stop.',
+  'hero.lede': 'Websites, online ordering, procedures and accounting tools in San Carlos and all of Costa Rica.',
+  'hero.cases_label': 'Pick your case',
+  'hero.case_restaurant': 'I run a restaurant',
+  'hero.case_accounting': 'I handle accounting',
+  'hero.case_website': 'I need a website',
+  'hero.case_procedures': 'I deal with municipal procedures',
+  'hero.credentials_label': 'What backs the work',
+  'hero.cred_accounting': 'Accounting',
+  'hero.cred_accounting_text': 'Clear processes and numbers',
+  'hero.cred_projects': 'Project management',
+  'hero.cred_projects_text': 'Delivery in stages',
+  'hero.cred_software': 'Software engineering',
+  'hero.cred_software_text': 'Our own code, no templates',
+  'hero.cred_live': 'In production',
 };
 
 export const ui = { es, en } as const;

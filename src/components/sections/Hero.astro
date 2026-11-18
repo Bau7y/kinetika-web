@@ -1,0 +1,199 @@
+---
+/**
+ * Opening scene. The h1 is the Largest Contentful Paint: it is never
+ * animated. Secondary elements rise in after the intro (or right away when
+ * the intro does not play).
+ */
+import { Picture } from 'astro:assets';
+import heroImage from '../../assets/hero.jpg';
+import { site } from '../../data/site';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const cases = [
+  { href: '#interruptor', label: t('hero.case_restaurant') },
+  { href: '#dia', label: t('hero.case_accounting') },
+  { href: '#plano', label: t('hero.case_website') },
+  { href: '#dia', label: t('hero.case_procedures') },
+];
+
+const credentials = [
+  { title: t('hero.cred_accounting'), text: t('hero.cred_accounting_text') },
+  { title: t('hero.cred_projects'), text: t('hero.cred_projects_text') },
+  { title: t('hero.cred_software'), text: t('hero.cred_software_text') },
+];
+const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '');
+---
+<section class="hero" aria-labelledby="hero_title">
+  <Picture
+    src={heroImage}
+    formats={['avif', 'webp']}
+    widths={[960, 1600, 2400]}
+    sizes="100vw"
+    alt=""
+    loading="eager"
+    fetchpriority="high"
+    class="hero_bg"
+  />
+
+  <div class="hero_body container">
+    <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
+    <p class="hero_lede hero_in" style="--d: 0">{t('hero.lede')}</p>
+    <div class="hero_cases hero_in" style="--d: 1" role="group" aria-label={t('hero.cases_label')}>
+      {cases.map((c) => (
+        <a href={c.href} class="hero_case">
+          {c.label} <span aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="hero_strip hero_in" style="--d: 2">
+    <ul role="list" class="container hero_credentials" aria-label={t('hero.credentials_label')}>
+      {credentials.map((c) => <li><strong>{c.title}</strong>{c.text}</li>)}
+      <li><strong>{t('hero.cred_live')}</strong><a href={site.external.tramimunisc}>{liveHost}</a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    padding-top: var(--navbar_h);
+    overflow: hidden;
+    background: radial-gradient(90% 70% at 50% 35%, #172b5c, var(--color_bg) 70%);
+  }
+
+  .hero :global(.hero_bg) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+  }
+
+  .hero_body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--space_lg) var(--space_2xl);
+    text-align: center;
+  }
+
+  .hero_title {
+    max-width: 1000px;
+    font-size: var(--text_display);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+
+  .hero_title span {
+    color: var(--color_accent_text);
+  }
+
+  .hero_lede {
+    max-width: 35rem;
+    margin-top: var(--space_md);
+    font-size: var(--text_lg);
+    color: var(--color_text_secondary);
+  }
+
+  .hero_cases {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 860px;
+    margin-top: 36px;
+  }
+
+  .hero_case {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding-inline: 18px;
+    border-radius: 12px;
+    border: 1px solid var(--color_line_strong);
+    background-color: rgb(13 20 34 / 0.75);
+    color: var(--color_text);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+  }
+
+  .hero_case span {
+    color: var(--color_accent_text);
+  }
+
+  .hero_case:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero_case:hover {
+      background-color: var(--color_accent_tint_strong);
+      color: var(--color_text);
+    }
+  }
+
+  .hero_strip {
+    border-top: 1px solid var(--color_line);
+    background: rgb(7 11 20 / 0.6);
+  }
+
+  .hero_credentials {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space_sm);
+    padding-block: 20px;
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .hero_credentials strong {
+    display: block;
+    color: var(--color_text);
+    font-weight: 600;
+  }
+
+  @media (min-width: 900px) {
+    .hero_credentials {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* Entrance of the secondary elements (never the h1) */
+  @keyframes hero_rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .hero_in {
+      animation: hero_rise 520ms var(--ease_out) calc(80ms + var(--d) * 80ms) both;
+    }
+
+    /* After the intro curtain lifts (1550 ms + 640 ms) */
+    :global(html.intro) .hero_in {
+      animation-delay: calc(1820ms + var(--d) * 80ms);
+    }
+  }
+</style>
