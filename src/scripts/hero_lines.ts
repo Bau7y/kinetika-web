@@ -19,13 +19,13 @@ export function initHeroLines(hero: HTMLElement) {
 
     const worker = new Worker(new URL('./hero_lines.worker.ts', import.meta.url), { type: 'module' });
     const offscreen = canvas.transferControlToOffscreen();
-    const mobile = !matchMedia('(min-width: 768px)').matches;
-    // Soft lines need no full retina resolution: fewer pixels keep 60 fps
+    // Soft lines need no full retina resolution; the worker lowers it further
+    // on big screens to keep a fixed pixel budget per frame
     const dpr = Math.min(devicePixelRatio || 1, 1.25);
 
     let width = hero.clientWidth;
     let height = hero.clientHeight;
-    worker.postMessage({ type: 'init', canvas: offscreen, width, height, dpr, mobile }, [offscreen]);
+    worker.postMessage({ type: 'init', canvas: offscreen, width, height, dpr }, [offscreen]);
 
     worker.addEventListener('message', (e: MessageEvent<{ type: string }>) => {
       if (e.data.type === 'ready') hero.classList.add('lines_live');
@@ -52,9 +52,13 @@ export function initHeroLines(hero: HTMLElement) {
     // Scroll story without scroll listeners: how much of the hero has left the
     // viewport (0 → 1) drives the lines from loose to ordered
     const steps = Array.from({ length: 41 }, (_, i) => i / 40);
+    // Hero position, refreshed by the observer: the pointer handler never
+    // reads layout (no getBoundingClientRect on every move)
+    let heroTop = 0;
     new IntersectionObserver(
       ([entry]) => {
-        const leaving = entry.boundingClientRect.top < 0;
+        heroTop = entry.boundingClientRect.top;
+        const leaving = heroTop < 0;
         worker.postMessage({ type: 'progress', value: leaving ? Math.min(1, (1 - entry.intersectionRatio) * 1.6) : 0 });
       },
       { threshold: steps },
@@ -69,7 +73,7 @@ export function initHeroLines(hero: HTMLElement) {
         worker.postMessage({ type: 'pointer', ...last });
       };
       hero.addEventListener('pointermove', (e) => {
-        last = { x: e.clientX / width, y: (e.clientY - (hero.getBoundingClientRect().top)) / height, inside: true };
+        last = { x: e.clientX / width, y: (e.clientY - heroTop) / height, inside: true };
         if (!queued) {
           queued = true;
           requestAnimationFrame(send);

@@ -12,7 +12,7 @@
  */
 
 type Message =
-  | { type: 'init'; canvas: OffscreenCanvas; width: number; height: number; dpr: number; mobile: boolean }
+  | { type: 'init'; canvas: OffscreenCanvas; width: number; height: number; dpr: number }
   | { type: 'resize'; width: number; height: number }
   | { type: 'pointer'; x: number; y: number; inside: boolean }
   | { type: 'progress'; value: number }
@@ -44,8 +44,24 @@ let ctx: OffscreenCanvasRenderingContext2D | null = null;
 let canvas: OffscreenCanvas | null = null;
 let W = 0;
 let H = 0;
+/** Device pixel ratio cap sent by the page. */
+let maxDpr = 1;
+/** Scale actually used: maxDpr, lowered on big screens to stay in budget. */
 let dpr = 1;
-let count = 260;
+let count = 200;
+let lastDraw = 0;
+
+/**
+ * Pixel budget per frame. The cost of these soft, blended lines grows with
+ * the canvas area, so a 1920×1080 monitor would draw six times the pixels of
+ * a phone. Above ~1.1 million pixels the canvas renders smaller and the
+ * browser scales it up: on soft lines the difference does not show.
+ */
+const PIXEL_BUDGET = 1_100_000;
+/** Line count follows the area too, between a phone and a wide monitor. */
+const linesFor = (w: number, h: number) => Math.round(Math.min(220, Math.max(140, 140 + ((w * h - 340_000) / 1_700_000) * 80)));
+/** Never more than ~60 fps: on 120/144 Hz screens every other frame is skipped. */
+const MIN_FRAME_MS = 1000 / 61;
 let lines: Line[] = [];
 let pulses: Pulse[] = [];
 let playing = false;
@@ -108,6 +124,8 @@ function build() {
 
 function resize(width: number, height: number) {
   if (!canvas) return;
+  dpr = Math.min(maxDpr, Math.sqrt(PIXEL_BUDGET / Math.max(1, width * height)));
+  count = linesFor(width, height);
   W = Math.round(width * dpr);
   H = Math.round(height * dpr);
   canvas.width = W;
@@ -239,6 +257,8 @@ function draw(now: number) {
 function loop(now: number) {
   if (!playing) return;
   frame = requestAnimationFrame(loop);
+  if (now - lastDraw < MIN_FRAME_MS) return;
+  lastDraw = now;
   draw(now);
 }
 
@@ -248,9 +268,7 @@ self.onmessage = (event: MessageEvent<Message>) => {
     case 'init': {
       canvas = msg.canvas;
       ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-      dpr = msg.dpr;
-      // Fewer lines on phones: same look, full frame rate, less battery
-      count = msg.mobile ? 150 : 260;
+      maxDpr = msg.dpr;
       startedAt = performance.now();
       resize(msg.width, msg.height);
       break;
