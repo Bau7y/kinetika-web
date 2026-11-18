@@ -23,7 +23,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const privacyHref = await getLegalHref('privacidad', lang);
 ---
-<BaseLayout intro lang={lang} title={t('site.tagline')} description={t('site.description')} alternates={routes.home}>
+<BaseLayout intro lang={lang} title={t('home.seo_title')} description={t('site.description')} alternates={routes.home}>
   <JsonLd slot="head" data={[businessSchema(Astro.site!, lang, t('site.description'), routes.home[lang]), faqSchema(faq[lang])]} />
   <Hero lang={lang} />
   <StatsStrip lang={lang} />

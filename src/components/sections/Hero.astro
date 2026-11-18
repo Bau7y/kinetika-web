@@ -42,6 +42,7 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
   />
 
   <div class="hero_body container">
+    <p class="hero_kicker">{t('hero.kicker')}</p>
     <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
     <p class="hero_lede hero_in" data-i="0">{t('hero.lede')}</p>
     <div class="hero_cases hero_in" data-i="1" role="group" aria-label={t('hero.cases_label')}>
@@ -120,6 +121,19 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
     justify-content: center;
     padding-block: var(--space_lg) var(--space_2xl);
     text-align: center;
+  }
+
+  /* What and where, in words search engines and assistants read first */
+  .hero_kicker {
+    margin-bottom: var(--space_md);
+    padding: 6px 14px;
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_accent_border);
+    background: rgb(13 20 34 / 0.6);
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    letter-spacing: 0.06em;
+    color: var(--color_text_secondary);
   }
 
   .hero_title {

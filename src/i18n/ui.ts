@@ -12,6 +12,8 @@ const es = {
   'site.description':
     'Sitios web, pedidos en línea, trámites municipales y gestión contable para negocios de San Carlos y todo Costa Rica.',
   'meta.locale': 'es_CR',
+  'home.seo_title': 'Kinetika | Sitios web y software para negocios en San Carlos, Costa Rica',
+  'hero.kicker': 'Estudio de software en San Carlos, Costa Rica',
 
   'nav.main_label': 'Principal',
   'nav.mobile_label': 'Menú',
@@ -195,6 +197,8 @@ const en: Strings = {
   'site.description':
     'Websites, online ordering, municipal procedures and accounting tools for businesses in San Carlos and all of Costa Rica.',
   'meta.locale': 'en_US',
+  'home.seo_title': 'Kinetika | Websites and software for businesses in San Carlos, Costa Rica',
+  'hero.kicker': 'Software studio in San Carlos, Costa Rica',
 
   'nav.main_label': 'Main',
   'nav.mobile_label': 'Menu',
