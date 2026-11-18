@@ -43,8 +43,8 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
 
   <div class="hero_body container">
     <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
-    <p class="hero_lede hero_in" style="--d: 0">{t('hero.lede')}</p>
-    <div class="hero_cases hero_in" style="--d: 1" role="group" aria-label={t('hero.cases_label')}>
+    <p class="hero_lede hero_in" data-i="0">{t('hero.lede')}</p>
+    <div class="hero_cases hero_in" data-i="1" role="group" aria-label={t('hero.cases_label')}>
       {cases.map((c) => (
         <a href={c.href} class="hero_case">
           {c.label} <span aria-hidden="true">→</span>
@@ -53,7 +53,7 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
     </div>
   </div>
 
-  <div class="hero_strip hero_in" style="--d: 2">
+  <div class="hero_strip hero_in" data-i="2">
     <div class="container">
     <ul role="list" class="hero_credentials" aria-label={t('hero.credentials_label')}>
       {credentials.map((c) => <li><strong>{c.title}</strong>{c.text}</li>)}
@@ -207,12 +207,12 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
 
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .hero_in {
-      animation: hero_rise 520ms var(--ease_out) calc(80ms + var(--d) * 80ms) both;
+      animation: hero_rise 520ms var(--ease_out) calc(80ms + var(--i) * 80ms) both;
     }
 
     /* After the intro curtain lifts (1550 ms + 640 ms) */
     :global(html.intro) .hero_in {
-      animation-delay: calc(1820ms + var(--d) * 80ms);
+      animation-delay: calc(1820ms + var(--i) * 80ms);
     }
   }
 </style>

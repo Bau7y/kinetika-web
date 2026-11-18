@@ -36,7 +36,7 @@
     <line class="intro_beam" x1="-6" y1="84" x2="106" y2="18" stroke="url(#intro_beam)" stroke-width="1" />
   </svg>
   <div class="intro_word" translate="no">
-    {'KINETIKA'.split('').map((letter, i) => <span style={`animation-delay: ${1000 + i * 40}ms`}>{letter}</span>)}
+    {'KINETIKA'.split('').map((letter, i) => <span data-i={i}>{letter}</span>)}
   </div>
 </div>
 
@@ -157,7 +157,7 @@
 
   .intro_word span {
     display: inline-block;
-    animation: intro_letter 420ms var(--ease_out) both;
+    animation: intro_letter 420ms var(--ease_out) calc(1000ms + var(--i) * 40ms) both;
   }
 
   @keyframes intro_stem {

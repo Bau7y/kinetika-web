@@ -58,9 +58,9 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
   <div id="menu_movil" class="navbar_mobile" data-mobile-menu>
     <nav aria-label={t('nav.mobile_label')} class="container">
       <ul role="list">
-        {links.map((link, i) => <li style={`--i: ${i}`}><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>)}
+        {links.map((link, i) => <li data-i={i}><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>)}
       </ul>
-      <a href={quoteHref} class="btn btn_primary navbar_mobile_cta" style={`--i: ${links.length}`}>{t('nav.quote')}</a>
+      <a href={quoteHref} class="btn btn_primary navbar_mobile_cta" data-i={links.length}>{t('nav.quote')}</a>
     </nav>
   </div>
 </header>
