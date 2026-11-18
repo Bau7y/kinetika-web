@@ -31,14 +31,14 @@ const anchor = (id: string) => homeAnchor(lang, id);
   />
 
   <div class="hero_body container">
-    <p class="hero_kicker"><span class="hero_dot" aria-hidden="true"></span>{t('hero.kicker')}</p>
+    <p class="hero_kicker hero_in" data-i="0"><span class="hero_dot" aria-hidden="true"></span>{t('hero.kicker')}</p>
     <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
-    <p class="hero_lede hero_in" data-i="0">{t('hero.lede')}</p>
-    <div class="hero_actions hero_in" data-i="1">
+    <p class="hero_lede hero_in" data-i="1">{t('hero.lede')}</p>
+    <div class="hero_actions hero_in" data-i="2">
       <Button href={routes.quote[lang]} arrow>{t('nav.quote')}</Button>
       <Button href={anchor('proyectos')} variant="ghost">{t('hero.cta_secondary')}</Button>
     </div>
-    <a href={anchor('proyectos')} class="hero_scroll hero_in" data-i="2">
+    <a href={anchor('proyectos')} class="hero_scroll hero_in" data-i="3">
       <span>{t('hero.scroll_a')}</span>
       <span class="hero_mouse" aria-hidden="true"><span></span></span>
       <span>{t('hero.scroll_b')}</span>
@@ -46,7 +46,7 @@ const anchor = (id: string) => homeAnchor(lang, id);
   </div>
 
   <!-- What we build, as a quiet marquee. The second copy only fills the loop. -->
-  <div class="hero_strip hero_in" data-i="3">
+  <div class="hero_strip hero_in" data-i="4">
     <div class="hero_marquee">
       <ul role="list" class="hero_marquee_track" aria-label={t('services.capabilities_label')}>
         {capabilities.map((c) => <li>{c}</li>)}
@@ -321,22 +321,53 @@ const anchor = (id: string) => homeAnchor(lang, id);
     }
   }
 
-  /* Entrance of the secondary elements (never the h1) */
+  /* Entrance of the secondary elements (never the h1): a longer, softer rise */
   @keyframes hero_rise {
     from {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(18px);
     }
   }
 
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .hero_in {
-      animation: hero_rise 520ms var(--ease_out) calc(80ms + var(--i) * 80ms) both;
+      animation: hero_rise 900ms var(--ease_out) calc(120ms + var(--i) * 110ms) both;
     }
 
     /* After the intro curtain lifts (1550 ms + 640 ms) */
     :global(html.intro) .hero_in {
-      animation-delay: calc(1820ms + var(--i) * 80ms);
+      animation-delay: calc(1820ms + var(--i) * 110ms);
+    }
+  }
+  /*
+   * Scroll story, part of the text: while the hero leaves the viewport its
+   * content drifts up and fades, as the lines behind it fall into order.
+   * Compositor-only (transform, opacity); browsers without scroll-driven
+   * animations simply scroll it away.
+   */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hero {
+        view-timeline-name: --hero;
+      }
+
+      .hero_body {
+        animation: hero_leave linear both;
+      }
+
+      /* Separate rule: the minifier folds a timeline set beside the
+         shorthand into it, which browsers then drop */
+      .hero .hero_body {
+        animation-timeline: --hero;
+        animation-range: exit 0% exit 70%;
+      }
+    }
+  }
+
+  @keyframes hero_leave {
+    to {
+      opacity: 0;
+      transform: translateY(-12vh) scale(0.98);
     }
   }
 </style>

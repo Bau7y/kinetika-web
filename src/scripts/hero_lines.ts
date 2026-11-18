@@ -20,7 +20,8 @@ export function initHeroLines(hero: HTMLElement) {
     const worker = new Worker(new URL('./hero_lines.worker.ts', import.meta.url), { type: 'module' });
     const offscreen = canvas.transferControlToOffscreen();
     const mobile = !matchMedia('(min-width: 768px)').matches;
-    const dpr = Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75);
+    // Soft lines need no full retina resolution: fewer pixels keep 60 fps
+    const dpr = Math.min(devicePixelRatio || 1, 1.25);
 
     let width = hero.clientWidth;
     let height = hero.clientHeight;
@@ -47,6 +48,17 @@ export function initHeroLines(hero: HTMLElement) {
     }).observe(hero);
     document.addEventListener('visibilitychange', sync);
     sync();
+
+    // Scroll story without scroll listeners: how much of the hero has left the
+    // viewport (0 → 1) drives the lines from loose to ordered
+    const steps = Array.from({ length: 41 }, (_, i) => i / 40);
+    new IntersectionObserver(
+      ([entry]) => {
+        const leaving = entry.boundingClientRect.top < 0;
+        worker.postMessage({ type: 'progress', value: leaving ? Math.min(1, (1 - entry.intersectionRatio) * 1.6) : 0 });
+      },
+      { threshold: steps },
+    ).observe(hero);
 
     // Lines lean toward a mouse pointer (not touch: scrolling would drag them)
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {

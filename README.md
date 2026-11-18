@@ -280,6 +280,7 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 - **Capturas del portafolio:** las tarjetas de proyecto usan `src/assets/work/<clave>.png`, tomadas de la demo de cada proyecto. Si una demo cambia: `yarn build && yarn capture:work`.
 - **Paleta:** azul empresarial. De Portfolite se toma la estructura (pastilla, scroll, franja, casos), los titulares en peso 500 y el brillo de los botones, no los colores.
 - **Testimonios:** no hay sección hasta tener testimonios reales con permiso de cada cliente.
+- **Historia del hero:** al llegar, las líneas pasan de un enredo a un vaivén tranquilo (el trabajo a mano). Al bajar, se ordenan en una banda y los pulsos aceleran (el mismo trabajo automatizado) mientras el texto sube y se desvanece. El progreso sale de un `IntersectionObserver` con umbrales, sin escuchar el scroll. El texto usa `animation-timeline` en una regla aparte, porque el minificador la pierde si va junto al shorthand `animation`. Todo es por tiempo y con suavizado, a 60 cuadros por segundo, y se omite con movimiento reducido.
 
 ## SEO, AEO y GEO
 
