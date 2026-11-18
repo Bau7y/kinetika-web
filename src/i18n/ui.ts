@@ -96,6 +96,13 @@ const es = {
   'proof.form_title': 'Formularios protegidos',
   'proof.form_desc': 'Captcha invisible, límite de envíos y filtros de spam.',
   'proof.form_note': 'El formulario valida en el servidor, pide consentimiento (Ley 8968) y filtra spam sin molestar a las personas.',
+  'why.eyebrow': 'Por qué existimos',
+  'why.quote': 'Vimos negocios de la zona norte perder pedidos en el chat, hacer filas para un trámite y llevar clientes en hojas sueltas. Kinetika nació para que eso se mueva solo.',
+  'why.text': 'Juntamos contabilidad, administración de proyectos e ingeniería de software. Primero entendemos tu negocio y después escribimos código.',
+  'why.signature': 'Equipo Kinetika',
+  'why.place': 'San Carlos, Costa Rica',
+  'area.title': 'Atendemos en persona en los 13 distritos de San Carlos',
+  'area.online': 'Y en línea en todo Costa Rica.',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -189,6 +196,13 @@ const en: Strings = {
   'proof.form_title': 'Protected forms',
   'proof.form_desc': 'Invisible captcha, submission limits and spam filters.',
   'proof.form_note': 'The form validates on the server, asks for consent (Costa Rica’s Law 8968) and filters spam without bothering people.',
+  'why.eyebrow': 'Why we exist',
+  'why.quote': 'We saw businesses in northern Costa Rica lose orders in the chat, wait in line for a permit and keep clients on loose sheets of paper. Kinetika was born so all of that moves on its own.',
+  'why.text': 'We bring together accounting, project management and software engineering. First we understand your business, then we write code.',
+  'why.signature': 'The Kinetika team',
+  'why.place': 'San Carlos, Costa Rica',
+  'area.title': 'We meet in person in all 13 districts of San Carlos',
+  'area.online': 'And online across Costa Rica.',
 };
 
 export const ui = { es, en } as const;

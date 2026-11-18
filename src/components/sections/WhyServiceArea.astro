@@ -1,0 +1,112 @@
+---
+/**
+ * Why the company exists, plus where it serves. The district list replaces a
+ * team photo: real, indexable local text (it also feeds schema.org areaServed).
+ */
+import { districts } from '../../data/service_area';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const t = useTranslations(Astro.props.lang);
+---
+<section id="nosotros" class="section section_band" aria-labelledby="why_title">
+  <div class="container why">
+    <div class="why_text">
+      <h2 id="why_title" class="eyebrow">{t('why.eyebrow')}</h2>
+      <blockquote class="why_quote" data-reveal>
+        <p>“{t('why.quote')}”</p>
+      </blockquote>
+      <p class="why_body" data-reveal>{t('why.text')}</p>
+      <p class="why_signature">{t('why.signature')} <span>· {t('why.place')}</span></p>
+    </div>
+
+    <aside class="why_area" aria-labelledby="area_title" data-reveal>
+      <h3 id="area_title">{t('area.title')}</h3>
+      <ul role="list">
+        {districts.map((d) => <li>{d}</li>)}
+      </ul>
+      <p>{t('area.online')}</p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .why {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space_xl);
+    align-items: center;
+  }
+
+  .why_text {
+    flex: 2 1 520px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space_md);
+  }
+
+  .why_quote {
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  .why_body {
+    max-width: 620px;
+    font-size: var(--text_md);
+    line-height: 1.65;
+    color: var(--color_text_secondary);
+  }
+
+  .why_signature {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .why_signature span {
+    font-weight: 400;
+    color: var(--color_text_muted);
+  }
+
+  .why_area {
+    flex: 1 1 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    border-radius: var(--radius_xl);
+    background: var(--color_raised);
+    border: 1px solid var(--color_line);
+  }
+
+  .why_area h3 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .why_area ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .why_area li {
+    padding: 8px 12px;
+    border-radius: var(--radius_sm);
+    background: var(--color_accent_tint);
+    border: 1px solid var(--color_accent_border);
+  }
+
+  .why_area p {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color_text_secondary);
+  }
+</style>

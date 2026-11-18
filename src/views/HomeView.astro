@@ -5,6 +5,7 @@ import Hero from '../components/sections/Hero.astro';
 import SwitchCompare from '../components/sections/SwitchCompare.astro';
 import DayTimeline from '../components/sections/DayTimeline.astro';
 import Blueprint from '../components/sections/Blueprint.astro';
+import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -18,4 +19,5 @@ const t = useTranslations(lang);
   <SwitchCompare lang={lang} />
   <DayTimeline lang={lang} />
   <Blueprint lang={lang} />
+  <WhyServiceArea lang={lang} />
 </BaseLayout>
