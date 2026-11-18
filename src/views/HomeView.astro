@@ -2,6 +2,7 @@
 /** Home page, shared by / and /en. Each section is its own component. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
+import StatsStrip from '../components/sections/StatsStrip.astro';
 import SwitchCompare from '../components/sections/SwitchCompare.astro';
 import DayTimeline from '../components/sections/DayTimeline.astro';
 import Blueprint from '../components/sections/Blueprint.astro';
@@ -24,6 +25,7 @@ const privacyHref = await getLegalHref('privacidad', lang);
 <BaseLayout intro lang={lang} title={t('site.tagline')} description={t('site.description')} alternates={routes.home}>
   <JsonLd slot="head" data={[businessSchema(Astro.site!, lang, t('site.description'), routes.home[lang]), faqSchema(faq[lang])]} />
   <Hero lang={lang} />
+  <StatsStrip lang={lang} />
   <SwitchCompare lang={lang} />
   <DayTimeline lang={lang} />
   <Blueprint lang={lang} />
