@@ -18,7 +18,7 @@ const { title, text, eyebrow, primary, secondary, id = 'cierre' } = Astro.props;
 ---
 <section class="closing" aria-labelledby={`${id}_title`}>
   <div class="container closing_body">
-    <p class="closing_eyebrow" data-reveal data-i="0"><span aria-hidden="true"></span>{eyebrow}</p>
+    <p class="closing_eyebrow" data-reveal data-i="0">{eyebrow}</p>
     <h2 id={`${id}_title`} class="closing_title" data-reveal data-i="1">{title}</h2>
     <p class="closing_text" data-reveal data-i="2">{text}</p>
     <div class="closing_actions" data-reveal data-i="3">
@@ -58,12 +58,6 @@ const { title, text, eyebrow, primary, secondary, id = 'cierre' } = Astro.props;
     font-size: var(--text_sm);
   }
 
-  .closing_eyebrow span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color_ok);
-  }
 
   .closing_title {
     max-width: 18ch;

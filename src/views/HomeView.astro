@@ -4,11 +4,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import StatsStrip from '../components/sections/StatsStrip.astro';
 import Testimonials from '../components/sections/Testimonials.astro';
-import ProjectsGrid from '../components/sections/ProjectsGrid.astro';
+import ProjectsRail from '../components/sections/ProjectsRail.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
-import SwitchCompare from '../components/sections/SwitchCompare.astro';
-import DayTimeline from '../components/sections/DayTimeline.astro';
-import Blueprint from '../components/sections/Blueprint.astro';
+import BeforeAfter from '../components/sections/BeforeAfter.astro';
+import AutoFlow from '../components/sections/AutoFlow.astro';
+import PageBuilder from '../components/sections/PageBuilder.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import Process from '../components/sections/Process.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
@@ -52,15 +52,15 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
 <BaseLayout intro lang={lang} title={t('home.seo_title')} description={t('site.description')} alternates={routes.home}>
   <JsonLd slot="head" data={[business, websiteSchema(Astro.site!, lang, routes.home[lang]), faqSchema(faq[lang])]} />
   <Hero lang={lang} />
-  <ProjectsGrid lang={lang} number={n('projects')} />
+  <ProjectsRail lang={lang} number={n('projects')} />
   <ServicesSection lang={lang} number={n('services')} />
-  <SwitchCompare lang={lang} number={n('compare')} />
-  <DayTimeline lang={lang} number={n('day')} />
+  <BeforeAfter lang={lang} number={n('compare')} />
+  <AutoFlow lang={lang} number={n('day')} />
   <WhyServiceArea lang={lang} number={n('about')} />
   <StatsStrip lang={lang} />
   <Testimonials lang={lang} number={n('testimonials')} />
   <Process lang={lang} number={n('process')} />
-  <Blueprint lang={lang} number={n('proof')} />
+  <PageBuilder lang={lang} number={n('proof')} />
   <FaqGuides lang={lang} number={n('faq')} />
   <ClosingCta
     id="contacto"

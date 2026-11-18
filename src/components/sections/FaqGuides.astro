@@ -1,7 +1,7 @@
 ---
 /** Frequent questions (FAQPage) and a preview of the guides (Article). */
 import { faq } from '../../data/faq';
-import Faq from '../ui/Faq.astro';
+import FaqPanel from '../ui/FaqPanel.astro';
 import GuideCards from '../ui/GuideCards.astro';
 import { getGuides } from '../../data/guides';
 import { routes, useTranslations, type Lang } from '../../i18n/ui';
@@ -20,7 +20,7 @@ const guides = (await getGuides(lang)).slice(0, 3);
 <section id="preguntas" class="section container" aria-labelledby="faq_title">
   <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.faq')}</p>
   <h2 id="faq_title" class="section_title faq_title" data-reveal data-i="1">{t('faq.title')}</h2>
-  <Faq items={items} columns />
+  <FaqPanel items={items} />
 
   <div class="guides_head">
     <h3>{t('guides.preview_title')}</h3>

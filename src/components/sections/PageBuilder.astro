@@ -1,0 +1,440 @@
+---
+/**
+ * Page builder sandbox: the visitor picks sections and a skeleton page builds
+ * itself next to the picks. Sections keep the usual landing-page order.
+ * Without JS the "Services" starting point is shown as a static preview.
+ * Animations: opacity and transform only (see scripts/page_builder.ts).
+ */
+import { pageSections, sectionIds, presets, defaultPreset, type SectionId } from '../../data/page_sections';
+import { useTranslations, type Lang, type UiKey } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Position in the home page, set by HomeView. */
+  number: string;
+}
+const { lang, number } = Astro.props;
+const t = useTranslations(lang);
+const copy = pageSections[lang];
+const initial = new Set<SectionId>(presets[defaultPreset]);
+const count = (n: number) => t('proof.count').replace('{n}', String(n)).replace('{total}', String(sectionIds.length));
+---
+<section id="plano" class="section container" aria-labelledby="proof_title" data-builder data-answers-template={t('proof.answers')} data-count-template={t('proof.count')} data-total={sectionIds.length}>
+  <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.proof')}</p>
+  <h2 id="proof_title" class="section_title" data-reveal data-i="1">{t('proof.title')}</h2>
+  <p class="lede proof_lede" data-reveal data-i="2">{t('proof.lede')}</p>
+
+  <div class="builder" data-reveal>
+    <div class="builder_controls">
+      <div role="group" aria-label={t('proof.presets_label')} class="builder_presets">
+        {(Object.keys(presets) as (keyof typeof presets)[]).map((id) => (
+          <button type="button" class="builder_preset" data-preset={id} data-sections={presets[id].join(',')} aria-pressed={id === defaultPreset ? 'true' : 'false'}>
+            {t(`proof.preset_${id}` as UiKey)}
+          </button>
+        ))}
+      </div>
+
+      <fieldset class="builder_fieldset">
+        <legend class="visually_hidden">{t('proof.sections_label')}</legend>
+        <ul role="list" class="builder_chips">
+          {sectionIds.map((id) => (
+            <li>
+              <label class="builder_chip" data-chip={id} data-question={copy[id].question}>
+                <input type="checkbox" value={id} checked={initial.has(id)} data-section-input />
+                <svg class="builder_check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                <span>{copy[id].label}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </fieldset>
+
+      <p class="builder_answer" aria-live="polite" data-answer></p>
+      <p class="builder_count mono" data-count>{count(initial.size)}</p>
+    </div>
+
+    <div class="plan" role="group" aria-label={t('proof.plan_label')}>
+      <div class="plan_bar mono" aria-hidden="true">
+        <span></span><span></span><span></span>
+        <span class="plan_url">kinetikacr.com</span>
+      </div>
+      <div class="plan_scroll" tabindex="0" data-plan>
+        <div class="plan_nav" aria-hidden="true"><span class="sk_logo_mark"></span><span class="sk_nav_links"><i></i><i></i><i></i></span><span class="sk_pill sk_pill_sm"></span></div>
+
+        {sectionIds.map((id) => (
+          <div class="blk" data-block={id} hidden={!initial.has(id)}>
+            <span class="blk_tag mono">{copy[id].label}</span>
+            {id === 'hero' && (
+              <div class="sk_hero">
+                <div class="sk_stack"><span class="sk_line sk_title"></span><span class="sk_line sk_w80"></span><span class="sk_line sk_w50"></span><span class="sk_pill"></span></div>
+                <span class="sk_box"></span>
+              </div>
+            )}
+            {id === 'trust' && <div class="sk_row_logos"><span class="sk_logo"></span><span class="sk_logo"></span><span class="sk_logo"></span><span class="sk_logo"></span><span class="sk_logo"></span></div>}
+            {id === 'services' && <div class="sk_cols3"><span class="sk_card"></span><span class="sk_card"></span><span class="sk_card"></span></div>}
+            {id === 'how' && <div class="sk_steps"><span class="sk_step"></span><span class="sk_step"></span><span class="sk_step"></span></div>}
+            {id === 'projects' && <div class="sk_cols2"><span class="sk_card sk_card_tall"></span><span class="sk_card sk_card_tall"></span></div>}
+            {id === 'testimonials' && <div class="sk_cols2"><span class="sk_quote"></span><span class="sk_quote"></span></div>}
+            {id === 'pricing' && <div class="sk_cols3"><span class="sk_card"></span><span class="sk_card sk_card_hl"></span><span class="sk_card"></span></div>}
+            {id === 'faq' && <div class="sk_faq"><span class="sk_line sk_bar"></span><span class="sk_line sk_bar"></span><span class="sk_line sk_bar"></span><span class="sk_line sk_bar"></span></div>}
+            {id === 'contact' && <div class="sk_form"><span class="sk_line sk_bar"></span><span class="sk_line sk_bar"></span><span class="sk_pill"></span></div>}
+          </div>
+        ))}
+
+        <div class="plan_footer" aria-hidden="true"><span class="sk_line sk_w30"></span><span class="sk_line sk_w20"></span></div>
+      </div>
+      <p class="plan_fixed">{t('proof.fixed')}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initPageBuilder } from '../../scripts/page_builder';
+  document.querySelectorAll<HTMLElement>('[data-builder]').forEach(initPageBuilder);
+</script>
+
+<style>
+  .proof_lede {
+    margin: var(--space_sm) 0 48px;
+  }
+
+  .builder {
+    display: grid;
+    gap: var(--space_lg);
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .builder {
+      grid-template-columns: minmax(280px, 1fr) 1.6fr;
+    }
+  }
+
+  .builder_controls {
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .builder_presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .builder_preset {
+    min-height: var(--tap_min);
+    padding-inline: 1rem;
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_line_strong);
+    font-size: var(--text_sm);
+    font-weight: 600;
+    color: var(--color_text_secondary);
+    transition: transform var(--duration_press) var(--ease_out), color var(--duration_fast) ease;
+  }
+
+  .builder_preset:active {
+    transform: scale(0.97);
+  }
+
+  .builder_preset[aria-pressed='true'] {
+    color: var(--color_text);
+    border-color: var(--color_accent);
+    background: var(--color_accent_tint_strong);
+  }
+
+  .builder_fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .builder_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Native checkbox, visually replaced: shape tells the state (dashed = off, solid + check = on) */
+  .builder_chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--tap_min);
+    padding-inline: 14px;
+    border-radius: var(--radius_md);
+    border: 1px dashed var(--color_line_strong);
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
+    cursor: pointer;
+    transition: transform var(--duration_press) var(--ease_out);
+  }
+
+  .builder_chip:active {
+    transform: scale(0.97);
+  }
+
+  .builder_chip input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .builder_check {
+    display: none;
+  }
+
+  .builder_chip:has(input:checked) {
+    border-style: solid;
+    border-color: var(--color_accent_border_strong);
+    background: var(--color_accent_tint);
+    color: var(--color_text);
+  }
+
+  .builder_chip:has(input:checked) .builder_check {
+    display: block;
+    color: var(--color_accent_text);
+  }
+
+  .builder_chip:has(input:focus-visible) {
+    outline: 2px solid var(--color_accent);
+    outline-offset: 2px;
+  }
+
+  .builder_answer {
+    min-height: 3em;
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .builder_count {
+    font-size: var(--text_xs);
+    letter-spacing: var(--tracking_label);
+    color: var(--color_accent_text);
+  }
+
+  /* ── Skeleton page ─────────────────────────────── */
+  .plan {
+    display: grid;
+    gap: 12px;
+    padding: 20px;
+    border-radius: var(--radius_xl);
+    border: 1px dashed var(--color_accent_border_strong);
+    background: var(--color_surface);
+  }
+
+  .plan_bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  .plan_bar span:not(.plan_url) {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color_line_strong);
+  }
+
+  .plan_url {
+    margin-left: 10px;
+  }
+
+  /* Fixed height: toggling sections never shifts the rest of the page */
+  .plan_scroll {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    height: 520px;
+    overflow-y: auto;
+    padding: 12px;
+    border-radius: var(--radius_lg);
+    background: var(--color_bg);
+    border: 1px solid var(--color_line);
+    scrollbar-width: thin;
+  }
+
+  .plan_scroll:focus-visible {
+    outline: 2px solid var(--color_accent);
+    outline-offset: 2px;
+  }
+
+  .plan_nav,
+  .plan_footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius_md);
+    background: var(--color_raised);
+  }
+
+  .blk {
+    position: relative;
+    padding: 28px 12px 12px;
+    border-radius: var(--radius_md);
+    border: 1px solid var(--color_accent_border);
+    background: var(--color_accent_tint);
+  }
+
+  .blk[hidden] {
+    display: none;
+  }
+
+  .blk_tag {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 0.6875rem;
+    letter-spacing: var(--tracking_label);
+    text-transform: uppercase;
+    color: var(--color_accent_text);
+  }
+
+  .plan_fixed {
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  /* Skeleton shapes: neutral bars and boxes, no text */
+  .sk_line,
+  .sk_box,
+  .sk_card,
+  .sk_logo,
+  .sk_quote,
+  .sk_step,
+  .sk_pill,
+  .sk_logo_mark,
+  .sk_nav_links i {
+    display: block;
+    border-radius: 6px;
+    background: var(--color_line_strong);
+  }
+
+  .sk_line {
+    height: 8px;
+  }
+
+  .sk_title {
+    height: 14px;
+    width: 70%;
+    background: var(--color_text_muted);
+  }
+
+  .sk_w80 { width: 80%; }
+  .sk_w50 { width: 50%; }
+  .sk_w30 { width: 30%; }
+  .sk_w20 { width: 20%; }
+
+  .sk_bar {
+    height: 22px;
+    border-radius: 8px;
+  }
+
+  .sk_pill {
+    width: 90px;
+    height: 22px;
+    border-radius: var(--radius_full);
+    background: var(--color_accent);
+  }
+
+  .sk_pill_sm {
+    width: 54px;
+    height: 16px;
+  }
+
+  .sk_logo_mark {
+    width: 22px;
+    height: 22px;
+    background: var(--color_accent);
+  }
+
+  .sk_nav_links {
+    display: flex;
+    gap: 10px;
+    margin-inline: auto;
+  }
+
+  .sk_nav_links i {
+    width: 34px;
+    height: 7px;
+  }
+
+  .sk_hero {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .sk_stack,
+  .sk_faq,
+  .sk_form {
+    display: grid;
+    gap: 8px;
+  }
+
+  .sk_box {
+    height: 96px;
+    border-radius: var(--radius_md);
+  }
+
+  .sk_row_logos {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  .sk_logo {
+    height: 16px;
+  }
+
+  .sk_cols3,
+  .sk_steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .sk_cols2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .sk_card {
+    height: 62px;
+    border-radius: var(--radius_md);
+  }
+
+  .sk_card_tall {
+    height: 78px;
+  }
+
+  .sk_card_hl {
+    background: var(--color_accent);
+    opacity: 0.8;
+  }
+
+  .sk_step {
+    height: 40px;
+    border-radius: var(--radius_full);
+  }
+
+  .sk_quote {
+    height: 54px;
+    border-radius: var(--radius_md);
+  }
+
+  @media (max-width: 520px) {
+    .sk_hero {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -34,7 +34,7 @@ const next = [t('contact.next_1'), t('contact.next_2'), t('contact.next_3')];
 
       <div class="contact_grid">
         <div class="contact_head">
-          <p class="contact_kicker"><span aria-hidden="true"></span>{t('closing.eyebrow')}</p>
+          <p class="contact_kicker">{t('closing.eyebrow')}</p>
           <h1 id="contact_title" class="contact_title">{t('contact.title')}</h1>
           <p class="lede">{t('contact.lede')}</p>
         </div>
@@ -123,12 +123,6 @@ const next = [t('contact.next_1'), t('contact.next_2'), t('contact.next_3')];
     font-size: var(--text_sm);
   }
 
-  .contact_kicker span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color_ok);
-  }
 
   .contact_title {
     font-size: clamp(2.25rem, 5vw, 3.75rem);

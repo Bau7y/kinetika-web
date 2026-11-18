@@ -272,8 +272,9 @@ main:focus {
 }
 
 /*
- * Hover color lives on a layer that only fades (opacity): no background or
- * border repaint is animated.
+ * Hover fill lives on a layer that only scales on X (transform): no
+ * background or border repaint is animated. It enters from the side the
+ * pointer came from (data-from, set by button_sweep.ts).
  */
 .btn::before {
   content: '';
@@ -281,19 +282,22 @@ main:focus {
   inset: -1px;
   z-index: -1;
   border-radius: inherit;
-  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
   pointer-events: none;
-  transition: opacity var(--duration_fast) ease;
+  transition: transform var(--duration_base) var(--ease_out);
+}
+
+.btn[data-from='right']::before {
+  transform-origin: right center;
 }
 
 .btn_primary::before {
-  background-color: var(--color_cta_hover);
-  box-shadow: 0 0 28px var(--color_glow);
+  background-color: var(--color_cta_fill);
 }
 
 .btn_ghost::before {
-  border: 1px solid var(--color_accent);
-  box-shadow: 0 0 24px var(--color_glow);
+  background-color: var(--color_cta);
 }
 
 .btn:active {
@@ -320,21 +324,45 @@ main:focus {
   transition: transform var(--duration_fast) var(--ease_out);
 }
 
+.btn {
+  transition:
+    transform var(--duration_press) var(--ease_out),
+    color var(--duration_base) var(--ease_out);
+}
+
 @media (hover: hover) and (pointer: fine) {
+  .btn:hover::before {
+    transform: scaleX(1);
+  }
+
+  .btn_primary:hover {
+    color: var(--color_on_cta_fill);
+  }
+
+  .btn_ghost:hover {
+    color: var(--color_on_cta);
+    border-color: var(--color_cta);
+  }
+
+  .btn:hover .btn_icon_arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* Reduced motion: no sweep, a plain fade of the fill instead */
+@media (prefers-reduced-motion: reduce) {
+  .btn::before {
+    transform: none;
+    opacity: 0;
+    transition: opacity var(--duration_fast) ease;
+  }
+
   .btn:hover::before {
     opacity: 1;
   }
 
-  .btn_primary:hover {
-    color: var(--color_on_cta);
-  }
-
-  .btn_ghost:hover {
-    color: var(--color_text);
-  }
-
-  .btn:hover .btn_icon_arrow {
-    transform: translateX(3px);
+  .btn_icon_arrow {
+    transition: none;
   }
 }
 

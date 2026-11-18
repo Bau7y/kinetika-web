@@ -210,8 +210,15 @@ describe('SEO', () => {
     assert.equal((await get('/en/work')).status, 200);
   });
 
-  it('las preguntas usan details nativo y la primera empieza abierta', async () => {
+  it('las preguntas del inicio dejan todas las respuestas en el HTML y la primera abierta', async () => {
     const html = await (await get('/')).text();
+    assert.match(html, /data-faq-panel/);
+    assert.match(html, /aria-expanded="true"[^>]*data-faq-tab/);
+    assert.ok((html.match(/data-faq-panel-body/g) ?? []).length >= 5);
+  });
+
+  it('las guías usan details nativo y la primera empieza abierta', async () => {
+    const html = await (await get('/guias/pedidos-de-whatsapp-a-un-sistema')).text();
     assert.match(html, /<details[^>]*class="faq_item[^"]*"[^>]*open/);
   });
 

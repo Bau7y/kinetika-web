@@ -26,24 +26,26 @@
   --color_accent_text: #6ea8ff;
   --color_accent_hover: #a9cbff;
   --color_cta: #2f6feb;
-  --color_cta_hover: #3f7ef5;
   --color_on_cta: #ffffff;
+  /* Hover fill of the primary button: light blue with dark text */
+  --color_cta_fill: #dbe8ff;
+  --color_on_cta_fill: #0b1530;
   /* Soft halo behind buttons on hover */
-  --color_glow: rgb(61 139 255 / 0.35);
   --color_accent_tint: rgb(61 139 255 / 0.08);
   --color_accent_tint_strong: rgb(61 139 255 / 0.16);
   --color_accent_border: rgb(61 139 255 / 0.35);
   --color_accent_border_strong: rgb(61 139 255 / 0.6);
 
-  /* Status */
-  --color_ok: #6ee7b7;
-  --color_ok_bg: rgb(110 231 183 / 0.14);
-  --color_warn: #fcd34d;
-  --color_warn_bg: rgb(252 211 77 / 0.14);
-  --color_bad: #fca5a5;
-  --color_bad_bg: rgb(252 165 165 / 0.14);
-  --color_neutral: #cbd5e1;
-  --color_neutral_bg: rgb(180 192 211 / 0.14);
+  /* Status: one accent plus neutrals. State is told by shape and text
+     (solid / dashed / outline), never by hue alone. Only errors keep a muted red. */
+  --color_ok: #9cc2ff;
+  --color_ok_bg: rgb(61 139 255 / 0.16);
+  --color_warn: #cbd5e1;
+  --color_warn_bg: transparent;
+  --color_bad: #e58a86;
+  --color_bad_bg: rgb(229 138 134 / 0.12);
+  --color_neutral: #94a3b8;
+  --color_neutral_bg: rgb(148 163 184 / 0.12);
 
   /* Typography */
   --font_sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

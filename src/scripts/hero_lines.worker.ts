@@ -29,6 +29,8 @@ interface Line {
   alpha: number;
   width: number;
   color: string;
+  /** Stroke style for the current arrival fade (rebuilt only when the fade moves). */
+  style: string;
   phase: number;
   speed: number;
   amp: number;
@@ -49,19 +51,32 @@ let maxDpr = 1;
 /** Scale actually used: maxDpr, lowered on big screens to stay in budget. */
 let dpr = 1;
 let count = 200;
-let lastDraw = 0;
 
 /**
  * Pixel budget per frame. The cost of these soft, blended lines grows with
  * the canvas area, so a 1920×1080 monitor would draw six times the pixels of
- * a phone. Above ~1.1 million pixels the canvas renders smaller and the
+ * a phone. Above ~0.7 million pixels the canvas renders smaller and the
  * browser scales it up: on soft lines the difference does not show.
  */
-const PIXEL_BUDGET = 1_100_000;
-/** Line count follows the area too, between a phone and a wide monitor. */
-const linesFor = (w: number, h: number) => Math.round(Math.min(220, Math.max(140, 140 + ((w * h - 340_000) / 1_700_000) * 80)));
-/** Never more than ~60 fps: on 120/144 Hz screens every other frame is skipped. */
-const MIN_FRAME_MS = 1000 / 61;
+const PIXEL_BUDGET = 700_000;
+/**
+ * Line count follows the area too, between a phone and a wide monitor. It is
+ * kept low on purpose: the target is a steady 120 fps, so every line must be
+ * cheap enough for a frame to fit in 8.3 ms.
+ */
+const MIN_LINES = 40;
+const MAX_LINES = 64;
+const linesFor = (w: number, h: number) =>
+  Math.round(Math.min(MAX_LINES, Math.max(MIN_LINES, MIN_LINES + ((w * h - 340_000) / 1_700_000) * (MAX_LINES - MIN_LINES))));
+/**
+ * Frame pacing: up to 120 fps. On a 60 Hz screen every frame is drawn; on
+ * 144/240 Hz screens frames are skipped to stay near 120 (a running deadline,
+ * not a fixed gap, so the rhythm does not stutter on odd refresh rates).
+ */
+const FRAME_MS = 1000 / 120;
+/** Early tolerance: a frame arriving 1 ms before its deadline still counts. */
+const SLACK_MS = 1;
+let nextDue = 0;
 let lines: Line[] = [];
 let pulses: Pulse[] = [];
 let playing = false;
@@ -69,6 +84,12 @@ let frame = 0;
 let startedAt = 0;
 let last = 0;
 let firstFrame = true;
+/** Fade the cached line styles were built for. */
+let styledFade = -1;
+/** Pre-drawn pulse glow and the darkening mask: built once per size, not per frame. */
+let glowSprite: OffscreenCanvas | null = null;
+let maskGradient: CanvasGradient | null = null;
+const GLOW_R = 10;
 
 /** Smoothed values: `v` moves toward `t` with a time constant in seconds. */
 const smooth = (v: number, t: number, dt: number, tau: number) => t + (v - t) * Math.exp(-dt / tau);
@@ -103,6 +124,7 @@ function build() {
       alpha,
       width,
       color: `hsla(${hue},92%,${light}%,`,
+      style: '',
       phase: (i * 2.399) % (Math.PI * 2),
       speed: 0.12 + ((i * 7) % 13) / 13 * 0.22,
       amp: H * (0.012 + ((i * 11) % 17) / 17 * 0.028),
@@ -131,6 +153,26 @@ function resize(width: number, height: number) {
   canvas.width = W;
   canvas.height = H;
   build();
+  buildResources();
+}
+
+function buildResources() {
+  if (!ctx) return;
+  const r = Math.ceil(GLOW_R * dpr);
+  glowSprite = new OffscreenCanvas(r * 2, r * 2);
+  const g = glowSprite.getContext('2d')!;
+  const glow = g.createRadialGradient(r, r, 0, r, r, r);
+  glow.addColorStop(0, 'rgba(190,220,255,0.55)');
+  glow.addColorStop(1, 'rgba(110,168,255,0)');
+  g.fillStyle = glow;
+  g.fillRect(0, 0, r * 2, r * 2);
+
+  // Same darkening as the static image: calmer bottom-left behind the text
+  maskGradient = ctx.createLinearGradient(0, H, W * 0.7, 0);
+  maskGradient.addColorStop(0, 'rgba(5,8,15,0.9)');
+  maskGradient.addColorStop(0.55, 'rgba(5,8,15,0.35)');
+  maskGradient.addColorStop(1, 'rgba(5,8,15,0)');
+  styledFade = -1;
 }
 
 /** Point on a cubic Bézier for one coordinate. */
@@ -165,6 +207,11 @@ function draw(now: number) {
   const X3 = W + 60 * dpr;
   const geo: [number, number, number, number][] = new Array(lines.length);
   const fadeIn = 1 - arrival * 0.85;
+  // Style strings only change while the arrival fade is still moving
+  if (Math.abs(fadeIn - styledFade) > 0.004) {
+    styledFade = fadeIn;
+    for (const l of lines) l.style = `${l.color}${l.alpha * fadeIn})`;
+  }
 
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i];
@@ -187,7 +234,7 @@ function draw(now: number) {
     }
 
     geo[i] = [y0, c1, c2, y3];
-    ctx.strokeStyle = `${l.color}${l.alpha * fadeIn})`;
+    ctx.strokeStyle = l.style;
     ctx.lineWidth = l.width * dpr;
     ctx.beginPath();
     ctx.moveTo(X0, y0);
@@ -206,7 +253,7 @@ function draw(now: number) {
       if (lines[p.line].alpha < 0.1) p.line = (p.line + 1) % lines.length;
     }
     const [y0, c1, c2, y3] = geo[p.line];
-    const STEPS = 18;
+    const STEPS = 12;
     const SPAN = 0.075 * (1 + order * 0.6);
     let prevX = 0;
     let prevY = 0;
@@ -229,23 +276,19 @@ function draw(now: number) {
     if (p.u >= 0 && p.u <= 1) {
       const hx = bez(X0, X1, X2, X3, p.u);
       const hy = bez(y0, c1, c2, y3, p.u);
-      const r = 10 * dpr;
-      const glow = ctx.createRadialGradient(hx, hy, 0, hx, hy, r);
-      glow.addColorStop(0, `rgba(190,220,255,${0.55 * fadeIn})`);
-      glow.addColorStop(1, 'rgba(110,168,255,0)');
-      ctx.fillStyle = glow;
-      ctx.fillRect(hx - r, hy - r, r * 2, r * 2);
+      if (glowSprite) {
+        ctx.globalAlpha = fadeIn;
+        ctx.drawImage(glowSprite, hx - glowSprite.width / 2, hy - glowSprite.height / 2);
+        ctx.globalAlpha = 1;
+      }
     }
   }
 
-  // Same darkening as the static image: calmer bottom-left behind the text
   ctx.globalCompositeOperation = 'source-over';
-  const mask = ctx.createLinearGradient(0, H, W * 0.7, 0);
-  mask.addColorStop(0, 'rgba(5,8,15,0.9)');
-  mask.addColorStop(0.55, 'rgba(5,8,15,0.35)');
-  mask.addColorStop(1, 'rgba(5,8,15,0)');
-  ctx.fillStyle = mask;
-  ctx.fillRect(0, 0, W, H);
+  if (maskGradient) {
+    ctx.fillStyle = maskGradient;
+    ctx.fillRect(0, 0, W, H);
+  }
 
   last = now;
   if (firstFrame) {
@@ -257,8 +300,9 @@ function draw(now: number) {
 function loop(now: number) {
   if (!playing) return;
   frame = requestAnimationFrame(loop);
-  if (now - lastDraw < MIN_FRAME_MS) return;
-  lastDraw = now;
+  if (now < nextDue - SLACK_MS) return;
+  // Behind by more than two frames (tab was busy): restart the deadline instead of bursting
+  nextDue = now - nextDue > FRAME_MS * 2 ? now + FRAME_MS : nextDue + FRAME_MS;
   draw(now);
 }
 
@@ -289,6 +333,7 @@ self.onmessage = (event: MessageEvent<Message>) => {
       if (playing) return;
       playing = true;
       last = 0;
+      nextDue = 0;
       frame = requestAnimationFrame(loop);
       break;
     case 'pause':
