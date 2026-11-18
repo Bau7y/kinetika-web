@@ -5,6 +5,7 @@
  * team photo: real, indexable local text (it also feeds schema.org areaServed).
  */
 import Badge from '../ui/Badge.astro';
+import Chips from '../ui/Chips.astro';
 import { districts } from '../../data/service_area';
 import { getProjects } from '../../data/work';
 import { statusBadge } from '../../data/work_status';
@@ -38,9 +39,9 @@ const skills = [
         <p>“{t('why.quote')}”</p>
       </blockquote>
       <p class="why_body" data-reveal>{t('why.text')}</p>
-      <ul role="list" class="why_skills" aria-label={t('about.skills_label')} data-reveal>
-        {skills.map((s) => <li>{s}</li>)}
-      </ul>
+      <div data-reveal>
+        <Chips items={skills} label={t('about.skills_label')} class="why_skills" />
+      </div>
       <dl class="why_projects" aria-label={t('about.projects_label')} data-reveal>
         {projects.map((p) => (
           <div>
@@ -59,9 +60,7 @@ const skills = [
 
     <aside class="why_area" aria-labelledby="area_title" data-reveal data-spotlight>
       <h3 id="area_title">{t('area.title')}</h3>
-      <ul role="list">
-        {districts.map((d) => <li>{d}</li>)}
-      </ul>
+      <Chips items={[...districts]} tone="accent" />
       <p>{t('area.online')}</p>
     </aside>
   </div>
@@ -117,20 +116,10 @@ const skills = [
     color: var(--color_text_secondary);
   }
 
-  .why_skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  .why_body + div {
     max-width: 620px;
   }
 
-  .why_skills li {
-    padding: 6px 12px;
-    border: 1px solid var(--color_line_strong);
-    border-radius: var(--radius_full);
-    font-size: var(--text_sm);
-    color: var(--color_text_secondary);
-  }
 
   .why_projects {
     max-width: 620px;
@@ -204,20 +193,7 @@ const skills = [
     letter-spacing: -0.01em;
   }
 
-  .why_area ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.8125rem;
-    font-weight: 500;
-  }
 
-  .why_area li {
-    padding: 8px 12px;
-    border-radius: var(--radius_sm);
-    background: var(--color_accent_tint);
-    border: 1px solid var(--color_accent_border);
-  }
 
   .why_area p {
     font-size: 0.9375rem;

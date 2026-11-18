@@ -1,0 +1,132 @@
+---
+/**
+ * One project as a portfolio card: capture of its working demo, status,
+ * name and what was automated. Links to the case page.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Badge from './Badge.astro';
+import type { Work } from '../../data/work';
+import { statusBadge } from '../../data/work_status';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  project: Work;
+  index: number;
+  /** Heading level of the name, to fit the page outline. */
+  level?: 2 | 3;
+}
+const { lang, project, index, level = 3 } = Astro.props;
+const t = useTranslations(lang);
+const Heading = `h${level}` as 'h2' | 'h3';
+const captures = import.meta.glob<{ default: ImageMetadata }>('../../assets/work/*.png', { eager: true });
+const capture = captures[`../../assets/work/${project.key}.png`]?.default;
+const badge = statusBadge[project.data.status];
+---
+<a href={project.href} class="project_link" aria-labelledby={`project_${project.key}`}>
+  <div class="project_media">
+    {capture && (
+      <Picture src={capture} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1100px) 380px, (min-width: 700px) 45vw, 92vw" alt="" class="project_img" />
+    )}
+    <span class="project_view" aria-hidden="true">{t('projects.view_case')} →</span>
+  </div>
+  <div class="project_meta">
+    <span class="mono project_n">{String(index + 1).padStart(2, '0')}</span>
+    <Badge tone={badge.tone}>{t(badge.label)}</Badge>
+  </div>
+  <Heading id={`project_${project.key}`} class="project_name">{project.data.name}</Heading>
+  <p class="project_text">{project.data.case?.solution}</p>
+</a>
+
+<style>
+  .project_link {
+    display: grid;
+    gap: 12px;
+    color: var(--color_text_secondary);
+    text-decoration: none;
+  }
+
+  .project_media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 11;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+  }
+
+  .project_media :global(picture) {
+    display: block;
+    height: 100%;
+  }
+
+  .project_media :global(.project_img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    transition: transform var(--duration_slow) var(--ease_out);
+  }
+
+  /* "View case" pill: appears on hover/focus (opacity + transform only) */
+  .project_view {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    padding: 10px 18px;
+    border-radius: var(--radius_full);
+    background: var(--color_cta);
+    color: var(--color_on_cta);
+    font-size: var(--text_sm);
+    font-weight: 600;
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.96);
+    transition:
+      opacity var(--duration_fast) var(--ease_out),
+      transform var(--duration_fast) var(--ease_out);
+  }
+
+  .project_link:focus-visible .project_view {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .project_link:hover .project_view {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+
+    .project_link:hover :global(.project_img) {
+      transform: scale(1.03);
+    }
+
+    .project_link:hover {
+      color: var(--color_text_secondary);
+    }
+  }
+
+  .project_meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+
+  .project_n {
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+
+  .project_name {
+    font-size: var(--text_h3);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color_text);
+  }
+
+  .project_text {
+    font-size: 0.9375rem;
+  }
+</style>

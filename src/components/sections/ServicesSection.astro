@@ -3,6 +3,7 @@
  * The two services: automating a process and extending a business's reach
  * with a website. Each card links to its service page.
  */
+import Chips from '../ui/Chips.astro';
 import { getServices } from '../../data/work';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
@@ -24,9 +25,7 @@ const capabilities = t('services.capabilities').split('|');
       </div>
       <div class="services_intro" data-reveal data-i="2">
         <p class="lede">{t('services.lede')}</p>
-        <ul role="list" class="services_chips" aria-label={t('services.capabilities_label')}>
-          {capabilities.map((c) => <li>{c}</li>)}
-        </ul>
+        <Chips items={capabilities} label={t('services.capabilities_label')} />
       </div>
     </div>
 
@@ -67,19 +66,7 @@ const capabilities = t('services.capabilities').split('|');
     gap: var(--space_md);
   }
 
-  .services_chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
 
-  .services_chips li {
-    padding: 6px 12px;
-    border: 1px solid var(--color_line_strong);
-    border-radius: var(--radius_full);
-    font-size: var(--text_sm);
-    color: var(--color_text_secondary);
-  }
 
   .services_grid {
     display: grid;

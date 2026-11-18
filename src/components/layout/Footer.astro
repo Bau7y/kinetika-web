@@ -149,9 +149,23 @@ const company = [
     gap: var(--space_sm) var(--space_md);
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 640px) {
     .footer_grid {
-      grid-template-columns: 1.6fr repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer_grid > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .footer_grid {
+      grid-template-columns: 1.5fr repeat(4, 1fr);
+    }
+
+    .footer_grid > :first-child {
+      grid-column: auto;
     }
   }
 </style>
