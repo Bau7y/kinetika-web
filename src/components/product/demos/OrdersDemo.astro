@@ -1,0 +1,323 @@
+---
+/**
+ * Ordering demo: a short menu with a cart and, next to it, the kitchen
+ * panel. Sending the cart creates an order; each order's button moves it to
+ * the next status. Sample dishes and prices; nothing leaves the browser.
+ */
+import type { Lang } from '../../../i18n/routes';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const copy = {
+  es: {
+    menu: 'Menú · Soda La Esquina',
+    items: [
+      { id: 'casado', name: 'Casado con pollo', price: 3500 },
+      { id: 'arroz', name: 'Arroz cantonés', price: 3200 },
+      { id: 'fresco', name: 'Fresco natural', price: 1200 },
+    ],
+    add: 'Agregar',
+    remove: 'Quitar',
+    total: 'Total',
+    send: 'Enviar pedido',
+    kitchen: 'Panel de cocina',
+    empty: 'Todavía no hay pedidos.',
+    statuses: ['Nuevo', 'En cocina', 'Listo'],
+    next: 'Pasar a',
+    done: 'Entregado',
+  },
+  en: {
+    menu: 'Menu · La Esquina Diner',
+    items: [
+      { id: 'casado', name: 'Chicken casado', price: 3500 },
+      { id: 'arroz', name: 'Fried rice', price: 3200 },
+      { id: 'fresco', name: 'Fresh juice', price: 1200 },
+    ],
+    add: 'Add',
+    remove: 'Remove',
+    total: 'Total',
+    send: 'Send order',
+    kitchen: 'Kitchen panel',
+    empty: 'No orders yet.',
+    statuses: ['New', 'Cooking', 'Ready'],
+    next: 'Move to',
+    done: 'Delivered',
+  },
+}[lang];
+const locale = lang === 'es' ? 'es-CR' : 'en-US';
+const money = (n: number) => `₡${n.toLocaleString(locale)}`;
+---
+<div class="ord_demo" data-orders-demo data-locale={locale} data-statuses={JSON.stringify(copy.statuses)} data-next={copy.next} data-done={copy.done}>
+  <div class="ord_menu">
+    <p class="eyebrow">{copy.menu}</p>
+    <ul role="list">
+      {copy.items.map((item) => (
+        <li data-item={item.id} data-price={item.price} data-name={item.name}>
+          <span class="ord_name">{item.name}<span class="mono">{money(item.price)}</span></span>
+          <span class="ord_qty">
+            <button type="button" aria-label={`${copy.remove}: ${item.name}`} data-delta="-1">−</button>
+            <output class="mono" data-qty aria-live="polite">0</output>
+            <button type="button" aria-label={`${copy.add}: ${item.name}`} data-delta="1">+</button>
+          </span>
+        </li>
+      ))}
+    </ul>
+    <div class="ord_total">
+      <span>{copy.total}</span>
+      <output class="mono" data-total>{money(0)}</output>
+    </div>
+    <button type="button" class="btn btn_primary btn_sm" data-send disabled>{copy.send}</button>
+  </div>
+
+  <div class="ord_kitchen">
+    <p class="eyebrow">{copy.kitchen}</p>
+    <p class="ord_empty" data-empty>{copy.empty}</p>
+    <ul role="list" aria-live="polite" data-kitchen></ul>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-orders-demo]').forEach((root) => {
+    const locale = root.dataset.locale ?? 'es-CR';
+    const statuses = JSON.parse(root.dataset.statuses ?? '[]') as string[];
+    const tones = ['ok', 'warn', 'neutral'];
+    const money = (n: number) => `₡${n.toLocaleString(locale)}`;
+    const items = [...root.querySelectorAll<HTMLElement>('[data-item]')];
+    const totalOut = root.querySelector<HTMLOutputElement>('[data-total]')!;
+    const send = root.querySelector<HTMLButtonElement>('[data-send]')!;
+    const kitchen = root.querySelector<HTMLElement>('[data-kitchen]')!;
+    const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+    const qty = new Map(items.map((el) => [el, 0]));
+    let next = 15;
+
+    const refresh = () => {
+      let total = 0;
+      for (const [el, n] of qty) {
+        el.querySelector('[data-qty]')!.textContent = String(n);
+        total += n * Number(el.dataset.price);
+      }
+      totalOut.textContent = money(total);
+      send.disabled = total === 0;
+    };
+
+    items.forEach((el) =>
+      el.querySelectorAll<HTMLButtonElement>('[data-delta]').forEach((button) =>
+        button.addEventListener('click', () => {
+          qty.set(el, Math.max(0, Math.min(9, qty.get(el)! + Number(button.dataset.delta))));
+          refresh();
+        }),
+      ),
+    );
+
+    send.addEventListener('click', () => {
+      const lines = [...qty].filter(([, n]) => n > 0).map(([el, n]) => `${n} × ${el.dataset.name}`);
+      if (lines.length === 0) return;
+      const total = totalOut.textContent ?? '';
+      let step = 0;
+
+      const order = document.createElement('li');
+      order.className = 'ord_order';
+      const head = document.createElement('div');
+      head.className = 'ord_order_head';
+      const id = document.createElement('span');
+      id.className = 'mono';
+      id.textContent = `#${String(next++).padStart(3, '0')} · ${total}`;
+      const badge = document.createElement('span');
+      badge.className = 'ord_badge';
+      head.append(id, badge);
+      const text = document.createElement('p');
+      text.textContent = lines.join(', ');
+      const advance = document.createElement('button');
+      advance.type = 'button';
+      advance.className = 'ord_advance';
+
+      const paint = () => {
+        badge.textContent = statuses[step];
+        badge.dataset.tone = tones[step];
+        advance.textContent = step < statuses.length - 1 ? `${root.dataset.next} “${statuses[step + 1]}”` : root.dataset.done ?? '';
+      };
+      advance.addEventListener('click', () => {
+        if (step < statuses.length - 1) {
+          step++;
+          paint();
+        } else {
+          order.remove();
+          empty.hidden = kitchen.children.length > 0;
+        }
+      });
+      paint();
+      order.append(head, text, advance);
+      kitchen.prepend(order);
+      empty.hidden = true;
+
+      qty.forEach((_, el) => qty.set(el, 0));
+      refresh();
+    });
+
+    refresh();
+  });
+</script>
+
+<style>
+  .ord_demo {
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .ord_menu,
+  .ord_kitchen {
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    padding: 24px;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_raised);
+  }
+
+  .ord_menu ul,
+  .ord_kitchen ul {
+    display: grid;
+    gap: 10px;
+  }
+
+  .ord_menu li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius_lg);
+    background: var(--color_surface);
+    border: 1px solid var(--color_line);
+  }
+
+  .ord_name {
+    display: grid;
+    font-weight: 500;
+  }
+
+  .ord_name .mono {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--color_text_muted);
+  }
+
+  .ord_qty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ord_qty button {
+    width: var(--tap_min);
+    height: var(--tap_min);
+    border-radius: var(--radius_md);
+    border: 1px solid var(--color_line_strong);
+    font-size: 1.125rem;
+    transition: transform var(--duration_press) var(--ease_out);
+  }
+
+  .ord_qty button:active {
+    transform: scale(0.95);
+  }
+
+  .ord_qty output {
+    min-width: 1.5ch;
+    text-align: center;
+  }
+
+  .ord_total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 6px;
+    font-weight: 600;
+  }
+
+  .ord_menu [data-send] {
+    justify-self: start;
+  }
+
+  .ord_menu [data-send]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ord_empty {
+    color: var(--color_text_muted);
+    font-size: var(--text_sm);
+  }
+
+  .ord_kitchen :global(.ord_order) {
+    display: grid;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: var(--radius_lg);
+    background: var(--color_surface);
+    border: 1px solid var(--color_line);
+    animation: ord_in 260ms var(--ease_out) both;
+  }
+
+  .ord_kitchen :global(.ord_order_head) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8125rem;
+    color: var(--color_text_muted);
+  }
+
+  .ord_kitchen :global(.ord_badge) {
+    padding: 6px 10px;
+    border-radius: var(--radius_sm);
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+  }
+
+  .ord_kitchen :global(.ord_badge[data-tone='ok']) {
+    background: var(--color_ok_bg);
+    color: var(--color_ok);
+  }
+
+  .ord_kitchen :global(.ord_badge[data-tone='warn']) {
+    background: var(--color_warn_bg);
+    color: var(--color_warn);
+  }
+
+  .ord_kitchen :global(.ord_badge[data-tone='neutral']) {
+    background: var(--color_neutral_bg);
+    color: var(--color_neutral);
+  }
+
+  .ord_kitchen :global(.ord_advance) {
+    justify-self: start;
+    min-height: var(--tap_min);
+    padding-inline: 4px;
+    color: var(--color_accent_text);
+    font-size: var(--text_sm);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @keyframes ord_in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.97);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ord_kitchen :global(.ord_order) {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 860px) {
+    .ord_demo {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+/** Link to the same page in the other language. Remembers the explicit choice. */
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  altHref: string;
+}
+const { lang, altHref } = Astro.props;
+const t = useTranslations(lang);
+const target: Lang = lang === 'es' ? 'en' : 'es';
+---
+<a href={altHref} class="lang_switch" hreflang={target} lang={target} aria-label={t('nav.lang_switch')} data-lang-switch>
+  <span aria-hidden="true">{target.toUpperCase()}</span>
+</a>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((link) =>
+    link.addEventListener('click', () => {
+      try {
+        localStorage.setItem('kinetika_lang', link.hreflang);
+      } catch {}
+    }),
+  );
+</script>
+
+<style>
+  .lang_switch {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap_min);
+    height: var(--tap_min);
+    border-radius: var(--radius_md);
+    border: 1px solid var(--color_line_strong);
+    color: var(--color_nav_link);
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: border-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+  }
+
+  .lang_switch:active {
+    transform: scale(0.97);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lang_switch:hover {
+      border-color: var(--color_accent);
+      color: var(--color_text);
+    }
+  }
+</style>

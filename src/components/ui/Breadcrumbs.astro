@@ -1,0 +1,65 @@
+---
+/** Visible breadcrumb trail; the last item is the current page. */
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+export interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  lang: Lang;
+  items: Crumb[];
+}
+const { lang, items } = Astro.props;
+const t = useTranslations(lang);
+---
+<nav class="breadcrumbs" aria-label={t('breadcrumbs.label')}>
+  <ol role="list">
+    {items.map((item, i) => (
+      <li>
+        {i === items.length - 1 ? <span aria-current="page">{item.name}</span> : <a href={item.href}>{item.name}</a>}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
+  }
+
+  .breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumbs li + li::before {
+    content: '/';
+    color: var(--color_line_strong);
+  }
+
+  .breadcrumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    color: var(--color_nav_link);
+    text-decoration: none;
+  }
+
+  .breadcrumbs [aria-current='page'] {
+    color: var(--color_text_secondary);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .breadcrumbs a:hover {
+      color: var(--color_accent_hover);
+    }
+  }
+</style>

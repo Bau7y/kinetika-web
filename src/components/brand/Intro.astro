@@ -1,0 +1,178 @@
+---
+/**
+ * Loading intro: the K assembles (stem, arm, leg), the beam crosses it, the
+ * letters appear and a curtain lifts to reveal the page. About 2 s.
+ *
+ * - Shown only when <html> has the `intro` class (see lib/theme_init.mjs):
+ *   once per session, never with prefers-reduced-motion.
+ * - The page underneath is already painted (the hero h1 is not animated), so
+ *   it does not delay the Largest Contentful Paint.
+ * - Any click or key skips it. Only transform, opacity and clip-path animate.
+ */
+---
+<div class="intro" data-intro aria-hidden="true">
+  <svg width="180" height="180" viewBox="0 0 100 100" overflow="visible">
+    <defs>
+      <linearGradient id="intro_glass" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity=".34" />
+        <stop offset=".6" stop-color="#fff" stop-opacity=".06" />
+        <stop offset="1" stop-color="#fff" stop-opacity=".18" />
+      </linearGradient>
+      <linearGradient id="intro_beam" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#3D8BFF" stop-opacity="0" />
+        <stop offset=".55" stop-color="#6EA8FF" />
+        <stop offset="1" stop-color="#3D8BFF" stop-opacity="0" />
+      </linearGradient>
+      <filter id="intro_blur" x="-50%" y="-200%" width="200%" height="500%">
+        <feGaussianBlur stdDeviation="2.4" />
+      </filter>
+    </defs>
+    <g fill="url(#intro_glass)" stroke="#fff" stroke-opacity=".7" stroke-width=".7" stroke-linejoin="round">
+      <polygon class="intro_stem" points="26,8 40,8 30,92 16,92" />
+      <polygon class="intro_arm" points="40,50 72,8 90,8 52,58" />
+      <polygon class="intro_leg" points="47,53 58,45 86,92 69,92" />
+    </g>
+    <g class="intro_glow"><line x1="-6" y1="84" x2="106" y2="18" stroke="url(#intro_beam)" stroke-width="4" filter="url(#intro_blur)" /></g>
+    <line class="intro_beam" x1="-6" y1="84" x2="106" y2="18" stroke="url(#intro_beam)" stroke-width="1" />
+  </svg>
+  <div class="intro_word" translate="no">
+    {'KINETIKA'.split('').map((letter, i) => <span style={`animation-delay: ${1000 + i * 40}ms`}>{letter}</span>)}
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const intro = document.querySelector<HTMLElement>('[data-intro]');
+
+  const finish = () => {
+    root.classList.remove('intro');
+    removeEventListener('pointerdown', finish);
+    removeEventListener('keydown', finish);
+  };
+
+  const start = () => {
+    try {
+      sessionStorage.setItem('kinetika_intro', '1');
+    } catch {}
+    addEventListener('pointerdown', finish, { once: true });
+    addEventListener('keydown', finish, { once: true });
+  };
+
+  if (intro) {
+    // The curtain is the last animation: when it ends, the intro is over.
+    intro.addEventListener('animationend', (e) => e.target === intro && finish());
+    if (root.classList.contains('intro')) start();
+
+    // "Replay the intro" button in the footer: restart every animation.
+    document.querySelectorAll('[data-intro-replay]').forEach((button) =>
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        root.classList.remove('intro');
+        void intro.offsetWidth; // restart CSS animations (only on this explicit click)
+        root.classList.add('intro');
+        start();
+      }),
+    );
+  }
+</script>
+
+<style>
+  .intro {
+    display: none;
+  }
+
+  :global(html.intro) .intro {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z_intro);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    background: radial-gradient(60% 60% at 50% 45%, #0f1a30, var(--color_bg) 70%);
+    cursor: pointer;
+    animation: intro_lift 640ms var(--ease_in_out) 1550ms both;
+  }
+
+  :global(html.intro) {
+    overflow: hidden;
+  }
+
+  .intro polygon,
+  .intro line {
+    transform-box: fill-box;
+  }
+
+  .intro_stem {
+    transform-origin: 50% 100%;
+    animation: intro_stem 620ms var(--ease_out) 120ms both;
+  }
+
+  .intro_arm {
+    transform-origin: 0% 100%;
+    animation: intro_arm 620ms var(--ease_out) 300ms both;
+  }
+
+  .intro_leg {
+    transform-origin: 0% 0%;
+    animation: intro_leg 620ms var(--ease_out) 460ms both;
+  }
+
+  .intro_beam {
+    transform-origin: 0% 50%;
+    animation: intro_beam 460ms var(--ease_in_out) 860ms both;
+  }
+
+  .intro_glow {
+    animation: intro_fade 500ms ease-out 980ms both;
+  }
+
+  .intro_word {
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 0.42em;
+    padding-left: 0.42em;
+    color: var(--color_text);
+  }
+
+  .intro_word span {
+    display: inline-block;
+    animation: intro_letter 420ms var(--ease_out) both;
+  }
+
+  @keyframes intro_stem {
+    from { transform: translateY(38%) scaleY(0.6); opacity: 0; }
+  }
+
+  @keyframes intro_arm {
+    from { transform: translate(30%, -30%) rotate(10deg); opacity: 0; }
+  }
+
+  @keyframes intro_leg {
+    from { transform: translate(30%, 30%) rotate(-10deg); opacity: 0; }
+  }
+
+  @keyframes intro_beam {
+    from { transform: scaleX(0); }
+  }
+
+  @keyframes intro_fade {
+    from { opacity: 0; }
+  }
+
+  @keyframes intro_letter {
+    from { transform: translateY(10px); opacity: 0; }
+  }
+
+  @keyframes intro_lift {
+    from { clip-path: inset(0 0 0 0); }
+    to { clip-path: inset(0 0 100% 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.intro) .intro {
+      display: none;
+    }
+  }
+</style>

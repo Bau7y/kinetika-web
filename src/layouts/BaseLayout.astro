@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
+import Fonts from '../components/layout/Fonts.astro';
+import NavBar from '../components/layout/NavBar.astro';
+import LangSuggest from '../components/layout/LangSuggest.astro';
+import Footer from '../components/layout/Footer.astro';
+import SkipLink from '../components/layout/SkipLink.astro';
+import Intro from '../components/brand/Intro.astro';
+import { site } from '../data/site';
+import { getPages, ogImagePath, OG_SIZE } from '../data/pages';
+import { THEME_INIT } from '../lib/theme_init.mjs';
+import { LANGS, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Page title; " | Kinetika" is appended unless it already names the site. */
+  title: string;
+  description?: string;
+  /** Same page in each language, for the switcher and hreflang. */
+  alternates: Record<Lang, string>;
+  /** Pages that must stay out of search results (404): no canonical or hreflang either. */
+  noindex?: boolean;
+  /** Play the K intro (home page only). */
+  intro?: boolean;
+}
+
+const { lang, title, description, alternates, noindex = false, intro = false } = Astro.props;
+const t = useTranslations(lang);
+const otherLang: Lang = lang === 'es' ? 'en' : 'es';
+const metaDescription = description ?? t('site.description');
+const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+// Per-page image when the page is in the registry; the home image otherwise (404).
+const inRegistry = (await getPages()).some((p) => p.path === Astro.url.pathname);
+const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alternates[lang]), Astro.site);
+---
+<!doctype html>
+<html lang={lang} data-has-intro={intro ? '' : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Fonts />
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {noindex ? (
+      <meta name="robots" content="noindex, follow" />
+    ) : (
+      <>
+        <link rel="canonical" href={canonicalUrl} />
+        {LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(alternates[l], Astro.site)} />)}
+        <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, Astro.site)} />
+      </>
+    )}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#070B14" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={t('meta.locale')} />
+    <meta property="og:locale:alternate" content={useTranslations(otherLang)('meta.locale')} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    {!noindex && <meta property="og:url" content={canonicalUrl} />}
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(OG_SIZE.width)} />
+    <meta property="og:image:height" content={String(OG_SIZE.height)} />
+    <meta property="og:image:alt" content={fullTitle} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline set:html={THEME_INIT}></script>
+    <slot name="head" />
+  </head>
+  <body>
+    {intro && <Intro />}
+    <SkipLink lang={lang} />
+    <NavBar lang={lang} altHref={alternates[otherLang]} />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} replayIntro={intro} />
+    <LangSuggest lang={lang} altHref={alternates[otherLang]} />
+    <!-- Vercel Web Analytics: no cookies; only records in production -->
+    <Analytics />
+    <!-- Vercel Speed Insights: real-user Core Web Vitals; only records in production -->
+    <SpeedInsights />
+  </body>
+</html>

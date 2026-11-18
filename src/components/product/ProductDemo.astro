@@ -1,0 +1,47 @@
+---
+/**
+ * Frame for a product's working demo. The demo itself (a component under
+ * ./demos) goes in the slot; it uses sample data only.
+ */
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  text: string;
+}
+const { lang, title, text } = Astro.props;
+const t = useTranslations(lang);
+---
+<section id="demo" class="section container product_demo" aria-labelledby="demo_title">
+  <div class="product_demo_head">
+    <h2 id="demo_title" class="section_title">{title}</h2>
+    <p class="lede">{text}</p>
+  </div>
+  <div class="product_demo_stage" data-reveal>
+    <slot />
+  </div>
+  <p class="product_demo_note mono">{t('product.demo_note')}</p>
+</section>
+
+<style>
+  .product_demo_head {
+    display: grid;
+    gap: var(--space_sm);
+    max-width: 760px;
+    margin-bottom: var(--space_lg);
+  }
+
+  .product_demo_stage {
+    padding: clamp(16px, 3vw, 28px);
+    border-radius: var(--radius_2xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+  }
+
+  .product_demo_note {
+    margin-top: var(--space_sm);
+    font-size: var(--text_xs);
+    color: var(--color_text_muted);
+  }
+</style>

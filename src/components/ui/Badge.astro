@@ -1,0 +1,48 @@
+---
+/**
+ * Small status label in mono type. The color is never the only signal:
+ * the text always says the status.
+ */
+export type BadgeTone = 'ok' | 'warn' | 'neutral' | 'accent';
+
+interface Props {
+  tone?: BadgeTone;
+  class?: string;
+}
+const { tone = 'neutral', class: className } = Astro.props;
+---
+<span class:list={['badge', `badge_${tone}`, className]}><slot /></span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: var(--radius_sm);
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .badge_ok {
+    background: var(--color_ok_bg);
+    color: var(--color_ok);
+  }
+
+  .badge_warn {
+    background: var(--color_warn_bg);
+    color: var(--color_warn);
+  }
+
+  .badge_neutral {
+    background: var(--color_neutral_bg);
+    color: var(--color_neutral);
+  }
+
+  .badge_accent {
+    background: var(--color_accent_tint_strong);
+    color: var(--color_accent_text);
+  }
+</style>

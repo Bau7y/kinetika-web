@@ -1,0 +1,33 @@
+---
+/** Home page, shared by / and /en. Each section is its own component. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import SwitchCompare from '../components/sections/SwitchCompare.astro';
+import DayTimeline from '../components/sections/DayTimeline.astro';
+import Blueprint from '../components/sections/Blueprint.astro';
+import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
+import FaqGuides from '../components/sections/FaqGuides.astro';
+import QuoteChat from '../components/sections/QuoteChat.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { getLegalHref } from '../data/legal';
+import { faq } from '../data/faq';
+import { businessSchema, faqSchema } from '../lib/structured_data';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const privacyHref = await getLegalHref('privacidad', lang);
+---
+<BaseLayout intro lang={lang} title={t('site.tagline')} description={t('site.description')} alternates={routes.home}>
+  <JsonLd slot="head" data={[businessSchema(Astro.site!, lang, t('site.description'), routes.home[lang]), faqSchema(faq[lang])]} />
+  <Hero lang={lang} />
+  <SwitchCompare lang={lang} />
+  <DayTimeline lang={lang} />
+  <Blueprint lang={lang} />
+  <WhyServiceArea lang={lang} />
+  <FaqGuides lang={lang} />
+  <QuoteChat lang={lang} privacyHref={privacyHref} />
+</BaseLayout>

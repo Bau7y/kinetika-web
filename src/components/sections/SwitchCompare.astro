@@ -1,0 +1,318 @@
+---
+/**
+ * Before/after comparison: the same lunch rush in a WhatsApp chat and in the
+ * kitchen panel. The range input moves a clip-path over the "today" layer.
+ * Without JS both panels are simply shown side by side (or stacked).
+ * The orders and messages are sample data for the demo.
+ */
+import Badge, { type BadgeTone } from '../ui/Badge.astro';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+interface Demo {
+  after_label: string;
+  before_label: string;
+  orders: { id: string; text: string; status: string; tone: BadgeTone }[];
+  note: string;
+  chat: { from: 'them' | 'us'; text: string }[];
+  pending: string;
+}
+
+const copy: Record<Lang, Demo> = {
+  es: {
+    after_label: 'Con Kinetika · panel de cocina, 12:14',
+    before_label: 'Hoy · WhatsApp, 12:14',
+    orders: [
+      { id: '#014', text: '2 × Casado con pollo, 1 × Refresco', status: 'Nuevo', tone: 'ok' },
+      { id: '#013', text: '4 × Casado, entrega a domicilio', status: 'En cocina', tone: 'warn' },
+      { id: '#012', text: '1 × Arroz cantonés', status: 'Listo', tone: 'neutral' },
+    ],
+    note: 'Cada pedido entra con estado, total y hora. Nadie se queda esperando en el chat.',
+    chat: [
+      { from: 'them', text: '¿Tienen casado de pollo hoy?' },
+      { from: 'them', text: 'Mándeme el precio porfa' },
+      { from: 'us', text: 'Sí señora, ₡3 500' },
+      { from: 'them', text: '¿Y para 4? ¿Llevan a domicilio?' },
+      { from: 'them', text: '¿Ya salió mi pedido? Llevo 40 min' },
+      { from: 'us', text: '¿Quién era el de la orden de arroz?' },
+    ],
+    pending: '3 pedidos sin confirmar',
+  },
+  en: {
+    after_label: 'With Kinetika · kitchen panel, 12:14',
+    before_label: 'Today · WhatsApp, 12:14',
+    orders: [
+      { id: '#014', text: '2 × Chicken casado, 1 × Soft drink', status: 'New', tone: 'ok' },
+      { id: '#013', text: '4 × Casado, home delivery', status: 'Cooking', tone: 'warn' },
+      { id: '#012', text: '1 × Fried rice', status: 'Ready', tone: 'neutral' },
+    ],
+    note: 'Every order arrives with its status, total and time. Nobody is left waiting in the chat.',
+    chat: [
+      { from: 'them', text: 'Do you have chicken casado today?' },
+      { from: 'them', text: 'Send me the price please' },
+      { from: 'us', text: 'Yes ma’am, ₡3,500' },
+      { from: 'them', text: 'And for 4? Do you deliver?' },
+      { from: 'them', text: 'Is my order out yet? It’s been 40 min' },
+      { from: 'us', text: 'Who ordered the rice?' },
+    ],
+    pending: '3 unconfirmed orders',
+  },
+};
+const demo = copy[lang];
+---
+<section id="interruptor" class="section container" aria-labelledby="compare_title">
+  <h2 id="compare_title" class="section_title compare_title" data-reveal>{t('compare.title')}</h2>
+  <p class="lede compare_lede" data-reveal>{t('compare.lede')}</p>
+
+  <div class="compare" data-compare data-value-template={t('compare.value')} data-reveal>
+    <div class="compare_after">
+      <span class="eyebrow">{demo.after_label}</span>
+      <ul role="list" class="compare_orders">
+        {demo.orders.map((o) => (
+          <li>
+            <span><span class="compare_order_id">{o.id}</span>{o.text}</span>
+            <Badge tone={o.tone}>{o.status}</Badge>
+          </li>
+        ))}
+      </ul>
+      <p class="compare_note">{demo.note}</p>
+    </div>
+
+    <div class="compare_before" data-compare-before>
+      <span class="eyebrow compare_before_label">{demo.before_label}</span>
+      <ul role="list" class="compare_chat">
+        {demo.chat.map((m) => <li class:list={['compare_bubble', `compare_bubble_${m.from}`]}>{m.text}</li>)}
+      </ul>
+      <Badge tone="warn" class="compare_pending">{demo.pending}</Badge>
+    </div>
+
+    <div class="compare_handle" data-compare-handle aria-hidden="true"></div>
+  </div>
+
+  <label class="compare_control">
+    <span>{t('compare.before')}</span>
+    <input type="range" min="0" max="100" step="1" value="50" aria-label={t('compare.control')} data-compare-range />
+    <span class="compare_control_after">{t('compare.after')}</span>
+  </label>
+</section>
+
+<script>
+  import { initSwitchCompare } from '../../scripts/switch_compare';
+  document.querySelectorAll<HTMLElement>('[data-compare]').forEach(initSwitchCompare);
+</script>
+
+<style>
+  .compare_title {
+    max-width: 820px;
+  }
+
+  .compare_lede {
+    margin: var(--space_sm) 0 var(--space_lg);
+  }
+
+  .compare {
+    display: grid;
+    gap: 1px;
+    border-radius: var(--radius_2xl);
+    overflow: hidden;
+    border: 1px solid var(--color_line);
+    background: var(--color_line);
+  }
+
+  .compare_after,
+  .compare_before {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: clamp(24px, 4vw, 40px);
+  }
+
+  .compare_after {
+    background: var(--color_raised);
+  }
+
+  .compare_before {
+    background: var(--color_surface);
+  }
+
+  .compare_before_label {
+    color: var(--color_text_muted);
+  }
+
+  .compare_orders {
+    display: grid;
+    gap: 14px;
+  }
+
+  .compare_orders li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: var(--radius_lg);
+    background: var(--color_surface);
+    border: 1px solid var(--color_line);
+  }
+
+  .compare_order_id {
+    display: block;
+    font-family: var(--font_mono);
+    font-size: 0.8125rem;
+    color: var(--color_text_muted);
+  }
+
+  .compare_note {
+    margin-top: 6px;
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  .compare_chat {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .compare_bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: var(--radius_lg);
+    background: var(--color_raised);
+  }
+
+  .compare_bubble_us {
+    align-self: flex-end;
+    background: rgb(47 111 235 / 0.45);
+  }
+
+  .compare_before :global(.compare_pending) {
+    align-self: flex-start;
+  }
+
+  .compare_handle,
+  .compare_control {
+    display: none;
+  }
+
+  @media (min-width: 860px) {
+    .compare {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .compare_before {
+      order: -1;
+    }
+  }
+
+  /* ── Enhanced: one stage, the "today" layer clipped by the range ── */
+  :global(html.js) .compare {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    background: var(--color_raised);
+  }
+
+  :global(html.js) .compare > * {
+    grid-area: 1 / 1;
+  }
+
+  :global(html.js) .compare_before {
+    order: 0;
+    clip-path: inset(0 50% 0 0);
+  }
+
+  :global(html.js) .compare_handle {
+    display: block;
+    position: relative;
+    pointer-events: none;
+    transform: translateX(50%);
+  }
+
+  .compare_handle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -1px;
+    width: 3px;
+    background: var(--color_accent);
+  }
+
+  :global(html.js) .compare_control {
+    display: flex;
+    align-items: center;
+    gap: var(--space_sm);
+    margin-top: 18px;
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .compare_control span {
+    white-space: nowrap;
+  }
+
+  .compare_control_after {
+    color: var(--color_accent_text);
+  }
+
+  /* On wide screens each layer keeps to its own half, so nothing is cut at 50 % */
+  @media (min-width: 860px) {
+    :global(html.js) .compare {
+      min-height: 440px;
+    }
+
+    :global(html.js) .compare_after {
+      padding-left: 52%;
+    }
+
+    :global(html.js) .compare_before {
+      padding-right: 52%;
+    }
+  }
+
+  /* Range */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: var(--tap_min);
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 4px;
+    background: var(--color_line_strong);
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    margin-top: -12px;
+    border-radius: 50%;
+    background: var(--color_cta);
+    border: 3px solid var(--color_text);
+  }
+
+  input[type='range']::-moz-range-track {
+    height: 4px;
+    border-radius: 4px;
+    background: var(--color_line_strong);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color_cta);
+    border: 3px solid var(--color_text);
+  }
+</style>

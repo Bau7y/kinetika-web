@@ -1,0 +1,149 @@
+---
+/** One guide, shared by /guias/<slug> and /en/guides/<slug>. */
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import Prose from '../components/ui/Prose.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import Button from '../components/ui/Button.astro';
+import { getGuides, type Guide } from '../data/guides';
+import { getProducts } from '../data/products';
+import { pairHrefs } from '../data/pages';
+import { articleSchema, breadcrumbSchema } from '../lib/structured_data';
+import { formatDate, routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  guide: Guide;
+}
+const { lang, guide } = Astro.props;
+const t = useTranslations(lang);
+const { data } = guide;
+const { Content } = await render(guide);
+
+const all = { es: await getGuides('es'), en: await getGuides('en') };
+const alternates = pairHrefs(all)(guide.key, lang);
+const product = (await getProducts(lang)).find((p) => p.key === data.product);
+const others = all[lang].filter((g) => g.key !== guide.key);
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.guides'), href: routes.guides[lang] },
+  { name: data.title, href: guide.href },
+];
+const base = Astro.site!;
+---
+<BaseLayout lang={lang} title={data.seo_title} description={data.meta_description} alternates={alternates}>
+  <JsonLd
+    slot="head"
+    data={[
+      articleSchema(base, lang, { title: data.title, description: data.meta_description, path: guide.href, updated: data.updated, law: data.law }),
+      breadcrumbSchema(base, crumbs),
+    ]}
+  />
+
+  <article class="guide container" aria-labelledby="guide_title">
+    <Breadcrumbs lang={lang} items={crumbs} />
+    <header class="guide_head">
+      <span class="eyebrow">{data.topic}</span>
+      <h1 id="guide_title">{data.title}</h1>
+      <p class="guide_updated">{t('updated.label')} <time datetime={data.updated.toISOString().slice(0, 10)}>{formatDate(data.updated, lang)}</time></p>
+    </header>
+
+    <p class="guide_summary">{data.summary}</p>
+
+    <Prose><Content /></Prose>
+
+    {product && (
+      <aside class="guide_product" aria-labelledby="guide_product_title">
+        <span class="eyebrow">{t('guides.related')}</span>
+        <h2 id="guide_product_title">{product.data.name}</h2>
+        <p>{product.data.summary}</p>
+        <Button href={product.href} arrow>{t('product.see')}</Button>
+      </aside>
+    )}
+
+    {others.length > 0 && (
+      <nav class="guide_others" aria-labelledby="guide_others_title">
+        <h2 id="guide_others_title" class="eyebrow">{t('guides.all')}</h2>
+        <ul role="list">
+          {others.map((g) => <li><a href={g.href}>{g.data.title}</a></li>)}
+        </ul>
+      </nav>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .guide {
+    padding-top: calc(var(--navbar_h) + var(--space_sm));
+    padding-bottom: var(--section_py);
+  }
+
+  .guide_head {
+    display: grid;
+    gap: var(--space_sm);
+    max-width: 820px;
+    margin-top: var(--space_lg);
+  }
+
+  .guide_head h1 {
+    font-size: clamp(2rem, 4.4vw, 3.5rem);
+    font-weight: 700;
+    line-height: var(--leading_tight);
+    letter-spacing: -0.03em;
+  }
+
+  .guide_updated {
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
+  }
+
+  .guide_summary {
+    max-width: 68ch;
+    margin: var(--space_lg) 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--color_accent);
+    border-radius: 0 var(--radius_lg) var(--radius_lg) 0;
+    background: var(--color_accent_tint);
+    font-size: var(--text_lg);
+    color: var(--color_text);
+  }
+
+  .guide_product {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    max-width: 68ch;
+    margin-top: var(--space_xl);
+    padding: 28px;
+    border-radius: var(--radius_xl);
+    background: var(--color_raised);
+    border: 1px solid var(--color_line);
+  }
+
+  .guide_product h2 {
+    font-size: var(--text_h3);
+    font-weight: 700;
+  }
+
+  .guide_product p {
+    color: var(--color_text_secondary);
+  }
+
+  .guide_others {
+    margin-top: var(--space_xl);
+  }
+
+  .guide_others ul {
+    display: grid;
+    gap: 4px;
+    margin-top: var(--space_xs);
+  }
+
+  .guide_others a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    font-weight: 500;
+  }
+</style>
