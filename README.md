@@ -1,6 +1,6 @@
 # kinetika-web
 
-Sitio web de **Kinetika**, estudio de software de San Carlos, Costa Rica. Funciona como landing de la empresa y como portafolio con demos funcionales de sus productos: sitios web a la medida, pedidos para restaurantes, TramiMuniSC y la plataforma contable.
+Sitio web de **Kinetika**, estudio de San Carlos, Costa Rica, que automatiza procesos de negocios con sitios y sistemas web y crea sitios que amplían su alcance. Funciona como landing y como portafolio: dos servicios (automatización de procesos y sitios web a la medida) y tres proyectos presentados como casos de estudio con demo funcional (pedidos para restaurantes, TramiMuniSC y la plataforma contable).
 
 - Dominio previsto: `kinetika.cr`
 - Diseño de referencia: lienzo de diseño "Kinetika — Direcciones de landing", artboard **F · Landing v2**
@@ -48,7 +48,7 @@ kinetika-web/
 │   │   │   └── Footer.astro
 │   │   ├── sections/             # secciones del inicio, una por commit
 │   │   │   ├── Hero.astro
-│   │   │   ├── StatsStrip.astro     # datos tomados de products y service_area
+│   │   │   ├── StatsStrip.astro     # datos tomados de work y service_area
 │   │   │   ├── SwitchCompare.astro
 │   │   │   ├── DayTimeline.astro
 │   │   │   ├── Blueprint.astro
@@ -56,11 +56,11 @@ kinetika-web/
 │   │   │   ├── WhyServiceArea.astro
 │   │   │   ├── FaqGuides.astro
 │   │   │   └── QuoteChat.astro
-│   │   ├── product/              # bloques de las páginas de producto
-│   │   │   ├── ProductHero.astro
-│   │   │   ├── ProductDemo.astro
+│   │   ├── work/                 # bloques de las páginas de servicio y proyecto
+│   │   │   ├── WorkHero.astro
+│   │   │   ├── WorkDemo.astro
 │   │   │   ├── WaitlistForm.astro
-│   │   │   └── demos/            # una demo funcional por producto (datos de ejemplo)
+│   │   │   └── demos/            # una demo funcional por entrada (datos de ejemplo)
 │   │   │       ├── index.ts
 │   │   │       ├── WebsiteDemo.astro
 │   │   │       ├── OrdersDemo.astro
@@ -75,15 +75,15 @@ kinetika-web/
 │   │       └── JsonLd.astro
 │   ├── content/                  # un archivo por idioma y entrada
 │   │   ├── guides/{es,en}/
-│   │   ├── products/{es,en}/
+│   │   ├── work/{es,en}/          # servicios y proyectos (kind: service | project)
 │   │   └── legal/{es,en}/
 │   ├── content.config.ts
 │   ├── data/
 │   │   ├── site.ts               # nombre, dominio, contacto, redes
 │   │   ├── pages.ts              # registro único de páginas (sitemap, OG, llms.txt, hreflang)
 │   │   ├── localized.ts          # colecciones por idioma con su ruta
-│   │   ├── products.ts / guides.ts / legal.ts
-│   │   ├── product_status.ts     # estados de producto y su etiqueta
+│   │   ├── work.ts / guides.ts / legal.ts
+│   │   ├── work_status.ts        # estados y su etiqueta
 │   │   ├── day_scenes.ts
 │   │   ├── service_area.ts       # 13 distritos de San Carlos
 │   │   ├── faq.ts
@@ -97,27 +97,29 @@ kinetika-web/
 │   ├── lib/
 │   │   ├── email.ts              # el dominio del correo recibe correo (MX/A)
 │   │   ├── structured_data.ts    # ProfessionalService, WebSite, Service, FAQPage, Article, BreadcrumbList
-│   │   ├── llms.ts               # productos, guías y preguntas en Markdown para asistentes de IA
+│   │   ├── llms.ts               # servicios, proyectos, guías y preguntas en Markdown para asistentes de IA
 │   │   ├── og_image.ts
 │   │   ├── theme_init.mjs        # clase js e intro antes del primer pintado (hash en la CSP)
 │   │   └── spam/                 # campo trampa, tiempo mínimo, límite por IP, Turnstile, análisis
 │   ├── views/                    # vistas compartidas por ES y EN
 │   │   ├── HomeView.astro
-│   │   ├── ProductView.astro
+│   │   ├── WorkView.astro        # servicio o proyecto (caso: antes, qué se automatizó, hoy)
 │   │   ├── GuidesIndexView.astro
 │   │   ├── GuideView.astro
 │   │   ├── QuoteView.astro
 │   │   └── LegalView.astro
 │   ├── pages/
 │   │   ├── index.astro                     # /
-│   │   ├── productos/[slug].astro          # /productos/sitios-web, /pedidos, /tramimunisc, /plataforma-contable
+│   │   ├── servicios/[slug].astro          # /servicios/automatizacion-de-procesos, /sitios-web
+│   │   ├── proyectos/[slug].astro          # /proyectos/pedidos, /tramimunisc, /plataforma-contable
 │   │   ├── guias/index.astro               # /guias
 │   │   ├── guias/[slug].astro
 │   │   ├── cotizar.astro                   # /cotizar
 │   │   ├── [legal].astro                   # /privacidad, /aviso-legal
 │   │   ├── en/
 │   │   │   ├── index.astro                 # /en
-│   │   │   ├── products/[slug].astro       # /en/products/websites, /ordering, /tramimunisc, /accounting-platform
+│   │   │   ├── services/[slug].astro       # /en/services/process-automation, /websites
+│   │   │   ├── projects/[slug].astro       # /en/projects/ordering, /tramimunisc, /accounting-platform
 │   │   │   ├── guides/index.astro
 │   │   │   ├── guides/[slug].astro
 │   │   │   ├── quote.astro
@@ -270,17 +272,26 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 | `yarn test:e2e` | Pruebas de humo sobre el build |
 | `yarn test:a11y` | Accesibilidad con axe (escritorio y móvil) |
 
+## Enfoque y estructura
+
+- **Servicios** (`kind: service`): automatización de procesos y sitios web a la medida. Cada página lista los proyectos que lo muestran.
+- **Proyectos** (`kind: project`): casos de estudio con `case` (antes, qué se automatizó, hoy y etiquetas). El resultado solo dice hechos; no se inventan cifras.
+- **Redirecciones:** las URLs antiguas `/productos/*` y `/en/products/*` responden 301 a su nueva ruta (`astro.config.mjs`).
+- **Capturas del portafolio:** las tarjetas de proyecto usan `src/assets/work/<clave>.png`, tomadas de la demo de cada proyecto. Si una demo cambia: `yarn build && yarn capture:work`.
+- **Paleta:** monocroma con azul mínimo (enlaces, foco, estados en vivo y un detalle por sección).
+- **Testimonios:** no hay sección hasta tener testimonios reales con permiso de cada cliente.
+
 ## SEO, AEO y GEO
 
 Cómo el sitio se deja encontrar por buscadores y citar por asistentes de IA (ChatGPT, Perplexity, AI Overviews):
 
 - **Título y portada:** servicio y ubicación en el `title` del inicio y en una etiqueta sobre el `h1`.
-- **Respuestas directas:** un bloque "¿Qué es Kinetika?" en el inicio y uno "¿Qué es…?" por producto (40 a 60 palabras, comprensible sin el resto de la página), con datos de ficha: para quién, estado, dónde y fecha de actualización.
-- **Comparaciones:** cada producto trae una tabla (frontmatter `comparison`) que en móvil se apila como tarjetas.
-- **Preguntas frecuentes:** en el inicio, en cada producto y en las guías (frontmatter `faq`), todas con `FAQPage`.
+- **Respuestas directas:** un bloque "¿Qué es Kinetika?" en el inicio y uno "¿Qué es…?" por servicio y proyecto (40 a 60 palabras, comprensible sin el resto de la página), con datos de ficha: para quién, estado, dónde y fecha de actualización.
+- **Comparaciones:** cada servicio y proyecto trae una tabla (frontmatter `comparison`) que en móvil se apila como tarjetas.
+- **Preguntas frecuentes:** en el inicio, en cada servicio y proyecto y en las guías (frontmatter `faq`), todas con `FAQPage`.
 - **Fuentes:** las guías citan la norma con enlace al texto oficial (frontmatter `sources`, publicado también como `citation` en `Article`).
 - **Datos estructurados:** `ProfessionalService` con catálogo de servicios, temas (`knowsAbout`), logo y zona atendida; `WebSite`; `Service`, `Article` y `BreadcrumbList`.
-- **Para asistentes de IA:** `/llms.txt` (resumen con enlaces) y `/llms-full.txt` (productos, preguntas y guías completas en Markdown). Ambos se generan del contenido.
+- **Para asistentes de IA:** `/llms.txt` (resumen con enlaces) y `/llms-full.txt` (servicios, proyectos con su caso, preguntas y guías completas en Markdown). Ambos se generan del contenido.
 - **Meta robots:** `max-snippet:-1` y `max-image-preview:large` en las páginas indexables.
 
 Fuera del código: Search Console con el sitemap, perfil de empresa en Google, perfiles en directorios con la misma descripción y una revisión mensual de cómo responden los asistentes a las preguntas clave.
