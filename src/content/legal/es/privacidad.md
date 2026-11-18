@@ -19,13 +19,13 @@ Los mensajes de los formularios se guardan en nuestro buzón de correo, que func
 - **Cotización:** tipo de negocio, lo que quiere resolver, su correo electrónico y, si lo escribe, un mensaje.
 - **Lista de espera:** su correo electrónico y, si lo indica, el nombre de su despacho.
 - **Datos técnicos:** los mínimos para evitar envíos automáticos o abusivos de los formularios. No se usan para identificarlo.
-- **Estadísticas de visitas:** se cuentan de forma agregada, sin identificar a nadie.
+- **Estadísticas de visitas:** se miden con Vercel Web Analytics y se cuentan de forma agregada: páginas vistas, página de origen, país, tipo de dispositivo y navegador. No se guardan cookies ni se identifica a las personas ni se las sigue en otros sitios.
 
 Las demos de los proyectos funcionan solo en su navegador: lo que escriba en ellas no nos llega.
 
 ## Cookies
 
-Este sitio no usa cookies propias ni herramientas de rastreo o publicidad. En su navegador se guardan solo dos preferencias para su comodidad: el idioma que elegiste y si ya viste la animación de entrada. No nos llegan y puede borrarlas limpiando los datos del sitio.
+Este sitio no usa cookies propias ni de terceros, ni herramientas de publicidad. La medición de visitas descrita arriba tampoco usa cookies. En su navegador se guardan solo dos preferencias para su comodidad: el idioma que elegiste y si ya viste la animación de entrada. No nos llegan y puede borrarlas limpiando los datos del sitio.
 
 ## Para qué los usamos
 

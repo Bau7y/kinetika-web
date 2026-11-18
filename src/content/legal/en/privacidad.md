@@ -19,13 +19,13 @@ Form messages are kept in our email inbox, which serves as the record of request
 - **Quote:** type of business, what you want to solve, your email address and, if you write one, a message.
 - **Waitlist:** your email address and, if you provide it, the name of your firm.
 - **Technical data:** the minimum needed to prevent automated or abusive form submissions. It is not used to identify you.
-- **Visit statistics:** counted in aggregate, without identifying anyone.
+- **Visit statistics:** measured with Vercel Web Analytics and counted in aggregate: page views, referring page, country, device type and browser. No cookies are stored, and people are neither identified nor followed across other sites.
 
 The project demos run only in your browser: whatever you type in them never reaches us.
 
 ## Cookies
 
-This site does not use its own cookies or any tracking or advertising tools. Your browser stores only two preferences for your convenience: the language you chose and whether you already saw the intro animation. They never reach us and you can delete them by clearing the site’s data.
+This site does not use its own or third-party cookies, nor any advertising tools. The visit measurement described above does not use cookies either. Your browser stores only two preferences for your convenience: the language you chose and whether you already saw the intro animation. They never reach us and you can delete them by clearing the site’s data.
 
 ## What we use it for
 

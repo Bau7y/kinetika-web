@@ -18,7 +18,7 @@ export default defineConfig({
   site: 'https://www.kinetikacr.com',
   // staticHeaders: the CSP below is sent as an HTTP header for every page
   // (instead of a <meta>), so frame-ancestors also applies.
-  adapter: vercel({ staticHeaders: true }),
+  adapter: vercel({ staticHeaders: true, webAnalytics: { enabled: true } }),
   trailingSlash: 'never',
   // Old URLs always point at the final page (never a redirect chain)
   redirects: {
