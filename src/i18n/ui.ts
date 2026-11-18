@@ -76,6 +76,26 @@ const es = {
   'day.prev': 'Hora anterior',
   'day.next': 'Hora siguiente',
   'day.scenes_label': 'Escenas de un día de trabajo',
+
+  'proof.title': 'Este sitio es la prueba.',
+  'proof.lede': 'Lo mismo que construimos para vos. Elegí una pieza para verla en el plano.',
+  'proof.blueprint_label': 'Plano de este sitio',
+  'proof.block_hero': 'portada',
+  'proof.block_demo': 'demo',
+  'proof.block_faq': 'preguntas y guías',
+  'proof.block_form': 'formulario',
+  'proof.hero_title': 'Carga rápida',
+  'proof.hero_desc': 'Páginas estáticas y la portada visible al instante.',
+  'proof.hero_note': 'La portada se pinta de inmediato: sin esperar scripts ni hojas de estilo externas.',
+  'proof.demos_title': 'Demos funcionales',
+  'proof.demos_desc': 'Cada producto se prueba antes de contratar.',
+  'proof.demos_note': 'Las demos son versiones reducidas de los productos reales, con datos de ejemplo.',
+  'proof.faq_title': 'Listo para Google',
+  'proof.faq_desc': 'Sitemap, datos estructurados y Search Console.',
+  'proof.faq_note': 'Las preguntas y guías son texto real con datos estructurados, para aparecer en búsquedas de la zona.',
+  'proof.form_title': 'Formularios protegidos',
+  'proof.form_desc': 'Captcha invisible, límite de envíos y filtros de spam.',
+  'proof.form_note': 'El formulario valida en el servidor, pide consentimiento (Ley 8968) y filtra spam sin molestar a las personas.',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -149,6 +169,26 @@ const en: Strings = {
   'day.prev': 'Previous hour',
   'day.next': 'Next hour',
   'day.scenes_label': 'Scenes from a work day',
+
+  'proof.title': 'This site is the proof.',
+  'proof.lede': 'The same thing we build for you. Pick a piece to see it on the blueprint.',
+  'proof.blueprint_label': 'Blueprint of this site',
+  'proof.block_hero': 'hero',
+  'proof.block_demo': 'demo',
+  'proof.block_faq': 'questions and guides',
+  'proof.block_form': 'form',
+  'proof.hero_title': 'Fast loading',
+  'proof.hero_desc': 'Static pages and a hero that shows up instantly.',
+  'proof.hero_note': 'The hero paints right away: no waiting for scripts or external stylesheets.',
+  'proof.demos_title': 'Working demos',
+  'proof.demos_desc': 'Try every product before you hire us.',
+  'proof.demos_note': 'The demos are trimmed-down versions of the real products, with sample data.',
+  'proof.faq_title': 'Ready for Google',
+  'proof.faq_desc': 'Sitemap, structured data and Search Console.',
+  'proof.faq_note': 'Questions and guides are real text with structured data, so they show up in local searches.',
+  'proof.form_title': 'Protected forms',
+  'proof.form_desc': 'Invisible captcha, submission limits and spam filters.',
+  'proof.form_note': 'The form validates on the server, asks for consent (Costa Rica’s Law 8968) and filters spam without bothering people.',
 };
 
 export const ui = { es, en } as const;
