@@ -173,6 +173,18 @@ export function articleSchema(base: URL, lang: Lang, info: ArticleInfo): Json {
   };
 }
 
+/** Contact page, pointing at the business it belongs to. */
+export function contactPageSchema(base: URL, lang: Lang, path: string, name: string): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name,
+    url: absolute(path, base),
+    inLanguage: lang === 'es' ? 'es-CR' : 'en',
+    about: businessRef(base),
+  };
+}
+
 /** Ordered list of pages (projects index). */
 export function itemListSchema(base: URL, items: { name: string; path: string }[]): Json {
   return {

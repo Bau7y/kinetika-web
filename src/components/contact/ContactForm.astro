@@ -1,0 +1,393 @@
+---
+/**
+ * Quote request as one plain form: every question visible at once, the
+ * choices as large cards (fewer words to type), the same anti-spam layers
+ * and the Ley 8968 consent. Sends to the `sendQuote` action.
+ */
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { BUSINESS_TYPES, MESSAGE_MAX, NEEDS } from '../../data/quote_options';
+import { useTranslations, type Lang, type UiKey } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  privacyHref: string;
+}
+const { lang, privacyHref } = Astro.props;
+const t = useTranslations(lang);
+const id = 'contacto';
+
+const errorKeys = [
+  'business_required', 'need_required', 'email_required', 'email_invalid', 'email_unreachable', 'message_max',
+  'consent_required', 'rate_limited', 'captcha_failed', 'offensive', 'generic',
+] as const;
+const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiKey)]));
+---
+<form id={`${id}_form`} class="contact_form" novalidate aria-label={t('quote.form_label')} data-contact-form data-errors={JSON.stringify(errors)}>
+  <input type="hidden" name="lang" value={lang} />
+  <input type="hidden" name="loaded_at" value="0" data-loaded-at />
+  <!-- Honeypot: hidden from people and assistive tech; bots fill it in -->
+  <div class="contact_trap" aria-hidden="true">
+    <label for={`${id}_website`}>Website</label>
+    <input id={`${id}_website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="contact_errors" role="alert" tabindex="-1" data-error-summary hidden>
+    <p>{t('quote.errors_title')}</p>
+    <ul></ul>
+  </div>
+
+  <fieldset class="contact_group" aria-describedby={`${id}_need_error`}>
+    <legend>{t('contact.need_label')}</legend>
+    <div class="contact_cards">
+      {NEEDS.map((key) => (
+        <label class="contact_card">
+          <input type="radio" name="need" value={key} required />
+          <span class="contact_card_body">
+            <strong>{t(`quote.need.${key}` as UiKey)}</strong>
+            <span>{t(`contact.need_desc.${key}` as UiKey)}</span>
+          </span>
+        </label>
+      ))}
+    </div>
+    <p id={`${id}_need_error`} class="contact_error" data-error-for="need"></p>
+  </fieldset>
+
+  <fieldset class="contact_group" aria-describedby={`${id}_business_error`}>
+    <legend>{t('contact.business_label')}</legend>
+    <div class="contact_chips">
+      {BUSINESS_TYPES.map((key) => (
+        <label class="contact_chip">
+          <input type="radio" name="business" value={key} required />
+          <span>{t(`quote.business.${key}` as UiKey)}</span>
+        </label>
+      ))}
+    </div>
+    <p id={`${id}_business_error`} class="contact_error" data-error-for="business"></p>
+  </fieldset>
+
+  <div class="contact_field">
+    <label for={`${id}_message`}>{t('quote.message')}</label>
+    <textarea
+      id={`${id}_message`}
+      name="message"
+      rows="4"
+      maxlength={MESSAGE_MAX}
+      placeholder={t('contact.message_hint')}
+      aria-describedby={`${id}_message_error`}
+    ></textarea>
+    <p id={`${id}_message_error`} class="contact_error" data-error-for="message"></p>
+  </div>
+
+  <div class="contact_field">
+    <label for={`${id}_email`}>{t('quote.email')}</label>
+    <input
+      id={`${id}_email`}
+      name="email"
+      type="email"
+      inputmode="email"
+      autocomplete="email"
+      spellcheck="false"
+      placeholder={t('quote.email_placeholder')}
+      aria-describedby={`${id}_email_error`}
+      maxlength="254"
+      required
+    />
+    <p id={`${id}_email_error`} class="contact_error" data-error-for="email"></p>
+  </div>
+
+  <div class="contact_field">
+    <label class="contact_consent">
+      <input id={`${id}_consent`} name="consent" type="checkbox" aria-describedby={`${id}_consent_error`} required />
+      <span>{t('quote.consent_before')} <a href={privacyHref}>{t('quote.consent_link')}</a> {t('quote.consent_after')}</span>
+    </label>
+    <p id={`${id}_consent_error`} class="contact_error" data-error-for="consent"></p>
+  </div>
+
+  {PUBLIC_TURNSTILE_SITE_KEY && (
+    <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-appearance="interaction-only" data-theme="dark" data-language={lang}></div>
+  )}
+  <p class="contact_error" data-error-for="form"></p>
+  <button type="submit" class="btn btn_primary contact_submit" data-label={t('quote.submit')} data-sending={t('quote.sending')}>{t('quote.submit')}</button>
+  <noscript><p class="contact_error">{t('quote.noscript')}</p></noscript>
+</form>
+
+<div class="contact_done" data-done-for={`${id}_form`} tabindex="-1" role="status" hidden>
+  <span class="contact_done_icon" aria-hidden="true"></span>
+  <h2>{t('contact.done_title')}</h2>
+  <p>{t('quote.done')}</p>
+  <button type="button" class="btn btn_ghost" data-again>{t('contact.again')}</button>
+</div>
+
+{PUBLIC_TURNSTILE_SITE_KEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<script>
+  import { actions } from 'astro:actions';
+  import { initContactForm } from '../../scripts/contact_form';
+  import { toErrorCode } from '../../scripts/quote_sender';
+
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) =>
+    initContactForm(form, async (data) => toErrorCode((await actions.sendQuote(data)).error)),
+  );
+</script>
+
+<style>
+  .contact_form {
+    display: grid;
+    gap: var(--space_lg);
+  }
+
+  .contact_trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .contact_group {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  legend,
+  .contact_field > label:not(.contact_consent) {
+    margin-bottom: 14px;
+    padding: 0;
+    font-weight: 600;
+    color: var(--color_text);
+  }
+
+  .contact_field > label:not(.contact_consent) {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* Choices as cards: the whole card is the click target */
+  .contact_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 10px;
+  }
+
+  .contact_card,
+  .contact_chip {
+    position: relative;
+  }
+
+  .contact_card input,
+  .contact_chip input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .contact_card_body {
+    display: grid;
+    gap: 4px;
+    height: 100%;
+    padding: 16px 18px;
+    border-radius: var(--radius_lg);
+    border: 1px solid var(--color_line_strong);
+    background: var(--color_bg);
+    transition:
+      border-color var(--duration_fast) ease,
+      background-color var(--duration_fast) ease;
+  }
+
+  .contact_card_body strong {
+    font-weight: 600;
+  }
+
+  .contact_card_body span {
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .contact_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .contact_chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap_min);
+    padding: 0 18px;
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_line_strong);
+    background: var(--color_bg);
+    font-size: 0.9375rem;
+    transition:
+      border-color var(--duration_fast) ease,
+      background-color var(--duration_fast) ease;
+  }
+
+  .contact_card input:checked + .contact_card_body,
+  .contact_chip input:checked + span {
+    border-color: var(--color_accent);
+    background: var(--color_accent_tint_strong);
+  }
+
+  .contact_card input:focus-visible + .contact_card_body,
+  .contact_chip input:focus-visible + span {
+    outline: 2px solid var(--color_accent);
+    outline-offset: 2px;
+  }
+
+  .contact_card input[aria-invalid='true'] + .contact_card_body,
+  .contact_chip input[aria-invalid='true'] + span {
+    border-color: var(--color_bad);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .contact_card:hover .contact_card_body,
+    .contact_chip:hover span {
+      border-color: var(--color_text_muted);
+    }
+  }
+
+  input[type='email'],
+  textarea {
+    width: 100%;
+    min-height: var(--tap_min);
+    padding: 12px 14px;
+    border-radius: var(--radius_md);
+    border: 1px solid var(--color_line_strong);
+    background: var(--color_bg);
+    color: var(--color_text);
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input[type='email']:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color_accent);
+    outline-offset: 1px;
+  }
+
+  input[aria-invalid='true'],
+  textarea[aria-invalid='true'] {
+    border-color: var(--color_bad);
+  }
+
+  ::placeholder {
+    color: var(--color_text_muted);
+  }
+
+  .contact_consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9375rem;
+    color: var(--color_text_secondary);
+  }
+
+  .contact_consent input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: var(--color_accent);
+  }
+
+  .contact_error {
+    min-height: 0;
+    margin-top: 6px;
+    font-size: var(--text_sm);
+    color: var(--color_bad);
+  }
+
+  .contact_error:empty {
+    display: none;
+  }
+
+  .contact_errors {
+    padding: 14px 18px;
+    border-radius: var(--radius_md);
+    border: 1px solid var(--color_bad);
+    background: var(--color_bad_bg);
+    font-size: 0.9375rem;
+  }
+
+  .contact_errors p {
+    font-weight: 600;
+  }
+
+  .contact_errors ul {
+    margin-top: 6px;
+    padding-left: 1.2rem;
+    list-style: disc;
+  }
+
+  .contact_submit {
+    justify-self: start;
+    min-width: 160px;
+  }
+
+  .contact_submit[aria-disabled='true'] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .contact_done {
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+    padding: var(--space_lg) 0;
+  }
+
+  .contact_done h2 {
+    font-size: var(--text_h3);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .contact_done p {
+    color: var(--color_text_secondary);
+  }
+
+  .contact_done_icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color_ok_bg);
+    border: 1px solid var(--color_ok);
+    position: relative;
+  }
+
+  /* Check mark drawn with borders */
+  .contact_done_icon::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 11px;
+    width: 10px;
+    height: 17px;
+    border: solid var(--color_ok);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .contact_done:not([hidden]) {
+      animation: contact_in 420ms var(--ease_out);
+    }
+  }
+
+  @keyframes contact_in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+</style>

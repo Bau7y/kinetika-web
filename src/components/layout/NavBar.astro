@@ -30,7 +30,7 @@ const links = [
   { href: anchor('preguntas'), label: t('nav.faq'), section: 'preguntas' },
   { href: routes.guides[lang], label: t('nav.guides'), section: undefined },
 ];
-const quoteHref = isHome ? '#contacto' : routes.quote[lang];
+const quoteHref = routes.quote[lang];
 const path = Astro.url.pathname;
 const current = (href: string) => (path === href || path.startsWith(`${href}/`) ? 'page' : undefined);
 ---

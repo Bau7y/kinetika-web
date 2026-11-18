@@ -10,7 +10,7 @@ export const LANGS = Object.keys(languages) as Lang[];
 
 export const routes = {
   home: { es: '/', en: '/en' },
-  quote: { es: '/cotizar', en: '/en/quote' },
+  quote: { es: '/contacto', en: '/en/contact' },
   servicesBase: { es: '/servicios', en: '/en/services' },
   projectsBase: { es: '/proyectos', en: '/en/projects' },
   guides: { es: '/guias', en: '/en/guides' },

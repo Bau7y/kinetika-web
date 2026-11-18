@@ -34,7 +34,7 @@ async function open(path, options = {}) {
 
 describe('páginas clave', () => {
   const paths = [
-    '/', '/en', '/cotizar', '/en/quote', '/guias', '/en/guides', '/privacidad', '/en/privacy',
+    '/', '/en', '/contacto', '/en/contact', '/guias', '/en/guides', '/privacidad', '/en/privacy',
     '/servicios/automatizacion-de-procesos', '/servicios/sitios-web', '/proyectos/pedidos', '/proyectos/tramimunisc', '/proyectos/plataforma-contable',
     '/en/services/websites', '/en/projects/tramimunisc', '/guias/declaracion-de-bienes-inmuebles',
   ];
@@ -81,27 +81,34 @@ describe('seguridad', () => {
 });
 
 describe('cotización', () => {
-  it('pide correo y consentimiento antes de enviar', async () => {
-    const page = await open('/cotizar');
-    const form = page.locator('[data-quote]');
-    await form.locator('.chat_option').first().click();
-    await form.locator('[data-step="1"] .chat_option').first().click();
-    await form.locator('button[type="submit"]').click();
-    const invalid = await page.$$eval('[data-quote] [aria-invalid="true"]', (els) => els.map((e) => e.getAttribute('name')).sort());
-    assert.deepEqual(invalid, ['consent', 'email']);
+  it('pide lo que necesitás, el negocio, el correo y el consentimiento antes de enviar', async () => {
+    const page = await open('/contacto');
+    await page.click('[data-contact-form] button[type="submit"]');
+    const invalid = await page.$$eval('[data-contact-form] [aria-invalid="true"]', (els) => [...new Set(els.map((e) => e.getAttribute('name')))].sort());
+    assert.deepEqual(invalid, ['business', 'consent', 'email', 'need']);
     assert.equal(await page.textContent('[data-error-for="consent"]'), 'Necesitamos tu autorización para usar estos datos.');
     assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-error-summary')), true);
+    // Choosing an option clears its error
+    await page.click('.contact_card >> nth=0');
+    assert.equal(await page.textContent('[data-error-for="need"]'), '');
     await page.close();
   });
 
-  it('muestra los errores en inglés en /en/quote', async () => {
-    const page = await open('/en/quote');
-    const form = page.locator('[data-quote]');
-    await form.locator('.chat_option').first().click();
-    await form.locator('[data-step="1"] .chat_option').first().click();
-    await form.locator('button[type="submit"]').click();
+  it('muestra los errores en inglés en /en/contact', async () => {
+    const page = await open('/en/contact');
+    await page.click('.contact_card >> nth=0');
+    await page.click('.contact_chip >> nth=0');
+    await page.click('[data-contact-form] button[type="submit"]');
     assert.equal(await page.textContent('[data-error-for="consent"]'), 'We need your permission to use this information.');
     await page.close();
+  });
+
+  it('muestra el correo público y redirige /cotizar', async () => {
+    const html = await (await get('/contacto')).text();
+    assert.match(html, /href="mailto:kinetikacr\.sc@gmail\.com"/);
+    assert.match(html, /"@type":"ContactPage"/);
+    const config = JSON.parse(await readFile('.vercel/output/config.json', 'utf8'));
+    assert.match(JSON.stringify(config.routes), /cotizar/);
   });
 
   it('la lista de espera también valida', async () => {
