@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import vercel from '@astrojs/vercel';
 
 /**
@@ -41,4 +41,19 @@ export default defineConfig({
           },
         },
       },
+  // Secrets stay in .env (local) and in Vercel; never in the code.
+  env: {
+    schema: {
+      RESEND_API_KEY: envField.string({ context: 'server', access: 'secret' }),
+      // Inbox that receives quotes and waitlist sign-ups
+      CONTACT_TO: envField.string({ context: 'server', access: 'secret' }),
+      // Sender on a domain verified in Resend, e.g. "Kinetika <hola@kinetika.cr>"
+      CONTACT_FROM: envField.string({ context: 'server', access: 'secret' }),
+      // Optional anti-spam services: each layer turns on when its keys exist
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),
+      TURNSTILE_SECRET_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
+      UPSTASH_REDIS_REST_URL: envField.string({ context: 'server', access: 'secret', optional: true }),
+      UPSTASH_REDIS_REST_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
+    },
+  },
 });
