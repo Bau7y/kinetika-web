@@ -29,7 +29,7 @@ const credentials = [
 ];
 const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '');
 ---
-<section class="hero" aria-labelledby="hero_title">
+<section class="hero" aria-labelledby="hero_title" data-hero>
   <Picture
     src={heroImage}
     formats={['avif', 'webp']}
@@ -63,6 +63,12 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
   </div>
 </section>
 
+<script>
+  import { initHeroLines } from '../../scripts/hero_lines';
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) initHeroLines(hero);
+</script>
+
 <style>
   .hero {
     position: relative;
@@ -83,6 +89,27 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
     height: 100%;
     object-fit: cover;
     opacity: 0.7;
+    transition: opacity 900ms ease;
+  }
+
+  /* Live lines (canvas added by scripts/hero_lines.ts): cross-fade with the image */
+  .hero :global(.hero_lines) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 900ms ease;
+  }
+
+  .hero:global(.lines_live) :global(.hero_lines) {
+    opacity: 0.7;
+  }
+
+  .hero:global(.lines_live) :global(.hero_bg) {
+    opacity: 0;
   }
 
   .hero_body {
