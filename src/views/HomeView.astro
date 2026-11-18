@@ -7,7 +7,6 @@ import Testimonials from '../components/sections/Testimonials.astro';
 import ProjectsRail from '../components/sections/ProjectsRail.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
 import BeforeAfter from '../components/sections/BeforeAfter.astro';
-import AutoFlow from '../components/sections/AutoFlow.astro';
 import PageBuilder from '../components/sections/PageBuilder.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import Process from '../components/sections/Process.astro';
@@ -35,12 +34,11 @@ const business = businessSchema(Astro.site!, lang, {
 // Story order of the home page: each numbered section takes its place here
 import { testimonials } from '../data/testimonials';
 // Testimonials take a number only once there are real ones
-type Chapter = 'projects' | 'services' | 'compare' | 'day' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq';
+type Chapter = 'projects' | 'services' | 'compare' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq';
 const chapters: Chapter[] = [
   'projects',
   'services',
   'compare',
-  'day',
   'about',
   ...(testimonials[lang].length > 0 ? (['testimonials'] as const) : []),
   'process',
@@ -55,7 +53,6 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
   <ProjectsRail lang={lang} number={n('projects')} />
   <ServicesSection lang={lang} number={n('services')} />
   <BeforeAfter lang={lang} number={n('compare')} />
-  <AutoFlow lang={lang} number={n('day')} />
   <WhyServiceArea lang={lang} number={n('about')} />
   <StatsStrip lang={lang} />
   <Testimonials lang={lang} number={n('testimonials')} />
