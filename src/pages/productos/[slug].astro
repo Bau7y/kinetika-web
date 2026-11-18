@@ -8,7 +8,7 @@ export const getStaticPaths = (async () =>
   (await getProducts('es')).map((product) => ({ params: { slug: product.data.url_slug }, props: { product } }))) satisfies GetStaticPaths;
 
 const { product } = Astro.props as { product: Product };
-const Demo = demos[product.key] as ((props: { lang: 'es' | 'en' }) => unknown) | undefined;
+const Demo = demos[product.key];
 ---
 <ProductView lang="es" product={product}>
   {Demo && <Demo slot="demo" lang="es" />}
