@@ -8,7 +8,10 @@ import Blueprint from '../components/sections/Blueprint.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
 import QuoteChat from '../components/sections/QuoteChat.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
 import { getLegalHref } from '../data/legal';
+import { faq } from '../data/faq';
+import { businessSchema, faqSchema } from '../lib/structured_data';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -19,6 +22,7 @@ const t = useTranslations(lang);
 const privacyHref = await getLegalHref('privacidad', lang);
 ---
 <BaseLayout intro lang={lang} title={t('site.tagline')} description={t('site.description')} alternates={routes.home}>
+  <JsonLd slot="head" data={[businessSchema(Astro.site!, lang, t('site.description'), routes.home[lang]), faqSchema(faq[lang])]} />
   <Hero lang={lang} />
   <SwitchCompare lang={lang} />
   <DayTimeline lang={lang} />

@@ -9,6 +9,8 @@ import ProductDemo from '../components/product/ProductDemo.astro';
 import Prose from '../components/ui/Prose.astro';
 import Button from '../components/ui/Button.astro';
 import WaitlistForm from '../components/product/WaitlistForm.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/structured_data';
 import { render } from 'astro:content';
 import { getProducts, type Product } from '../data/products';
 import { pairHrefs } from '../data/pages';
@@ -35,7 +37,21 @@ const crumbs = [
 ];
 ---
 <BaseLayout lang={lang} title={data.seo_title} description={data.meta_description} alternates={alternates}>
-  <slot name="head" slot="head" />
+  <JsonLd
+    slot="head"
+    data={[
+      serviceSchema(Astro.site!, lang, {
+        name: data.name,
+        type: data.service_type,
+        description: data.meta_description,
+        path: product.href,
+        audience: data.audience,
+        url: data.external_url,
+      }),
+      breadcrumbSchema(Astro.site!, crumbs),
+      ...(data.faq.length > 0 ? [faqSchema(data.faq)] : []),
+    ]}
+  />
   <ProductHero lang={lang} product={product} crumbs={crumbs} />
 
   <ProductDemo lang={lang} title={data.demo.title} text={data.demo.text}>

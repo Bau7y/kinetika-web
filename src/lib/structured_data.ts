@@ -3,6 +3,8 @@
  * plain objects, so pages decide what to publish and components stay unaware.
  */
 import type { Lang } from '../i18n/routes';
+import { site } from '../data/site';
+import { canton, districts } from '../data/service_area';
 
 type Json = Record<string, unknown>;
 
@@ -10,6 +12,89 @@ const absolute = (path: string, base: URL) => new URL(path, base).toString();
 
 /** The business node every other object points to. */
 export const businessRef = (base: URL) => ({ '@id': absolute('/#negocio', base) });
+
+const LANGUAGES = ['es', 'en'];
+
+/** In person: the districts of San Carlos. Online: the whole country. */
+export const areaServed = [
+  ...districts.map((name) => ({
+    '@type': 'Place',
+    name: `${name}, ${canton.name}, ${canton.province}`,
+  })),
+  { '@type': 'Country', name: canton.country },
+];
+
+/** The business itself, published on the home page. Optional data only when it exists. */
+export function businessSchema(base: URL, lang: Lang, description: string, homePath: string): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    ...businessRef(base),
+    name: site.name,
+    description,
+    url: absolute(homePath, base),
+    logo: absolute('/favicon.svg', base),
+    image: absolute('/og/index.png', base),
+    inLanguage: lang,
+    knowsLanguage: LANGUAGES,
+    ...(site.email ? { email: site.email } : {}),
+    ...(site.phone ? { telephone: site.phone } : {}),
+    ...(site.profiles.length > 0 ? { sameAs: site.profiles } : {}),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.locality,
+      addressRegion: site.region,
+      addressCountry: site.country,
+    },
+    areaServed,
+  };
+}
+
+export interface ServiceInfo {
+  name: string;
+  type: string;
+  description: string;
+  path: string;
+  audience: string;
+  /** Running on its own domain. */
+  url?: string;
+}
+
+/** A product page: a Service provided by the business. */
+export function serviceSchema(base: URL, lang: Lang, info: ServiceInfo): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: info.name,
+    serviceType: info.type,
+    description: info.description,
+    url: absolute(info.path, base),
+    ...(info.url ? { sameAs: info.url } : {}),
+    inLanguage: lang,
+    availableLanguage: LANGUAGES,
+    provider: businessRef(base),
+    areaServed,
+    audience: { '@type': 'Audience', audienceType: info.audience },
+  };
+}
+
+export interface FaqEntry {
+  q: string;
+  a: string;
+}
+
+/** FAQ markup no longer produces a Google rich result, but still describes the page. */
+export function faqSchema(items: FaqEntry[]): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+}
 
 /** "Ley 7509" → schema.org Legislation; other labels are skipped. */
 export function legislation(label?: string): Json | undefined {

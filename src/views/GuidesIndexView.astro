@@ -2,6 +2,8 @@
 /** Guides index, shared by /guias and /en/guides. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { breadcrumbSchema } from '../lib/structured_data';
 import GuideCards from '../components/ui/GuideCards.astro';
 import { getGuides } from '../data/guides';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
@@ -18,7 +20,7 @@ const crumbs = [
 ];
 ---
 <BaseLayout lang={lang} title={t('guides.seo_title')} description={t('guides.meta')} alternates={routes.guides}>
-  <slot name="head" slot="head" />
+  <JsonLd slot="head" data={breadcrumbSchema(Astro.site!, crumbs)} />
   <section class="guides_index" aria-labelledby="guides_title">
     <div class="container">
       <Breadcrumbs lang={lang} items={crumbs} />

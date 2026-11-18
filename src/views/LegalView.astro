@@ -3,6 +3,8 @@
 import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { breadcrumbSchema } from '../lib/structured_data';
 import Prose from '../components/ui/Prose.astro';
 import { getLegalPages, type LegalPage } from '../data/legal';
 import { pairHrefs } from '../data/pages';
@@ -22,7 +24,7 @@ const crumbs = [
 ];
 ---
 <BaseLayout lang={lang} title={page.data.title} description={page.data.meta_description} alternates={alternates}>
-  <slot name="head" slot="head" />
+  <JsonLd slot="head" data={breadcrumbSchema(Astro.site!, crumbs)} />
   <article class="legal container" aria-labelledby="legal_title">
     <Breadcrumbs lang={lang} items={crumbs} />
     <h1 id="legal_title">{page.data.title}</h1>

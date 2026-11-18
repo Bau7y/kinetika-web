@@ -2,6 +2,8 @@
 /** Quote page: the same chat as the home page, as the page's main content. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import { breadcrumbSchema } from '../lib/structured_data';
 import QuoteChat from '../components/sections/QuoteChat.astro';
 import { getLegalHref } from '../data/legal';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
@@ -18,6 +20,7 @@ const crumbs = [
 ];
 ---
 <BaseLayout lang={lang} title={t('quote.page_title')} description={t('quote.meta')} alternates={routes.quote}>
+  <JsonLd slot="head" data={breadcrumbSchema(Astro.site!, crumbs)} />
   <div class="container quote_crumbs">
     <Breadcrumbs lang={lang} items={crumbs} />
   </div>
