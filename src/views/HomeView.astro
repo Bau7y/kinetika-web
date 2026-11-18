@@ -7,6 +7,7 @@ import DayTimeline from '../components/sections/DayTimeline.astro';
 import Blueprint from '../components/sections/Blueprint.astro';
 import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
+import QuoteChat from '../components/sections/QuoteChat.astro';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -22,4 +23,5 @@ const t = useTranslations(lang);
   <Blueprint lang={lang} />
   <WhyServiceArea lang={lang} />
   <FaqGuides lang={lang} />
+  <QuoteChat lang={lang} privacyHref={lang === 'es' ? '/privacidad' : '/en/privacy'} />
 </BaseLayout>

@@ -11,6 +11,11 @@
   margin: 0;
 }
 
+/* `hidden` always wins over component display rules */
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
