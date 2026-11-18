@@ -5,8 +5,10 @@ import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** Show the "replay the intro" button (pages with the intro). */
+  replayIntro?: boolean;
 }
-const { lang } = Astro.props;
+const { lang, replayIntro = false } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 
@@ -42,7 +44,7 @@ const company = [
       <p translate="no">© {year} {site.name}. {t('footer.rights')}</p>
       <div class="footer_bottom_end">
         <p>{t('footer.location')}</p>
-        <slot name="bottom" />
+        {replayIntro && <button type="button" class="btn btn_ghost btn_sm" data-intro-replay>{t('footer.replay_intro')}</button>}
       </div>
     </div>
   </div>

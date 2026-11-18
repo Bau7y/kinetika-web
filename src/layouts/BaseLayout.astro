@@ -5,6 +5,7 @@ import NavBar from '../components/layout/NavBar.astro';
 import LangSuggest from '../components/layout/LangSuggest.astro';
 import Footer from '../components/layout/Footer.astro';
 import SkipLink from '../components/layout/SkipLink.astro';
+import Intro from '../components/brand/Intro.astro';
 import { site } from '../data/site';
 import { THEME_INIT } from '../lib/theme_init.mjs';
 import { LANGS, useTranslations, type Lang } from '../i18n/ui';
@@ -18,9 +19,11 @@ interface Props {
   alternates: Record<Lang, string>;
   /** Pages that must stay out of search results (404): no canonical or hreflang either. */
   noindex?: boolean;
+  /** Play the K intro (home page only). */
+  intro?: boolean;
 }
 
-const { lang, title, description, alternates, noindex = false } = Astro.props;
+const { lang, title, description, alternates, noindex = false, intro = false } = Astro.props;
 const t = useTranslations(lang);
 const otherLang: Lang = lang === 'es' ? 'en' : 'es';
 const metaDescription = description ?? t('site.description');
@@ -28,7 +31,7 @@ const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-intro={intro ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -60,12 +63,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body>
+    {intro && <Intro />}
     <SkipLink lang={lang} />
     <NavBar lang={lang} altHref={alternates[otherLang]} />
     <main id="contenido" tabindex="-1">
       <slot />
     </main>
-    <Footer lang={lang} />
+    <Footer lang={lang} replayIntro={intro} />
     <LangSuggest lang={lang} altHref={alternates[otherLang]} />
   </body>
 </html>
