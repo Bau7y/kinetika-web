@@ -1,15 +1,12 @@
 ---
 /**
- * Portfolio of projects as case studies. Each card shows a capture of the
- * project's own working demo (src/assets/work/<key>.png, regenerated with
- * scripts/capture_work.mjs) and links to its case page.
+ * Portfolio of projects on the home page, as case-study cards (captures in
+ * src/assets/work/<key>.png, regenerated with `yarn capture:work`).
  */
-import { Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import Badge from '../ui/Badge.astro';
+import ProjectCard from '../ui/ProjectCard.astro';
+import SectionHead from '../ui/SectionHead.astro';
 import { getProjects } from '../../data/work';
-import { statusBadge } from '../../data/work_status';
-import { useTranslations, type Lang } from '../../i18n/ui';
+import { routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -18,143 +15,39 @@ interface Props {
 const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 const projects = await getProjects(lang);
-const captures = import.meta.glob<{ default: ImageMetadata }>('../../assets/work/*.png', { eager: true });
-const captureOf = (key: string) => captures[`../../assets/work/${key}.png`]?.default;
 ---
 <section id="proyectos" class="section container" aria-labelledby="projects_title">
-  <div class="projects_head">
-    <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.projects')}</p>
-    <h2 id="projects_title" class="section_title" data-reveal data-i="1">{t('projects.title')}</h2>
-    <p class="lede" data-reveal data-i="2">{t('projects.lede')}</p>
-  </div>
+  <SectionHead id="projects_title" number={number} label={t('label.projects')} title={t('projects.title')} lede={t('projects.lede')} />
 
   <ul role="list" class="projects_grid">
-    {projects.map((p, i) => {
-      const capture = captureOf(p.key);
-      const badge = statusBadge[p.data.status];
-      return (
-        <li class="project" data-reveal data-i={i}>
-          <a href={p.href} class="project_link" aria-labelledby={`project_${p.key}`}>
-            <div class="project_media">
-              {capture && (
-                <Picture src={capture} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1100px) 380px, (min-width: 700px) 45vw, 92vw" alt="" class="project_img" />
-              )}
-              <span class="project_view" aria-hidden="true">{t('projects.view_case')} →</span>
-            </div>
-            <div class="project_meta">
-              <span class="mono project_n">{String(i + 1).padStart(2, '0')}</span>
-              <Badge tone={badge.tone}>{t(badge.label)}</Badge>
-            </div>
-            <h3 id={`project_${p.key}`} class="project_name">{p.data.name}</h3>
-            <p class="project_text">{p.data.case?.solution}</p>
-          </a>
-        </li>
-      );
-    })}
+    {projects.map((p, i) => (
+      <li data-reveal data-i={i}>
+        <ProjectCard lang={lang} project={p} index={i} />
+      </li>
+    ))}
   </ul>
+
+  <p class="projects_all">
+    <a href={routes.projectsBase[lang]}>{t('projects.all')} <span aria-hidden="true">→</span></a>
+  </p>
 </section>
 
 <style>
-  .projects_head {
-    display: grid;
-    gap: var(--space_sm);
-    max-width: 760px;
-    margin-bottom: var(--space_lg);
-  }
-
   .projects_grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
     gap: var(--space_md);
   }
 
-  .project_link {
-    display: grid;
-    gap: 12px;
-    color: var(--color_text_secondary);
-    text-decoration: none;
+  .projects_all {
+    margin-top: var(--space_lg);
   }
 
-  .project_media {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 16 / 11;
-    border-radius: var(--radius_xl);
-    border: 1px solid var(--color_line);
-    background: var(--color_surface);
-  }
-
-  .project_media :global(picture) {
-    display: block;
-    height: 100%;
-  }
-
-  .project_media :global(.project_img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top left;
-    transition: transform var(--duration_slow) var(--ease_out);
-  }
-
-  /* "View case" pill: appears on hover/focus (opacity + transform only) */
-  .project_view {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    padding: 10px 18px;
-    border-radius: var(--radius_full);
-    background: var(--color_cta);
-    color: var(--color_on_cta);
-    font-size: var(--text_sm);
-    font-weight: 600;
-    opacity: 0;
-    transform: translate(-50%, -40%) scale(0.96);
-    transition:
-      opacity var(--duration_fast) var(--ease_out),
-      transform var(--duration_fast) var(--ease_out);
-  }
-
-  .project_link:focus-visible .project_view {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .project_link:hover .project_view {
-      opacity: 1;
-      transform: translate(-50%, -50%);
-    }
-
-    .project_link:hover :global(.project_img) {
-      transform: scale(1.03);
-    }
-
-    .project_link:hover {
-      color: var(--color_text_secondary);
-    }
-  }
-
-  .project_meta {
-    display: flex;
+  .projects_all a {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: 6px;
-  }
-
-  .project_n {
-    font-size: var(--text_xs);
-    color: var(--color_text_muted);
-  }
-
-  .project_name {
-    font-size: var(--text_h3);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--color_text);
-  }
-
-  .project_text {
-    font-size: 0.9375rem;
+    gap: 6px;
+    min-height: var(--tap_min);
+    font-weight: 600;
   }
 </style>

@@ -15,7 +15,7 @@ const isDev = process.argv.includes('dev');
 const themeInitHash = `sha256-${createHash('sha256').update(THEME_INIT).digest('base64')}`;
 
 export default defineConfig({
-  site: 'https://kinetika.cr',
+  site: 'https://kinetikacr.com',
   // staticHeaders: the CSP below is sent as an HTTP header for every page
   // (instead of a <meta>), so frame-ancestors also applies.
   adapter: vercel({ staticHeaders: true }),
@@ -65,7 +65,7 @@ export default defineConfig({
       RESEND_API_KEY: envField.string({ context: 'server', access: 'secret' }),
       // Inbox that receives quotes and waitlist sign-ups
       CONTACT_TO: envField.string({ context: 'server', access: 'secret' }),
-      // Sender on a domain verified in Resend, e.g. "Kinetika <hola@kinetika.cr>"
+      // Sender on a domain verified in Resend, e.g. "Kinetika <hola@kinetikacr.com>"
       CONTACT_FROM: envField.string({ context: 'server', access: 'secret' }),
       // Optional anti-spam services: each layer turns on when its keys exist
       PUBLIC_TURNSTILE_SITE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),

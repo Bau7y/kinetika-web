@@ -2,7 +2,7 @@
 
 Sitio web de **Kinetika**, estudio de San Carlos, Costa Rica, que automatiza procesos de negocios con sitios y sistemas web y crea sitios que amplían su alcance. Funciona como landing y como portafolio: dos servicios (automatización de procesos y sitios web a la medida) y tres proyectos presentados como casos de estudio con demo funcional (pedidos para restaurantes, TramiMuniSC y la plataforma contable).
 
-- Dominio previsto: `kinetika.cr`
+- Dominio previsto: `kinetikacr.com`
 - Diseño de referencia: lienzo de diseño "Kinetika — Direcciones de landing", artboard **F · Landing v2**
 - Base técnica: [Landing_TramiMuniSC](https://github.com/Bau7y/Landing_TramiMuniSC) (requisitos no funcionales comunes de la marca)
 
@@ -277,9 +277,16 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 - **Servicios** (`kind: service`): automatización de procesos y sitios web a la medida. Cada página lista los proyectos que lo muestran.
 - **Proyectos** (`kind: project`): casos de estudio con `case` (antes, qué se automatizó, hoy y etiquetas). El resultado solo dice hechos; no se inventan cifras.
 - **Redirecciones:** las URLs antiguas `/productos/*` y `/en/products/*` responden 301 a su nueva ruta (`astro.config.mjs`).
-- **Capturas del portafolio:** las tarjetas de proyecto usan `src/assets/work/<clave>.png`, tomadas de la demo de cada proyecto. Si una demo cambia: `yarn build && yarn capture:work`.
+- **Capturas del portafolio:** las tarjetas de proyecto usan `src/assets/work/<clave>.png`, tomadas de la demo de cada proyecto. Si una demo cambia: `yarn build && yarn capture:work`. En CI, `yarn check:captures` falla si alguna quedó desactualizada.
+- **Presupuesto de rendimiento:** `yarn test:perf` (Lighthouse CI) corre en CI sobre la portada, un servicio y un proyecto: LCP menor a 2,5 s, CLS menor a 0,01, TBT menor a 200 ms y 100 en accesibilidad y SEO.
 - **Paleta:** azul empresarial. De Portfolite se toma la estructura (pastilla, scroll, franja, casos), los titulares en peso 500 y el brillo de los botones, no los colores.
-- **Testimonios:** no hay sección hasta tener testimonios reales con permiso de cada cliente.
+- **Testimonios:** `src/data/testimonials.ts` empieza vacío y la sección no se muestra. Cada testimonio necesita el permiso escrito del cliente (campo `consent` con fecha), y una prueba unitaria lo exige.
+- **Índice de proyectos:** `/proyectos` y `/en/projects` listan todos los casos, con filtro por estado. Sin JavaScript se ven todos.
+- **Hitos:** `case.milestones` (fecha y hecho) es opcional; si un proyecto los tiene, aparecen en su caso y en `llms-full.txt`.
+- **Textos de las demos:** viven en `src/data/demos/`. Una prueba unitaria verifica que español e inglés tengan la misma forma.
+- **Componentes compartidos:** `Faq` (acordeón nativo con `details`), `ClosingCta` (cierre antes del pie), `SectionHead`, `Chips` y `ProjectCard`, en `src/components/ui`.
+- **Numeración de la portada:** el orden de `chapters` en `HomeView` define los números 01, 02…
+- **Historia del hero:** al llegar, las líneas pasan de un enredo a un vaivén tranquilo (el trabajo a mano). Al bajar, se ordenan en una banda y los pulsos aceleran (el mismo trabajo automatizado) mientras el texto sube y se desvanece. El progreso sale de un `IntersectionObserver` con umbrales, sin escuchar el scroll. El texto usa `animation-timeline` en una regla aparte, porque el minificador la pierde si va junto al shorthand `animation`. Todo es por tiempo y con suavizado, a 60 cuadros por segundo, y se omite con movimiento reducido.
 
 ## SEO, AEO y GEO
 

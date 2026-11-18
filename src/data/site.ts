@@ -7,7 +7,7 @@
  */
 export const site = {
   name: 'Kinetika',
-  domain: 'kinetika.cr',
+  domain: 'kinetikacr.com',
   locality: 'San Carlos',
   region: 'Alajuela',
   country: 'CR',

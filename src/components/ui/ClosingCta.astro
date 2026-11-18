@@ -1,0 +1,89 @@
+---
+/**
+ * Large closing call to action before the footer: one question, one primary
+ * action and an optional secondary one. Used at the end of every page that
+ * has no quote form of its own.
+ */
+import Button from './Button.astro';
+
+interface Props {
+  title: string;
+  text: string;
+  eyebrow: string;
+  primary: { href: string; label: string };
+  secondary?: { href: string; label: string };
+  id?: string;
+}
+const { title, text, eyebrow, primary, secondary, id = 'cierre' } = Astro.props;
+---
+<section class="closing" aria-labelledby={`${id}_title`}>
+  <div class="container closing_body">
+    <p class="closing_eyebrow" data-reveal data-i="0"><span aria-hidden="true"></span>{eyebrow}</p>
+    <h2 id={`${id}_title`} class="closing_title" data-reveal data-i="1">{title}</h2>
+    <p class="closing_text" data-reveal data-i="2">{text}</p>
+    <div class="closing_actions" data-reveal data-i="3">
+      <Button href={primary.href} arrow>{primary.label}</Button>
+      {secondary && <Button href={secondary.href} variant="ghost">{secondary.label}</Button>}
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .closing {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(80px, 12vw, 160px);
+    border-top: 1px solid var(--color_line);
+    background:
+      radial-gradient(60% 80% at 50% 110%, rgb(47 111 235 / 0.28), transparent 70%),
+      var(--color_bg);
+    text-align: center;
+  }
+
+  .closing_body {
+    display: grid;
+    justify-items: center;
+    gap: var(--space_md);
+  }
+
+  .closing_eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_accent_border);
+    background: var(--color_accent_tint);
+    font-size: var(--text_sm);
+  }
+
+  .closing_eyebrow span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color_ok);
+  }
+
+  .closing_title {
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+  }
+
+  .closing_text {
+    max-width: 40rem;
+    font-size: var(--text_lg);
+    color: var(--color_text_secondary);
+  }
+
+  .closing_actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>

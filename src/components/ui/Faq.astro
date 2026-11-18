@@ -1,0 +1,165 @@
+---
+/**
+ * Questions as a native accordion (`details`/`summary`): no JavaScript,
+ * keyboard and screen-reader support built in, and every answer stays in the
+ * HTML for search engines and the FAQPage data. The first one starts open.
+ */
+interface Item {
+  q: string;
+  a: string;
+  /** Optional link inside the answer: `text` must appear in `a`. */
+  link?: { text: string; href: string };
+}
+
+interface Props {
+  items: Item[];
+  /** Two columns on wide screens (home). */
+  columns?: boolean;
+  /** Heading level of each question, to fit the page outline. */
+  level?: 3 | 4;
+  /** Accordion group: opening one closes the others. */
+  name?: string;
+}
+const { items, columns = false, level = 3, name } = Astro.props;
+const Heading = `h${level}` as 'h3' | 'h4';
+const half = Math.ceil(items.length / 2);
+
+/** Splits an answer around its link text, if any. */
+const parts = (item: Item) => {
+  if (!item.link) return { before: item.a, link: undefined, after: '' };
+  const [before, ...rest] = item.a.split(item.link.text);
+  return { before, link: item.link, after: rest.join(item.link.text) };
+};
+---
+<div class:list={['faq', columns && 'faq_columns']}>
+  {items.map((item, i) => {
+    const { before, link, after } = parts(item);
+    return (
+      <details class:list={['faq_item', columns && i === half && 'faq_col_start']} name={name} open={i === 0} data-reveal data-i={i % 2}>
+        <summary>
+          <Heading class="faq_q">{item.q}</Heading>
+          <span class="faq_icon" aria-hidden="true"></span>
+        </summary>
+        <p class="faq_a">{before}{link && <a href={link.href}>{link.text}</a>}{after}</p>
+      </details>
+    );
+  })}
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    align-items: start;
+    column-gap: var(--space_xl);
+  }
+
+  /* Two independent columns: opening one question never leaves a gap
+     beside it, as a shared grid row would */
+  @media (min-width: 900px) {
+    .faq_columns {
+      display: block;
+      columns: 2;
+      column-gap: var(--space_xl);
+    }
+
+    .faq_columns .faq_item {
+      break-inside: avoid;
+    }
+  }
+
+  .faq_item {
+    border-bottom: 1px solid var(--color_line);
+  }
+
+  .faq_item:first-child {
+    border-top: 1px solid var(--color_line);
+  }
+
+  @media (min-width: 900px) {
+    /* First item of the second column gets its own top rule */
+    .faq_columns .faq_col_start {
+      border-top: 1px solid var(--color_line);
+    }
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space_sm);
+    min-height: var(--tap_min);
+    padding-block: 20px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq_q {
+    font-size: var(--text_lg);
+    font-weight: 600;
+    line-height: var(--leading_snug);
+    letter-spacing: -0.01em;
+  }
+
+  /* Plus that turns into a minus (transform only) */
+  .faq_icon {
+    position: relative;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--color_line_strong);
+  }
+
+  .faq_icon::before,
+  .faq_icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 1.5px;
+    margin: -0.75px 0 0 -5px;
+    border-radius: 1px;
+    background: var(--color_text);
+    transition: transform var(--duration_fast) var(--ease_out);
+  }
+
+  .faq_icon::after {
+    transform: rotate(90deg);
+  }
+
+  details[open] .faq_icon::after {
+    transform: rotate(0deg);
+  }
+
+  .faq_a {
+    padding-bottom: 22px;
+    max-width: 62ch;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color_text_secondary);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    details[open] .faq_a {
+      animation: faq_in 260ms var(--ease_out);
+    }
+  }
+
+  @keyframes faq_in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    summary:hover .faq_icon {
+      border-color: var(--color_accent);
+    }
+  }
+</style>

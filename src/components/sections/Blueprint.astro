@@ -7,8 +7,10 @@ import { useTranslations, type Lang, type UiKey } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** Position in the home page, set by HomeView. */
+  number: string;
 }
-const { lang } = Astro.props;
+const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 
 const specs = (['hero', 'demos', 'faq', 'form'] as const).map((id) => ({
@@ -19,7 +21,7 @@ const specs = (['hero', 'demos', 'faq', 'form'] as const).map((id) => ({
 }));
 ---
 <section id="plano" class="section container" aria-labelledby="proof_title" data-blueprint>
-  <p class="section_label" data-reveal data-i="0"><span>07</span>{t('label.proof')}</p>
+  <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.proof')}</p>
   <h2 id="proof_title" class="section_title" data-reveal data-i="1">{t('proof.title')}</h2>
   <p class="lede proof_lede" data-reveal data-i="2">{t('proof.lede')}</p>
 
@@ -38,7 +40,7 @@ const specs = (['hero', 'demos', 'faq', 'form'] as const).map((id) => ({
     <div id="proof_plan" class="proof_plan" role="group" aria-label={t('proof.blueprint_label')} data-reveal>
       <div class="proof_browser mono" aria-hidden="true">
         <span></span><span></span><span></span>
-        <span class="proof_url">kinetika.cr</span>
+        <span class="proof_url">kinetikacr.com</span>
       </div>
       <div class="proof_block proof_block_hero" data-block="hero" data-active>
         {t('proof.block_hero')}

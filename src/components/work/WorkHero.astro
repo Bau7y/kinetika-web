@@ -18,21 +18,21 @@ const { data } = work;
 const badge = statusBadge[data.status];
 const waitlist = data.status === 'waitlist';
 ---
-<section class="product_hero" aria-labelledby="product_title">
+<section class="work_hero" aria-labelledby="work_title">
   <div class="container">
     <Breadcrumbs lang={lang} items={crumbs} />
-    <div class="product_hero_body">
+    <div class="work_hero_body">
       <Badge tone={badge.tone}>{t(badge.label)}</Badge>
-      <h1 id="product_title" class="product_title">{data.title}</h1>
+      <h1 id="work_title" class="work_title">{data.title}</h1>
       <p class="lede">{data.summary}</p>
-      <div class="product_actions">
+      <div class="work_actions">
         {waitlist ? (
-          <Button href="#lista-de-espera" arrow>{t('product.cta_waitlist')}</Button>
+          <Button href="#lista-de-espera" arrow>{t('work.cta_waitlist')}</Button>
         ) : (
-          <Button href={routes.quote[lang]} arrow>{t('product.cta_quote')}</Button>
+          <Button href={routes.quote[lang]} arrow>{t('work.cta_quote')}</Button>
         )}
         {data.external_url && (
-          <Button href={data.external_url} variant="ghost">{t('product.cta_live')}</Button>
+          <Button href={data.external_url} variant="ghost">{t('work.cta_live')}</Button>
         )}
       </div>
     </div>
@@ -40,14 +40,14 @@ const waitlist = data.status === 'waitlist';
 </section>
 
 <style>
-  .product_hero {
+  .work_hero {
     padding-top: calc(var(--navbar_h) + var(--space_sm));
     padding-bottom: var(--space_2xl);
     background: radial-gradient(70% 90% at 80% 0%, #132552, var(--color_bg) 70%);
     border-bottom: 1px solid var(--color_line);
   }
 
-  .product_hero_body {
+  .work_hero_body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -56,14 +56,14 @@ const waitlist = data.status === 'waitlist';
     margin-top: var(--space_lg);
   }
 
-  .product_title {
+  .work_title {
     font-size: clamp(2.25rem, 5vw, 4rem);
     font-weight: 500;
     line-height: var(--leading_tight);
     letter-spacing: -0.035em;
   }
 
-  .product_actions {
+  .work_actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;

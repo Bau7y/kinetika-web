@@ -3,6 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import StatsStrip from '../components/sections/StatsStrip.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
 import ProjectsGrid from '../components/sections/ProjectsGrid.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
 import SwitchCompare from '../components/sections/SwitchCompare.astro';
@@ -33,18 +34,36 @@ const business = businessSchema(Astro.site!, lang, {
   knowsAbout: t('site.knows_about').split('|'),
   services: services.map((s) => ({ name: s.data.name, path: s.href, description: s.data.meta_description })),
 });
+// Story order of the home page: each numbered section takes its place here
+import { testimonials } from '../data/testimonials';
+// Testimonials take a number only once there are real ones
+type Chapter = 'projects' | 'services' | 'compare' | 'day' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq' | 'quote';
+const chapters: Chapter[] = [
+  'projects',
+  'services',
+  'compare',
+  'day',
+  'about',
+  ...(testimonials[lang].length > 0 ? (['testimonials'] as const) : []),
+  'process',
+  'proof',
+  'faq',
+  'quote',
+];
+const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
 ---
 <BaseLayout intro lang={lang} title={t('home.seo_title')} description={t('site.description')} alternates={routes.home}>
   <JsonLd slot="head" data={[business, websiteSchema(Astro.site!, lang, routes.home[lang]), faqSchema(faq[lang])]} />
   <Hero lang={lang} />
-  <ProjectsGrid lang={lang} number="01" />
-  <ServicesSection lang={lang} number="02" />
-  <SwitchCompare lang={lang} />
-  <DayTimeline lang={lang} />
-  <WhyServiceArea lang={lang} number="05" />
+  <ProjectsGrid lang={lang} number={n('projects')} />
+  <ServicesSection lang={lang} number={n('services')} />
+  <SwitchCompare lang={lang} number={n('compare')} />
+  <DayTimeline lang={lang} number={n('day')} />
+  <WhyServiceArea lang={lang} number={n('about')} />
   <StatsStrip lang={lang} />
-  <Process lang={lang} />
-  <Blueprint lang={lang} />
-  <FaqGuides lang={lang} />
-  <QuoteChat lang={lang} privacyHref={privacyHref} number="09" />
+  <Testimonials lang={lang} number={n('testimonials')} />
+  <Process lang={lang} number={n('process')} />
+  <Blueprint lang={lang} number={n('proof')} />
+  <FaqGuides lang={lang} number={n('faq')} />
+  <QuoteChat lang={lang} privacyHref={privacyHref} number={n('quote')} />
 </BaseLayout>

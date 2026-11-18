@@ -19,7 +19,7 @@ export function workMarkdown(base: URL, p: Work, status: string): string {
     `**${d.answer.question}** ${d.answer.text}`,
     '',
     ...(d.case
-      ? [`### Caso`, `- **Problema:** ${d.case.problem}`, `- **Solución:** ${d.case.solution}`, `- **Resultado:** ${d.case.result}`, '']
+      ? [`### Caso`, `- **Problema:** ${d.case.problem}`, `- **Solución:** ${d.case.solution}`, `- **Resultado:** ${d.case.result}`, ...d.case.milestones.map((m) => `- ${m.date.toISOString().slice(0, 10)}: ${m.text}`), '']
       : []),
     `### ${d.highlights.title}`,
     ...d.highlights.items.map((i) => `- **${i.title}:** ${i.text}`),

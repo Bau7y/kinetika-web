@@ -10,7 +10,7 @@ import { getWork } from './work';
 import { getGuides } from './guides';
 import { getLegalPages } from './legal';
 
-export type PageSection = 'home' | 'quote' | 'service' | 'project' | 'guides' | 'guide' | 'legal';
+export type PageSection = 'home' | 'quote' | 'service' | 'projects' | 'project' | 'guides' | 'guide' | 'legal';
 
 export interface PageEntry {
   path: string;
@@ -51,6 +51,7 @@ function fixedPages(lang: Lang): PageEntry[] {
   return [
     fixed('home', routes.home, t('site.tagline'), t('site.description')),
     fixed('quote', routes.quote, t('quote.page_title'), t('quote.meta')),
+    fixed('projects', routes.projectsBase, t('projects.title'), t('projects.meta')),
     fixed('guides', routes.guides, t('guides.title'), t('guides.meta')),
   ];
 }

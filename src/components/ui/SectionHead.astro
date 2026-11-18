@@ -1,0 +1,36 @@
+---
+/**
+ * Head of a home section: number and label, title and optional lede.
+ * The number comes from the order of the sections in HomeView.
+ */
+interface Props {
+  /** Id of the title, referenced by the section's aria-labelledby. */
+  id: string;
+  number?: string;
+  label: string;
+  title: string;
+  lede?: string;
+  /** Wide titles span the container instead of ~760px. */
+  wide?: boolean;
+}
+const { id, number, label, title, lede, wide = false } = Astro.props;
+---
+<div class:list={['section_head', wide && 'section_head_wide']}>
+  <p class="section_label" data-reveal data-i="0">{number && <span>{number}</span>}{label}</p>
+  <h2 id={id} class="section_title" data-reveal data-i="1">{title}</h2>
+  {lede && <p class="lede" data-reveal data-i="2">{lede}</p>}
+  <slot />
+</div>
+
+<style>
+  .section_head {
+    display: grid;
+    gap: var(--space_sm);
+    max-width: 760px;
+    margin-bottom: var(--space_lg);
+  }
+
+  .section_head_wide {
+    max-width: none;
+  }
+</style>

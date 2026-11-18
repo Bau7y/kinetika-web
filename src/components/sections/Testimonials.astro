@@ -1,0 +1,69 @@
+---
+/**
+ * Client testimonials. Renders nothing until src/data/testimonials.ts has
+ * real entries with permission (no placeholders, no invented reviews).
+ */
+import SectionHead from '../ui/SectionHead.astro';
+import { testimonials } from '../../data/testimonials';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  number: string;
+}
+const { lang, number } = Astro.props;
+const t = useTranslations(lang);
+const items = testimonials[lang];
+---
+{items.length > 0 && (
+  <section id="opiniones" class="section container" aria-labelledby="testimonials_title">
+    <SectionHead id="testimonials_title" number={number} label={t('testimonials.label')} title={t('testimonials.title')} />
+    <ul role="list" class="testimonials">
+      {items.map((item, i) => (
+        <li data-reveal data-i={i % 3}>
+          <figure>
+            <blockquote><p>“{item.quote}”</p></blockquote>
+            <figcaption>
+              <strong>{item.name}</strong>
+              <span>{item.role}</span>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: var(--space_md);
+  }
+
+  figure {
+    display: grid;
+    gap: var(--space_md);
+    height: 100%;
+    padding: 28px;
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+  }
+
+  blockquote p {
+    font-size: var(--text_lg);
+    line-height: 1.55;
+  }
+
+  figcaption {
+    display: grid;
+    gap: 2px;
+    align-self: end;
+  }
+
+  figcaption span {
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
+  }
+</style>

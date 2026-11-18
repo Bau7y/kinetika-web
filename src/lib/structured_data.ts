@@ -173,6 +173,20 @@ export function articleSchema(base: URL, lang: Lang, info: ArticleInfo): Json {
   };
 }
 
+/** Ordered list of pages (projects index). */
+export function itemListSchema(base: URL, items: { name: string; path: string }[]): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      url: absolute(item.path, base),
+    })),
+  };
+}
+
 export function breadcrumbSchema(base: URL, items: { name: string; href: string }[]): Json {
   return {
     '@context': 'https://schema.org',

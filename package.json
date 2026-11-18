@@ -16,7 +16,9 @@
     "test": "vitest run",
     "test:e2e": "node --test tests/e2e/*.test.mjs",
     "test:a11y": "node scripts/a11y.mjs",
-    "capture:work": "node scripts/capture_work.mjs"
+    "capture:work": "node scripts/capture_work.mjs",
+    "check:captures": "node scripts/capture_work.mjs --check",
+    "test:perf": "lhci autorun --config=lighthouserc.cjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^11.0.22",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.16.1",
     "@types/node": "^22",
     "playwright": "^1.65.1",
     "typescript": "^6",

@@ -26,8 +26,8 @@ after(async () => {
 
 const get = (path) => fetch(server.base + path);
 
-async function open(path) {
-  const page = await browser.newPage({ reducedMotion: 'reduce' });
+async function open(path, options = {}) {
+  const page = await browser.newPage({ reducedMotion: 'reduce', ...options });
   await page.goto(server.base + path);
   return page;
 }
@@ -122,6 +122,29 @@ describe('idioma', () => {
   });
 });
 
+describe('menú móvil', () => {
+  it('al abrir lleva el foco al primer enlace y Escape lo devuelve al botón', async () => {
+    const page = await open('/', { viewport: { width: 390, height: 844 } });
+    await page.click('[data-menu-toggle]');
+    assert.equal(await page.evaluate(() => document.activeElement?.closest('[data-mobile-menu]') !== null), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-menu-toggle')), true);
+    await page.close();
+  });
+});
+
+describe('proyectos', () => {
+  it('el filtro por estado oculta las demás tarjetas y anuncia el total', async () => {
+    const page = await open('/proyectos');
+    await page.click('[data-project-filter] button[data-status="in_production"]');
+    assert.equal(await page.locator('li[data-status]:visible').count(), 1);
+    assert.match(await page.textContent('[data-project-count]'), /^1 proyecto$/);
+    await page.click('[data-project-filter] button[data-status="all"]');
+    assert.equal(await page.locator('li[data-status]:visible').count(), 3);
+    await page.close();
+  });
+});
+
 describe('SEO', () => {
   it('la 404 no se indexa ni declara canonical', async () => {
     const html = await (await get('/404.html')).text();
@@ -141,7 +164,7 @@ describe('SEO', () => {
   it('robots.txt apunta al sitemap y bloquea las acciones', async () => {
     const text = await (await get('/robots.txt')).text();
     assert.match(text, /Disallow: \/_actions\//);
-    assert.match(text, /Sitemap: https:\/\/kinetika\.cr\/sitemap\.xml/);
+    assert.match(text, /Sitemap: https:\/\/kinetikacr\.com\/sitemap\.xml/);
   });
 
   it('cada página tiene su imagen Open Graph de 1200×630', async () => {
@@ -171,6 +194,18 @@ describe('SEO', () => {
     const routes = JSON.stringify(config.routes);
     assert.match(routes, /productos\/pedidos/);
     assert.match(routes, /proyectos\/pedidos/);
+  });
+
+  it('el índice de proyectos lista cada caso con su enlace', async () => {
+    const html = await (await get('/proyectos')).text();
+    for (const slug of ['pedidos', 'tramimunisc', 'plataforma-contable']) assert.match(html, new RegExp(`href="/proyectos/${slug}"`));
+    assert.match(html, /"@type":"ItemList"/);
+    assert.equal((await get('/en/projects')).status, 200);
+  });
+
+  it('las preguntas usan details nativo y la primera empieza abierta', async () => {
+    const html = await (await get('/')).text();
+    assert.match(html, /<details[^>]*class="faq_item[^"]*"[^>]*open/);
   });
 
   it('cada proyecto muestra su caso: antes, qué se automatizó y hoy', async () => {

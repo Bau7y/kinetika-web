@@ -1,0 +1,121 @@
+---
+/**
+ * Panel under the pill on narrow screens. Opened and closed by the menu
+ * button (src/scripts/navbar.ts), which also makes the rest of the page inert.
+ */
+interface Link {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  links: Link[];
+  quoteHref: string;
+  quoteLabel: string;
+  label: string;
+}
+const { links, quoteHref, quoteLabel, label } = Astro.props;
+const path = Astro.url.pathname;
+const current = (href: string) => (path === href || path.startsWith(`${href}/`) ? 'page' : undefined);
+---
+<div id="menu_movil" class="pill_panel" data-mobile-menu>
+  <nav aria-label={label}>
+    <ul role="list">
+      {links.map((link, i) => <li data-i={i}><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>)}
+    </ul>
+    <a href={quoteHref} class="btn btn_primary pill_panel_cta" data-i={links.length}>{quoteLabel}</a>
+  </nav>
+</div>
+
+<style>
+  /* ── Panel under the pill (narrow screens) ── */
+  .pill_panel {
+    max-width: 1180px;
+    margin: 10px auto 0;
+    padding: 12px;
+    border-radius: var(--radius_2xl);
+    background: var(--color_surface);
+    border: 1px solid var(--color_line_strong);
+    box-shadow: 0 24px 48px rgb(0 0 0 / 0.45);
+    transform-origin: 50% 0;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    visibility: hidden;
+    pointer-events: none;
+    /* Closing (this state) is faster than opening */
+    transition:
+      opacity var(--duration_exit) var(--ease_out),
+      transform var(--duration_exit) var(--ease_out),
+      visibility var(--duration_exit);
+  }
+
+  .pill_panel.open {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    pointer-events: auto;
+    /* Visibility switches at once on opening, so the first link can take focus */
+    transition:
+      opacity var(--duration_base) var(--ease_out),
+      transform var(--duration_base) var(--ease_out),
+      visibility 0s;
+  }
+
+  .pill_panel ul {
+    display: grid;
+  }
+
+  .pill_panel li,
+  .pill_panel_cta {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--duration_exit) var(--ease_out),
+      transform var(--duration_exit) var(--ease_out);
+  }
+
+  .pill_panel.open li,
+  .pill_panel.open .pill_panel_cta {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--duration_base);
+    transition-delay: calc(40ms + var(--i) * 30ms);
+  }
+
+  .pill_panel li a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding-inline: 16px;
+    border-radius: var(--radius_lg);
+    font-size: var(--text_lg);
+    font-weight: 600;
+    color: var(--color_nav_link);
+    text-decoration: none;
+  }
+
+  .pill_panel li a[aria-current='page'] {
+    color: var(--color_accent_text);
+  }
+
+  .pill_panel_cta {
+    width: 100%;
+    margin-top: 8px;
+    border-radius: var(--radius_full);
+  }
+
+  @media (min-width: 1080px) {
+    .pill_panel {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pill_panel,
+    .pill_panel li,
+    .pill_panel_cta {
+      transition-property: opacity;
+      transform: none;
+    }
+  }
+</style>

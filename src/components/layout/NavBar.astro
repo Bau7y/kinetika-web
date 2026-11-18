@@ -6,10 +6,12 @@
  *   or to the hovered link. It is a duplicated, clipped copy of the links:
  *   only clip-path animates, so the background and the text color change
  *   together, with no layout work.
- * - On narrow screens the pill opens a panel right under it.
+ * - On narrow screens the pill opens a panel right under it (NavPanel).
+ * Behavior lives in src/scripts/navbar.ts.
  */
 import Logo from '../brand/Logo.astro';
 import LangSwitch from './LangSwitch.astro';
+import NavPanel from './NavPanel.astro';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
@@ -72,111 +74,12 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     </div>
   </div>
 
-  <div id="menu_movil" class="pill_panel" data-mobile-menu>
-    <nav aria-label={t('nav.mobile_label')}>
-      <ul role="list">
-        {links.map((link, i) => <li data-i={i}><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>)}
-      </ul>
-      <a href={quoteHref} class="btn btn_primary pill_panel_cta" data-i={links.length}>{t('nav.quote')}</a>
-    </nav>
-  </div>
+  <NavPanel links={links} quoteLabel={t('nav.quote')} quoteHref={quoteHref} label={t('nav.mobile_label')} />
 </header>
 
 <script>
-  const navbar = document.querySelector<HTMLElement>('[data-navbar]')!;
-  const menuButton = navbar.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
-  const mobileMenu = navbar.querySelector<HTMLElement>('[data-mobile-menu]')!;
-
-  /* More solid after scrolling. A sentinel at the top of the page:
-     no scroll listener and no geometry reads, so no forced layout. */
-  const sentinel = document.querySelector<HTMLElement>('[data-scroll-sentinel]')!;
-  new IntersectionObserver(([entry]) => navbar.classList.toggle('scrolled', !entry.isIntersecting)).observe(sentinel);
-
-  /* ── Sliding highlight (wide screens) ── */
-  const list = navbar.querySelector<HTMLElement>('[data-pill-links]')!;
-  const highlight = navbar.querySelector<HTMLElement>('[data-pill-highlight]')!;
-  const links = [...list.querySelectorAll<HTMLAnchorElement>('a')];
-  const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-  // Link boxes, measured only when the layout changes (load, resize, fonts)
-  let boxes: { left: number; right: number }[] = [];
-  const measure = () => {
-    const width = list.offsetWidth;
-    boxes = links.map((a) => {
-      const li = a.parentElement!;
-      return { left: li.offsetLeft, right: width - li.offsetLeft - li.offsetWidth };
-    });
-    paint(shown, false);
-  };
-
-  let active = links.findIndex((a) => a.getAttribute('aria-current') === 'page');
-  let shown = active;
-
-  /** Clips the highlight to link `index` (-1 hides it). */
-  function paint(index: number, animate = true) {
-    shown = index;
-    highlight.classList.toggle('no_motion', !animate);
-    const box = boxes[index];
-    if (index < 0 || !box) {
-      highlight.classList.remove('is_on');
-      return;
-    }
-    highlight.style.clipPath = `inset(0 ${box.right}px 0 ${box.left}px round 999px)`;
-    highlight.classList.add('is_on');
-  }
-
-  new ResizeObserver(measure).observe(list);
-  document.fonts?.ready.then(measure);
-
-  if (finePointer) {
-    links.forEach((a, i) => a.addEventListener('pointerenter', () => paint(i)));
-    list.addEventListener('pointerleave', () => paint(active));
-  }
-
-  // Scroll spy: the section crossing the middle of the viewport
-  const sections = links
-    .map((a, i) => ({ i, el: a.dataset.section ? document.getElementById(a.dataset.section) : null }))
-    .filter((s): s is { i: number; el: HTMLElement } => s.el !== null);
-  if (sections.length > 0) {
-    const spy = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const match = sections.find((s) => s.el === entry.target);
-          if (!match) continue;
-          if (entry.isIntersecting) active = match.i;
-          else if (active === match.i) active = -1;
-        }
-        if (!list.matches(':hover')) paint(active);
-      },
-      { rootMargin: '-45% 0px -50% 0px' },
-    );
-    sections.forEach((s) => spy.observe(s.el));
-  }
-
-  /* ── Panel (narrow screens). While open, everything outside the header is
-     inert: focus stays in the menu. Escape closes it and returns focus. ── */
-  const outside = () => document.querySelectorAll<HTMLElement>('body > :not(header):not(script)');
-
-  const setMenuOpen = (isOpen: boolean) => {
-    if (isOpen === mobileMenu.classList.contains('open')) return;
-    mobileMenu.classList.toggle('open', isOpen);
-    menuButton.classList.toggle('open', isOpen);
-    navbar.classList.toggle('menu_open', isOpen);
-    menuButton.setAttribute('aria-expanded', String(isOpen));
-    menuButton.setAttribute('aria-label', (isOpen ? menuButton.dataset.labelClose : menuButton.dataset.labelOpen) ?? '');
-    outside().forEach((el) => el.toggleAttribute('inert', isOpen));
-    if (isOpen) mobileMenu.querySelector<HTMLElement>('a')?.focus();
-  };
-
-  menuButton.addEventListener('click', () => setMenuOpen(!mobileMenu.classList.contains('open')));
-  mobileMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenuOpen(false)));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-      setMenuOpen(false);
-      menuButton.focus();
-    }
-  });
-  matchMedia('(min-width: 1080px)').addEventListener('change', (e) => e.matches && setMenuOpen(false));
+  import { initNavbar } from '../../scripts/navbar';
+  initNavbar();
 </script>
 
 <style>
@@ -351,78 +254,6 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
   .pill_menu_btn.open span:nth-child(1) { transform: rotate(45deg); }
   .pill_menu_btn.open span:nth-child(2) { transform: rotate(-45deg); }
 
-  /* ── Panel under the pill (narrow screens) ── */
-  .pill_panel {
-    max-width: 1180px;
-    margin: 10px auto 0;
-    padding: 12px;
-    border-radius: var(--radius_2xl);
-    background: var(--color_surface);
-    border: 1px solid var(--color_line_strong);
-    box-shadow: 0 24px 48px rgb(0 0 0 / 0.45);
-    transform-origin: 50% 0;
-    opacity: 0;
-    transform: translateY(-8px) scale(0.97);
-    visibility: hidden;
-    pointer-events: none;
-    /* Closing (this state) is faster than opening */
-    transition:
-      opacity var(--duration_exit) var(--ease_out),
-      transform var(--duration_exit) var(--ease_out),
-      visibility var(--duration_exit);
-  }
-
-  .pill_panel.open {
-    opacity: 1;
-    transform: none;
-    visibility: visible;
-    pointer-events: auto;
-    transition-duration: var(--duration_base);
-  }
-
-  .pill_panel ul {
-    display: grid;
-  }
-
-  .pill_panel li,
-  .pill_panel_cta {
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity var(--duration_exit) var(--ease_out),
-      transform var(--duration_exit) var(--ease_out);
-  }
-
-  .pill_panel.open li,
-  .pill_panel.open .pill_panel_cta {
-    opacity: 1;
-    transform: none;
-    transition-duration: var(--duration_base);
-    transition-delay: calc(40ms + var(--i) * 30ms);
-  }
-
-  .pill_panel li a {
-    display: flex;
-    align-items: center;
-    min-height: 52px;
-    padding-inline: 16px;
-    border-radius: var(--radius_lg);
-    font-size: var(--text_lg);
-    font-weight: 600;
-    color: var(--color_nav_link);
-    text-decoration: none;
-  }
-
-  .pill_panel li a[aria-current='page'] {
-    color: var(--color_accent_text);
-  }
-
-  .pill_panel_cta {
-    width: 100%;
-    margin-top: 8px;
-    border-radius: var(--radius_full);
-  }
-
   @media (min-width: 560px) {
     .pill_cta {
       display: inline-flex;
@@ -434,24 +265,14 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
       display: block;
     }
 
-    .pill_menu_btn,
-    .pill_panel {
+    .pill_menu_btn {
       display: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .pill_highlight,
-    .pill_panel,
-    .pill_panel li,
-    .pill_panel_cta {
+    .pill_highlight {
       transition-property: opacity;
-    }
-
-    .pill_panel,
-    .pill_panel li,
-    .pill_panel_cta {
-      transform: none;
     }
   }
 </style>
