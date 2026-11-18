@@ -89,21 +89,21 @@ const crumbs = [
     <section class="section container" aria-labelledby="compare_table_title">
       <h2 id="compare_table_title" class="section_title product_h2">{data.comparison.title}</h2>
       <div class="product_table" role="region" aria-labelledby="compare_table_title" tabindex="0">
-        <table>
+        <table role="table">
           <caption class="visually_hidden">{data.comparison.title}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{t('product.compare_aspect')}</th>
-              <th scope="col">{data.comparison.columns[0]}</th>
-              <th scope="col" class="product_table_us">{data.comparison.columns[1]}</th>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th scope="col" role="columnheader">{t('product.compare_aspect')}</th>
+              <th scope="col" role="columnheader">{data.comparison.columns[0]}</th>
+              <th scope="col" role="columnheader" class="product_table_us">{data.comparison.columns[1]}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody role="rowgroup">
             {data.comparison.rows.map(([aspect, a, b]) => (
-              <tr>
-                <th scope="row">{aspect}</th>
-                <td>{a}</td>
-                <td class="product_table_us">{b}</td>
+              <tr role="row">
+                <th scope="row" role="rowheader">{aspect}</th>
+                <td role="cell" data-label={data.comparison!.columns[0]}>{a}</td>
+                <td role="cell" class="product_table_us" data-label={data.comparison!.columns[1]}>{b}</td>
               </tr>
             ))}
           </tbody>
@@ -256,6 +256,73 @@ const crumbs = [
   .product_table .product_table_us {
     background: var(--color_accent_tint);
     color: var(--color_text);
+  }
+
+  /* Narrow screens: each row becomes a card with labelled cells, no sideways scroll.
+     Explicit roles keep the table semantics that display:block would drop. */
+  @media (max-width: 639px) {
+    .product_table {
+      overflow: visible;
+    }
+
+    .product_table table {
+      min-width: 0;
+    }
+
+    .product_table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+
+    .product_table tbody,
+    .product_table tr,
+    .product_table th,
+    .product_table td {
+      display: block;
+    }
+
+    .product_table tbody tr {
+      border-bottom: 1px solid var(--color_line);
+    }
+
+    .product_table tbody tr:last-child {
+      border-bottom: 0;
+    }
+
+    .product_table tbody th,
+    .product_table td {
+      border-bottom: 0;
+      padding: 12px 16px 0;
+    }
+
+    .product_table tbody tr > :last-child {
+      padding-bottom: 14px;
+    }
+
+    .product_table td::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 2px;
+      font-family: var(--font_mono);
+      font-size: var(--text_xs);
+      letter-spacing: var(--tracking_label);
+      text-transform: uppercase;
+      color: var(--color_text_muted);
+    }
+
+    .product_table td.product_table_us {
+      margin: 8px 16px 0;
+      padding: 10px 12px 12px;
+      border-radius: var(--radius_md);
+    }
+
+    .product_table tbody tr > td.product_table_us:last-child {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+    }
   }
 
   .product_h2 {
