@@ -7,6 +7,7 @@
 import Badge from '../ui/Badge.astro';
 import { dayScenes } from '../../data/day_scenes';
 import { statusBadge } from '../../data/product_status';
+import { getProducts } from '../../data/products';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
@@ -16,6 +17,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const scenes = dayScenes[lang];
 const last = scenes[scenes.length - 1].hour;
+const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
 ---
 <section id="dia" class="section section_band day" aria-labelledby="day_title" data-day>
   <div class="container">
@@ -54,6 +56,11 @@ const last = scenes[scenes.length - 1].hour;
                 {scene.rows.map(([label, value]) => (
                   <div class="day_row"><span>{label}</span><span>{value}</span></div>
                 ))}
+                {hrefs.get(scene.product) && (
+                  <a href={hrefs.get(scene.product)} class="day_link">
+                    {t('product.see')}<span class="visually_hidden">: {scene.name}</span> <span aria-hidden="true">→</span>
+                  </a>
+                )}
               </article>
             </li>
           );
@@ -217,6 +224,17 @@ const last = scenes[scenes.length - 1].hour;
   .day_row span:last-child {
     color: var(--color_accent_text);
     text-align: right;
+  }
+
+  .day_link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: var(--tap_min);
+    font-size: var(--text_sm);
+    font-weight: 600;
+    text-decoration: none;
   }
 
   .day_progress {
