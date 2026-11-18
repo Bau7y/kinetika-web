@@ -6,8 +6,8 @@
  */
 import { Picture } from 'astro:assets';
 import heroImage from '../../assets/hero.jpg';
-import { site } from '../../data/site';
-import { useTranslations, type Lang } from '../../i18n/ui';
+import Button from '../ui/Button.astro';
+import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -15,19 +15,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const cases = [
-  { href: '#interruptor', label: t('hero.case_restaurant') },
-  { href: '#dia', label: t('hero.case_accounting') },
-  { href: '#plano', label: t('hero.case_website') },
-  { href: '#dia', label: t('hero.case_procedures') },
-];
-
-const credentials = [
-  { title: t('hero.cred_accounting'), text: t('hero.cred_accounting_text') },
-  { title: t('hero.cred_projects'), text: t('hero.cred_projects_text') },
-  { title: t('hero.cred_software'), text: t('hero.cred_software_text') },
-];
-const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '');
+const capabilities = t('services.capabilities').split('|');
+const anchor = (id: string) => homeAnchor(lang, id);
 ---
 <section class="hero" aria-labelledby="hero_title" data-hero>
   <Picture
@@ -42,24 +31,29 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
   />
 
   <div class="hero_body container">
-    <p class="hero_kicker">{t('hero.kicker')}</p>
+    <p class="hero_kicker"><span class="hero_dot" aria-hidden="true"></span>{t('hero.kicker')}</p>
     <h1 id="hero_title" class="hero_title">{t('hero.title_a')} <span>{t('hero.title_b')}</span></h1>
     <p class="hero_lede hero_in" data-i="0">{t('hero.lede')}</p>
-    <div class="hero_cases hero_in" data-i="1" role="group" aria-label={t('hero.cases_label')}>
-      {cases.map((c) => (
-        <a href={c.href} class="hero_case">
-          {c.label} <span aria-hidden="true">→</span>
-        </a>
-      ))}
+    <div class="hero_actions hero_in" data-i="1">
+      <Button href={routes.quote[lang]} arrow>{t('nav.quote')}</Button>
+      <Button href={anchor('proyectos')} variant="ghost">{t('hero.cta_secondary')}</Button>
     </div>
+    <a href={anchor('proyectos')} class="hero_scroll hero_in" data-i="2">
+      <span>{t('hero.scroll_a')}</span>
+      <span class="hero_mouse" aria-hidden="true"><span></span></span>
+      <span>{t('hero.scroll_b')}</span>
+    </a>
   </div>
 
-  <div class="hero_strip hero_in" data-i="2">
-    <div class="container">
-    <ul role="list" class="hero_credentials" aria-label={t('hero.credentials_label')}>
-      {credentials.map((c) => <li><strong>{c.title}</strong>{c.text}</li>)}
-      <li><strong>{t('hero.cred_live')}</strong><a href={site.external.tramimunisc}>{liveHost}</a></li>
-    </ul>
+  <!-- What we build, as a quiet marquee. The second copy only fills the loop. -->
+  <div class="hero_strip hero_in" data-i="3">
+    <div class="hero_marquee">
+      <ul role="list" class="hero_marquee_track" aria-label={t('services.capabilities_label')}>
+        {capabilities.map((c) => <li>{c}</li>)}
+      </ul>
+      <ul role="list" class="hero_marquee_track" aria-hidden="true">
+        {capabilities.map((c) => <li>{c}</li>)}
+      </ul>
     </div>
   </div>
 </section>
@@ -125,90 +119,130 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
 
   /* What and where, in words search engines and assistants read first */
   .hero_kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: var(--space_md);
-    padding: 6px 14px;
+    padding: 8px 16px;
     border-radius: var(--radius_full);
-    border: 1px solid var(--color_accent_border);
+    border: 1px solid var(--color_line_strong);
     background: rgb(20 20 20 / 0.6);
-    font-family: var(--font_mono);
-    font-size: var(--text_xs);
-    letter-spacing: 0.06em;
-    color: var(--color_text_secondary);
+    font-size: var(--text_sm);
+    color: var(--color_text);
+  }
+
+  .hero_dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color_accent);
+    box-shadow: 0 0 10px var(--color_accent);
   }
 
   .hero_title {
-    max-width: 1000px;
+    max-width: 1040px;
     font-size: var(--text_display);
-    font-weight: 700;
-    line-height: 1.02;
-    letter-spacing: -0.035em;
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
   }
 
   .hero_title span {
-    color: var(--color_accent_text);
+    color: var(--color_text_secondary);
   }
 
   .hero_lede {
-    max-width: 35rem;
+    max-width: 36rem;
     margin-top: var(--space_md);
     font-size: var(--text_lg);
     color: var(--color_text_secondary);
   }
 
-  .hero_cases {
+  .hero_actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    max-width: 860px;
+    gap: 12px;
     margin-top: 36px;
   }
 
-  .hero_case {
-    position: relative;
-    isolation: isolate;
-    display: inline-flex;
+  .hero_scroll {
+    display: none;
     align-items: center;
-    gap: 10px;
-    min-height: 48px;
-    padding-inline: 18px;
-    border-radius: 12px;
-    border: 1px solid var(--color_line_strong);
-    background-color: rgb(20 20 20 / 0.75);
-    color: var(--color_text);
-    font-size: 0.9375rem;
-    font-weight: 500;
+    gap: 16px;
+    margin-top: var(--space_xl);
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
     text-decoration: none;
-    transition: transform var(--duration_press) var(--ease_out);
   }
 
-  /* Hover tint on a layer that only fades */
-  .hero_case::before {
+  .hero_scroll::before,
+  .hero_scroll::after {
     content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background-color: var(--color_accent_tint_strong);
-    opacity: 0;
-    transition: opacity var(--duration_fast) ease;
+    order: 1;
+    width: clamp(40px, 12vw, 160px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color_line_strong));
   }
 
-  .hero_case span {
-    color: var(--color_accent_text);
+  .hero_scroll::after {
+    order: 3;
+    background: linear-gradient(90deg, var(--color_line_strong), transparent);
   }
 
-  .hero_case:active {
-    transform: scale(0.97);
+  .hero_scroll > :first-child {
+    order: 0;
+  }
+
+  .hero_mouse {
+    order: 2;
+    display: grid;
+    justify-items: center;
+    width: 18px;
+    height: 28px;
+    padding-top: 5px;
+    border: 1.5px solid var(--color_text_secondary);
+    border-radius: 10px;
+  }
+
+  .hero_mouse span {
+    width: 2px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--color_text);
+  }
+
+  .hero_scroll > :last-child {
+    order: 4;
+  }
+
+  @media (min-width: 900px) and (hover: hover) {
+    .hero_scroll {
+      display: inline-flex;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero_mouse span {
+      animation: hero_wheel 1.8s var(--ease_in_out) infinite;
+    }
+  }
+
+  @keyframes hero_wheel {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    60% {
+      transform: translateY(8px);
+      opacity: 0;
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .hero_case:hover {
+    .hero_scroll:hover {
       color: var(--color_text);
-    }
-
-    .hero_case:hover::before {
-      opacity: 1;
     }
   }
 
@@ -217,24 +251,73 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
     background: rgb(5 5 5 / 0.6);
   }
 
-  .hero_credentials {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space_sm);
-    padding-block: 20px;
-    font-size: var(--text_sm);
-    color: var(--color_text_secondary);
+  /* Marquee: two identical tracks slide by their own width (transform only) */
+  .hero_marquee {
+    display: flex;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
   }
 
-  .hero_credentials strong {
-    display: block;
-    color: var(--color_text);
-    font-weight: 600;
+  .hero_marquee_track {
+    flex: none;
+    display: flex;
+    gap: 48px;
+    padding: 22px 24px;
+    font-size: var(--text_md);
+    font-weight: 500;
+    color: var(--color_text_muted);
+    white-space: nowrap;
   }
 
-  @media (min-width: 900px) {
-    .hero_credentials {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+  .hero_marquee_track li::before {
+    content: '✦';
+    margin-right: 48px;
+    color: var(--color_line_strong);
+  }
+
+  .hero_marquee_track li:first-child::before {
+    content: none;
+  }
+
+  .hero_marquee_track li:first-child {
+    margin-left: 0;
+  }
+
+  .hero_marquee_track + .hero_marquee_track li:first-child::before {
+    content: '✦';
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero_marquee_track {
+      animation: hero_marquee 40s linear infinite;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .hero_marquee:hover .hero_marquee_track {
+        animation-play-state: paused;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero_marquee {
+      justify-content: center;
+    }
+
+    .hero_marquee_track {
+      flex-wrap: wrap;
+      justify-content: center;
+      white-space: normal;
+    }
+
+    .hero_marquee_track[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  @keyframes hero_marquee {
+    to {
+      transform: translateX(-100%);
     }
   }
 

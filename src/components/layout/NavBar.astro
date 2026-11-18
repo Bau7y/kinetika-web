@@ -22,9 +22,9 @@ const isHome = Astro.url.pathname === routes.home[lang];
 const anchor = (id: string) => (isHome ? `#${id}` : homeAnchor(lang, id));
 
 const links = [
-  { href: anchor('interruptor'), label: t('nav.products'), section: 'interruptor' },
-  { href: anchor('dia'), label: t('nav.day'), section: 'dia' },
-  { href: anchor('plano'), label: t('nav.proof'), section: 'plano' },
+  { href: anchor('servicios'), label: t('nav.services'), section: 'servicios' },
+  { href: anchor('proyectos'), label: t('nav.projects'), section: 'proyectos' },
+  { href: anchor('nosotros'), label: t('nav.about'), section: 'nosotros' },
   { href: anchor('preguntas'), label: t('nav.faq'), section: 'preguntas' },
   { href: routes.guides[lang], label: t('nav.guides'), section: undefined },
 ];
@@ -289,7 +289,7 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: var(--color_accent_tint_strong);
+    background: rgb(255 255 255 / 0.09);
     border-radius: var(--radius_full);
     clip-path: inset(0 50% 0 50% round 999px);
     opacity: 0;

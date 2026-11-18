@@ -168,9 +168,9 @@ main:focus {
 /* ── Type helpers ─────────────────────────────────── */
 .section_title {
   font-size: var(--text_h2);
-  font-weight: 500;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
 }
 
 /* Numbered label above section titles: "01 — Productos" */
@@ -287,10 +287,12 @@ main:focus {
 
 .btn_primary::before {
   background-color: var(--color_cta_hover);
+  box-shadow: 0 0 28px var(--color_glow);
 }
 
 .btn_ghost::before {
-  border: 1px solid var(--color_accent);
+  border: 1px solid var(--color_text_secondary);
+  box-shadow: 0 0 24px var(--color_glow);
 }
 
 .btn:active {
