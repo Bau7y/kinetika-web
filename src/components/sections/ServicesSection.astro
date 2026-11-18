@@ -3,7 +3,6 @@
  * The two services: automating a process and extending a business's reach
  * with a website. Each card links to its service page.
  */
-import Chips from '../ui/Chips.astro';
 import { getServices } from '../../data/work';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
@@ -14,7 +13,6 @@ interface Props {
 const { lang, number } = Astro.props;
 const t = useTranslations(lang);
 const services = await getServices(lang);
-const capabilities = t('services.capabilities').split('|');
 ---
 <section id="servicios" class="section section_band" aria-labelledby="services_title">
   <div class="container">
@@ -25,7 +23,6 @@ const capabilities = t('services.capabilities').split('|');
       </div>
       <div class="services_intro" data-reveal data-i="2">
         <p class="lede">{t('services.lede')}</p>
-        <Chips items={capabilities} label={t('services.capabilities_label')} />
       </div>
     </div>
 
@@ -61,13 +58,6 @@ const capabilities = t('services.capabilities').split('|');
     }
   }
 
-  .services_intro {
-    display: grid;
-    gap: var(--space_md);
-  }
-
-
-
   .services_grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
@@ -89,7 +79,9 @@ const capabilities = t('services.capabilities').split('|');
     background: var(--color_bg);
     color: var(--color_text_secondary);
     text-decoration: none;
-    transition: border-color var(--duration_fast) ease;
+    transition:
+      border-color var(--duration_fast) ease,
+      transform var(--duration_base) var(--ease_out);
   }
 
   .service_n {
@@ -104,6 +96,7 @@ const capabilities = t('services.capabilities').split('|');
     color: var(--color_text);
   }
 
+  /* ---- Highlights and link ---- */
   .service_points {
     display: grid;
     gap: 8px;
@@ -114,7 +107,12 @@ const capabilities = t('services.capabilities').split('|');
     color: var(--color_text);
   }
 
-  .service_points li::before {
+  .service_points li {
+    position: relative;
+  }
+
+  .service_points li::before,
+  .service_points li::after {
     content: '';
     display: inline-block;
     width: 6px;
@@ -125,6 +123,20 @@ const capabilities = t('services.capabilities').split('|');
     vertical-align: middle;
   }
 
+  /* The accent dot sits over the muted one and lights up on hover/focus */
+  .service_points li::after {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin: -3px 0 0;
+    background: var(--color_accent);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity var(--duration_fast) ease,
+      transform var(--duration_base) var(--ease_out);
+  }
+
   .service_more {
     align-self: end;
     margin-top: 8px;
@@ -132,10 +144,43 @@ const capabilities = t('services.capabilities').split('|');
     color: var(--color_text);
   }
 
+  .service_more > span {
+    display: inline-block;
+    transition: transform var(--duration_base) var(--ease_out);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .service:hover {
       border-color: var(--color_line_strong);
       color: var(--color_text_secondary);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .service:hover { transform: translateY(-3px); }
+  }
+
+  .service:is(:hover, :focus-visible) .service_points li::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(2)::after { transition-delay: 50ms; }
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(3)::after { transition-delay: 100ms; }
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(4)::after { transition-delay: 150ms; }
+  .service:is(:hover, :focus-visible) .service_points li:nth-child(5)::after { transition-delay: 200ms; }
+
+  .service:is(:hover, :focus-visible) .service_more > span {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service_points li::after,
+    .service_more > span {
+      transition: none;
+    }
+    .service:is(:hover, :focus-visible) .service_more > span {
+      transform: none;
     }
   }
 </style>
