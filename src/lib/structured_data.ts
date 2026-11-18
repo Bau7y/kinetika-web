@@ -25,16 +25,37 @@ export const areaServed = [
 ];
 
 /** The business itself, published on the home page. Optional data only when it exists. */
-export function businessSchema(base: URL, lang: Lang, description: string, homePath: string): Json {
+export interface BusinessInfo {
+  description: string;
+  homePath: string;
+  slogan: string;
+  /** Topics the business works on (entity understanding for search and AI). */
+  knowsAbout: string[];
+  /** Products and services, with their page. */
+  services: { name: string; path: string; description: string }[];
+}
+
+export function businessSchema(base: URL, lang: Lang, info: BusinessInfo): Json {
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     ...businessRef(base),
     name: site.name,
-    description,
-    url: absolute(homePath, base),
-    logo: absolute('/favicon.svg', base),
+    description: info.description,
+    slogan: info.slogan,
+    url: absolute(info.homePath, base),
+    // Raster logo: Google does not accept SVG logos
+    logo: absolute('/logo.png', base),
     image: absolute('/og/index.png', base),
+    knowsAbout: info.knowsAbout,
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: site.name,
+      itemListElement: info.services.map((s) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: s.name, description: s.description, url: absolute(s.path, base) },
+      })),
+    },
     inLanguage: lang,
     knowsLanguage: LANGUAGES,
     ...(site.email ? { email: site.email } : {}),
@@ -47,6 +68,18 @@ export function businessSchema(base: URL, lang: Lang, description: string, homeP
       addressCountry: site.country,
     },
     areaServed,
+  };
+}
+
+/** The site itself, so assistants tie every page to one publisher and language set. */
+export function websiteSchema(base: URL, lang: Lang, homePath: string): Json {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    url: absolute(homePath, base),
+    inLanguage: lang,
+    publisher: businessRef(base),
   };
 }
 

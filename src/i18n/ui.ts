@@ -14,6 +14,7 @@ const es = {
   'meta.locale': 'es_CR',
   'home.seo_title': 'Kinetika | Sitios web y software para negocios en San Carlos, Costa Rica',
   'hero.kicker': 'Estudio de software en San Carlos, Costa Rica',
+  'site.knows_about': 'Diseño y desarrollo web|SEO local|Sistemas de pedidos en línea para restaurantes|Trámites municipales en San Carlos|Software para despachos contables|Accesibilidad web|Protección de datos personales (Ley 8968)',
 
   'nav.main_label': 'Principal',
   'nav.mobile_label': 'Menú',
@@ -199,6 +200,7 @@ const en: Strings = {
   'meta.locale': 'en_US',
   'home.seo_title': 'Kinetika | Websites and software for businesses in San Carlos, Costa Rica',
   'hero.kicker': 'Software studio in San Carlos, Costa Rica',
+  'site.knows_about': 'Web design and development|Local SEO|Online ordering systems for restaurants|Municipal procedures in San Carlos|Software for accounting firms|Web accessibility|Personal data protection (Costa Rica Law 8968)',
 
   'nav.main_label': 'Main',
   'nav.mobile_label': 'Menu',
