@@ -26,8 +26,8 @@ after(async () => {
 
 const get = (path) => fetch(server.base + path);
 
-async function open(path) {
-  const page = await browser.newPage({ reducedMotion: 'reduce' });
+async function open(path, options = {}) {
+  const page = await browser.newPage({ reducedMotion: 'reduce', ...options });
   await page.goto(server.base + path);
   return page;
 }
@@ -118,6 +118,17 @@ describe('idioma', () => {
     await page.click('[data-lang-switch]');
     await page.waitForURL(/\/en\/projects\/ordering$/);
     assert.equal(await page.getAttribute('html', 'lang'), 'en');
+    await page.close();
+  });
+});
+
+describe('menú móvil', () => {
+  it('al abrir lleva el foco al primer enlace y Escape lo devuelve al botón', async () => {
+    const page = await open('/', { viewport: { width: 390, height: 844 } });
+    await page.click('[data-menu-toggle]');
+    assert.equal(await page.evaluate(() => document.activeElement?.closest('[data-mobile-menu]') !== null), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-menu-toggle')), true);
     await page.close();
   });
 });
