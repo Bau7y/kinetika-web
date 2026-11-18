@@ -281,7 +281,7 @@ const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiK
     color: var(--color_accent_text);
     font-size: var(--text_sm);
     font-weight: 500;
-    transition: background-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+    transition: transform var(--duration_press) var(--ease_out);
   }
 
   .chat_option input:checked + span {

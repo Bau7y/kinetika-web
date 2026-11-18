@@ -124,6 +124,8 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
   }
 
   .hero_case {
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -136,7 +138,19 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
     font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
-    transition: background-color var(--duration_fast) ease, transform var(--duration_press) var(--ease_out);
+    transition: transform var(--duration_press) var(--ease_out);
+  }
+
+  /* Hover tint on a layer that only fades */
+  .hero_case::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: var(--color_accent_tint_strong);
+    opacity: 0;
+    transition: opacity var(--duration_fast) ease;
   }
 
   .hero_case span {
@@ -149,8 +163,11 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
 
   @media (hover: hover) and (pointer: fine) {
     .hero_case:hover {
-      background-color: var(--color_accent_tint_strong);
       color: var(--color_text);
+    }
+
+    .hero_case:hover::before {
+      opacity: 1;
     }
   }
 
