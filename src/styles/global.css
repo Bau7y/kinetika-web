@@ -184,3 +184,65 @@ main:focus {
     }
   }
 }
+
+/* ── Buttons ──────────────────────────────────────── */
+/* Base styles shared by the Button component and plain links styled as buttons. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding-inline: 1.25rem;
+  border-radius: var(--radius_md);
+  border: 1px solid transparent;
+  font-size: var(--text_base);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    transform var(--duration_press) var(--ease_out),
+    background-color var(--duration_fast) ease,
+    border-color var(--duration_fast) ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn_sm {
+  min-height: var(--tap_min);
+  padding-inline: 1.1rem;
+  font-size: var(--text_sm);
+}
+
+.btn_primary {
+  background-color: var(--color_cta);
+  color: var(--color_on_cta);
+}
+
+.btn_ghost {
+  border-color: var(--color_line_strong);
+  color: var(--color_text);
+}
+
+.btn_icon_arrow {
+  transition: transform var(--duration_fast) var(--ease_out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn_primary:hover {
+    background-color: var(--color_cta_hover);
+    color: var(--color_on_cta);
+  }
+
+  .btn_ghost:hover {
+    border-color: var(--color_accent);
+    color: var(--color_text);
+  }
+
+  .btn:hover .btn_icon_arrow {
+    transform: translateX(3px);
+  }
+}

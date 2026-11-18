@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import Fonts from '../components/layout/Fonts.astro';
+import NavBar from '../components/layout/NavBar.astro';
+import LangSuggest from '../components/layout/LangSuggest.astro';
 import { site } from '../data/site';
 import { THEME_INIT } from '../lib/theme_init.mjs';
 import { LANGS, useTranslations, type Lang } from '../i18n/ui';
@@ -56,8 +58,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body>
+    <NavBar lang={lang} altHref={alternates[otherLang]} />
     <main id="contenido" tabindex="-1">
       <slot />
     </main>
+    <LangSuggest lang={lang} altHref={alternates[otherLang]} />
   </body>
 </html>
