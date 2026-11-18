@@ -82,6 +82,10 @@ const guides = defineCollection({
     /** Law the guide is about, when there is one (e.g. "Ley 7509"). */
     law: z.string().optional(),
     updated: z.coerce.date(),
+    /** Primary sources the guide relies on, listed at the end. */
+    sources: z.array(z.object({ title: z.string(), url: z.url() })).default([]),
+    /** Short questions answered by the guide (FAQPage). */
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
   }),
 });
 

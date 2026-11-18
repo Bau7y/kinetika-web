@@ -8,6 +8,11 @@ seo_title: Cómo organizar la cartera de clientes de un despacho contable en Exc
 meta_description: Una plantilla y un método para llevar la cartera de clientes, documentos pendientes y vencimientos de un despacho contable en Excel, mes a mes.
 summary: Una fila por cliente, columnas fijas para lo que pedís cada mes y fórmulas simples que marcan lo atrasado. Con eso el cierre deja de depender de la memoria.
 updated: 2026-11-17
+faq:
+  - q: "¿Estas fórmulas funcionan en Excel 2019?"
+    a: "Sí. Usan HOY, SI y CONTAR.SI, que existen en Excel 2019; no dependen de funciones nuevas como FILTRAR."
+  - q: "¿Conviene una hoja por mes o una sola hoja?"
+    a: "Una hoja por mes, copiada de la anterior: el mes cerrado queda como registro y el nuevo empieza con todo pendiente."
 ---
 
 ## Una fila por cliente

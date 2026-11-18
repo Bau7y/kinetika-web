@@ -149,6 +149,8 @@ export interface ArticleInfo {
   image?: string;
   updated: Date;
   law?: string;
+  /** Primary sources cited by the article. */
+  sources?: { title: string; url: string }[];
 }
 
 /** A guide: an Article published by the business. */
@@ -167,6 +169,7 @@ export function articleSchema(base: URL, lang: Lang, info: ArticleInfo): Json {
     author: businessRef(base),
     publisher: businessRef(base),
     ...(law ? { about: law } : {}),
+    ...(info.sources?.length ? { citation: info.sources.map((s) => ({ '@type': 'CreativeWork', name: s.title, url: s.url })) } : {}),
   };
 }
 

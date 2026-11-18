@@ -8,6 +8,11 @@ seo_title: How to organize an accounting firm’s client portfolio in Excel
 meta_description: A template and a method to track an accounting firm’s clients, pending documents and deadlines in Excel, month after month.
 summary: One row per client, fixed columns for what you ask for every month and simple formulas that flag what is late. Month-end then stops depending on memory.
 updated: 2026-11-17
+faq:
+  - q: "Do these formulas work in Excel 2019?"
+    a: "Yes. They use TODAY, IF and COUNTIF, which exist in Excel 2019; they do not rely on newer functions such as FILTER."
+  - q: "One sheet per month or a single sheet?"
+    a: "One sheet per month, copied from the previous one: the closed month stays as a record and the new one starts with everything pending."
 ---
 
 ## One row per client
