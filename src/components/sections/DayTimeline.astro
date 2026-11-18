@@ -152,7 +152,6 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     flex-direction: column;
     gap: 16px;
     scroll-snap-align: start;
-    transition: opacity 400ms ease;
   }
 
   .day_time {
@@ -190,6 +189,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     border-radius: var(--radius_xl);
     background: var(--color_raised);
     border: 1px solid var(--color_line);
+    transition: border-color 400ms ease;
   }
 
   .day_card_head {
@@ -278,14 +278,20 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     transition: transform var(--duration_slow) var(--ease_in_out);
   }
 
-  :global(html.js) .day_scene:not([aria-current]) {
-    opacity: 0.45;
+  /* The current scene stands out by its border and dot, not by fading the
+     others: every scene keeps WCAG AA contrast. */
+  :global(html.js) .day_scene[aria-current] .day_card {
+    border-color: var(--color_accent_border_strong);
+  }
+
+  :global(html.js) .day_scene:not([aria-current]) .day_dot {
+    background: var(--color_line_strong);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .day_track,
     .day_fill,
-    .day_scene {
+    .day_card {
       transition: none !important;
     }
   }
