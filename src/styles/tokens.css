@@ -28,6 +28,8 @@
   --color_cta: #2f6feb;
   --color_cta_hover: #3f7ef5;
   --color_on_cta: #ffffff;
+  /* Soft halo behind buttons on hover */
+  --color_glow: rgb(61 139 255 / 0.35);
   --color_accent_tint: rgb(61 139 255 / 0.08);
   --color_accent_tint_strong: rgb(61 139 255 / 0.16);
   --color_accent_border: rgb(61 139 255 / 0.35);

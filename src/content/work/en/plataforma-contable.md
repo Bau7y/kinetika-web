@@ -1,5 +1,6 @@
 ---
-order: 4
+kind: project
+order: 3
 url_slug: accounting-platform
 status: waitlist
 name: Accounting platform
@@ -56,4 +57,9 @@ comparison:
     - ["Deadlines", "Formulas and colors by hand", "Calendar with reminders"]
     - ["Before filing", "Manual review", "Findings sorted by severity"]
     - ["Your current data", "Stays in the sheet", "Imported from your Excel"]
+case:
+  problem: "Firms collect each client’s documents by email and WhatsApp, track deadlines in Excel sheets and check records by hand before filing."
+  solution: "A portal to receive documents, a client portfolio with a deadline calendar and a review of findings before filing with Hacienda. It starts by importing the firm’s Excel file."
+  result: "Waitlist open. The demo already shows the whole flow."
+  tags: ["Document portal", "Deadline calendar", "Excel import"]
 ---

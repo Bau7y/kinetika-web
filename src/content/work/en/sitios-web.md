@@ -1,12 +1,13 @@
 ---
-order: 1
+kind: service
+order: 2
 url_slug: websites
 status: available
 name: Custom websites
 title: Custom websites for businesses in Costa Rica
 seo_title: Custom websites in San Carlos, Costa Rica
 meta_description: We design and build fast websites, ready for Google and with protected forms, for businesses in San Carlos and across Costa Rica.
-summary: A site of your own, fast and easy to find on Google, with a form that brings you customers instead of spam. You see it working before you hire us.
+summary: A site of your own that extends the reach of your business or chain of stores. Fast, easy to find on Google and with a form that brings you customers instead of spam. You see it working before you hire us.
 service_type: Web design and development
 audience: Businesses and professionals in San Carlos and Costa Rica
 updated: 2026-11-17

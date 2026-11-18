@@ -1,5 +1,6 @@
 ---
-order: 2
+kind: project
+order: 1
 url_slug: pedidos
 status: in_development
 name: Pedidos para restaurantes
@@ -54,4 +55,9 @@ comparison:
     - ["El pedido", "Repartido en varios mensajes", "Completo en un solo lugar"]
     - ["En la cocina", "De palabra o en papel", "En un panel con hora y estado"]
     - ["Seguimiento", "Se responde mensaje por mensaje", "El estado dice si está en cocina o listo"]
+case:
+  problem: "Los pedidos llegan por WhatsApp repartidos en varios mensajes; precios y disponibilidad se responden uno por uno y en la cocina se anotan a mano."
+  solution: "Un menú en línea donde el cliente arma su pedido y un panel de cocina donde cada orden entra con hora, total y estado."
+  result: "En desarrollo. La demo ya funciona y buscamos restaurantes de la zona para probarlo."
+  tags: ["Menú en línea", "Panel de cocina", "Estados de pedido"]
 ---

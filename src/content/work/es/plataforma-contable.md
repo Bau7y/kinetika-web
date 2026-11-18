@@ -1,5 +1,6 @@
 ---
-order: 4
+kind: project
+order: 3
 url_slug: plataforma-contable
 status: waitlist
 name: Plataforma contable
@@ -56,4 +57,9 @@ comparison:
     - ["Vencimientos", "Fórmulas y colores a mano", "Calendario con recordatorios"]
     - ["Antes de declarar", "Revisión manual", "Hallazgos ordenados por gravedad"]
     - ["Tus datos actuales", "Siguen en la hoja", "Se importan desde tu Excel"]
+case:
+  problem: "Los despachos reúnen los documentos de cada cliente por correo y WhatsApp, llevan los vencimientos en hojas de Excel y revisan los registros a mano antes de declarar."
+  solution: "Un portal para recibir documentos, una cartera de clientes con calendario de obligaciones y una revisión de hallazgos antes de declarar ante Hacienda. Empieza importando el Excel del despacho."
+  result: "Lista de espera abierta. La demo ya muestra el flujo completo."
+  tags: ["Portal de documentos", "Calendario de obligaciones", "Importar Excel"]
 ---

@@ -21,7 +21,7 @@ Form messages are kept in our email inbox, which serves as the record of request
 - **Technical data:** the minimum needed to prevent automated or abusive form submissions. It is not used to identify you.
 - **Visit statistics:** counted in aggregate, without identifying anyone.
 
-The product demos run only in your browser: whatever you type in them never reaches us.
+The project demos run only in your browser: whatever you type in them never reaches us.
 
 ## Cookies
 
@@ -30,7 +30,7 @@ This site does not use its own cookies or any tracking or advertising tools. You
 ## What we use it for
 
 - Answering your request and sending you a proposal or a demo.
-- Letting you know when a waitlisted product becomes available.
+- Letting you know when a waitlisted project becomes available.
 
 We do not sell your data, use it for advertising or share it with third parties beyond the services that run the site.
 
@@ -42,7 +42,7 @@ To run the site we use web hosting, email delivery and anti-spam verification pr
 
 ## How long we keep it
 
-As long as needed to handle your request. Waitlist data is kept until the product is available or until you ask to leave the list. After that we delete it, unless a law requires us to keep it.
+As long as needed to handle your request. Waitlist data is kept until the project is available or until you ask to leave the list. After that we delete it, unless a law requires us to keep it.
 
 ## Your rights
 

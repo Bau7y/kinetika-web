@@ -3,6 +3,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import StatsStrip from '../components/sections/StatsStrip.astro';
+import ProjectsGrid from '../components/sections/ProjectsGrid.astro';
+import ServicesSection from '../components/sections/ServicesSection.astro';
 import SwitchCompare from '../components/sections/SwitchCompare.astro';
 import DayTimeline from '../components/sections/DayTimeline.astro';
 import Blueprint from '../components/sections/Blueprint.astro';
@@ -14,7 +16,7 @@ import JsonLd from '../components/ui/JsonLd.astro';
 import { getLegalHref } from '../data/legal';
 import { faq } from '../data/faq';
 import { businessSchema, faqSchema, websiteSchema } from '../lib/structured_data';
-import { getProducts } from '../data/products';
+import { getServices } from '../data/work';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -23,24 +25,26 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const privacyHref = await getLegalHref('privacidad', lang);
-const products = await getProducts(lang);
+const services = await getServices(lang);
 const business = businessSchema(Astro.site!, lang, {
   description: t('site.description'),
   homePath: routes.home[lang],
   slogan: t('site.tagline'),
   knowsAbout: t('site.knows_about').split('|'),
-  services: products.map((p) => ({ name: p.data.name, path: p.href, description: p.data.meta_description })),
+  services: services.map((s) => ({ name: s.data.name, path: s.href, description: s.data.meta_description })),
 });
 ---
 <BaseLayout intro lang={lang} title={t('home.seo_title')} description={t('site.description')} alternates={routes.home}>
   <JsonLd slot="head" data={[business, websiteSchema(Astro.site!, lang, routes.home[lang]), faqSchema(faq[lang])]} />
   <Hero lang={lang} />
-  <StatsStrip lang={lang} />
+  <ProjectsGrid lang={lang} number="01" />
+  <ServicesSection lang={lang} number="02" />
   <SwitchCompare lang={lang} />
   <DayTimeline lang={lang} />
-  <Blueprint lang={lang} />
+  <WhyServiceArea lang={lang} number="05" />
+  <StatsStrip lang={lang} />
   <Process lang={lang} />
-  <WhyServiceArea lang={lang} />
+  <Blueprint lang={lang} />
   <FaqGuides lang={lang} />
-  <QuoteChat lang={lang} privacyHref={privacyHref} number="07" />
+  <QuoteChat lang={lang} privacyHref={privacyHref} number="09" />
 </BaseLayout>

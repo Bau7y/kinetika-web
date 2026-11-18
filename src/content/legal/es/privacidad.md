@@ -21,7 +21,7 @@ Los mensajes de los formularios se guardan en nuestro buzón de correo, que func
 - **Datos técnicos:** los mínimos para evitar envíos automáticos o abusivos de los formularios. No se usan para identificarte.
 - **Estadísticas de visitas:** se cuentan de forma agregada, sin identificar a nadie.
 
-Las demos de los productos funcionan solo en tu navegador: lo que escribas en ellas no nos llega.
+Las demos de los proyectos funcionan solo en tu navegador: lo que escribas en ellas no nos llega.
 
 ## Cookies
 
@@ -30,7 +30,7 @@ Este sitio no usa cookies propias ni herramientas de rastreo o publicidad. En tu
 ## Para qué los usamos
 
 - Responder tu solicitud y enviarte una propuesta o una demo.
-- Avisarte cuando un producto de la lista de espera esté disponible.
+- Avisarte cuando un proyecto de la lista de espera esté disponible.
 
 No vendemos tus datos, no los usamos para publicidad ni los compartimos con terceros fuera de los servicios que hacen funcionar el sitio.
 
@@ -42,7 +42,7 @@ Para que el sitio funcione usamos proveedores de alojamiento web, de envío de c
 
 ## Cuánto tiempo los conservamos
 
-El tiempo necesario para atender tu solicitud. Los datos de la lista de espera se conservan hasta que el producto esté disponible o hasta que pidas salir de la lista. Después los eliminamos, salvo que una ley obligue a conservarlos.
+El tiempo necesario para atender tu solicitud. Los datos de la lista de espera se conservan hasta que el proyecto esté disponible o hasta que pidas salir de la lista. Después los eliminamos, salvo que una ley obligue a conservarlos.
 
 ## Tus derechos
 

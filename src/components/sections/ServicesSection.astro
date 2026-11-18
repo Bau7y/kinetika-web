@@ -1,0 +1,154 @@
+---
+/**
+ * The two services: automating a process and extending a business's reach
+ * with a website. Each card links to its service page.
+ */
+import { getServices } from '../../data/work';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  number: string;
+}
+const { lang, number } = Astro.props;
+const t = useTranslations(lang);
+const services = await getServices(lang);
+const capabilities = t('services.capabilities').split('|');
+---
+<section id="servicios" class="section section_band" aria-labelledby="services_title">
+  <div class="container">
+    <div class="services_head">
+      <div>
+        <p class="section_label" data-reveal data-i="0"><span>{number}</span>{t('label.services')}</p>
+        <h2 id="services_title" class="section_title" data-reveal data-i="1">{t('services.title')}</h2>
+      </div>
+      <div class="services_intro" data-reveal data-i="2">
+        <p class="lede">{t('services.lede')}</p>
+        <ul role="list" class="services_chips" aria-label={t('services.capabilities_label')}>
+          {capabilities.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <ul role="list" class="services_grid">
+      {services.map((s, i) => (
+        <li data-reveal data-i={i} data-spotlight>
+          <a href={s.href} class="service" aria-labelledby={`service_${s.key}`}>
+            <span class="mono service_n">{String(i + 1).padStart(2, '0')}</span>
+            <h3 id={`service_${s.key}`}>{s.data.name}</h3>
+            <p>{s.data.summary}</p>
+            <ul role="list" class="service_points">
+              {s.data.highlights.items.map((h) => <li>{h.title}</li>)}
+            </ul>
+            <span class="service_more">{t('services.more')} <span aria-hidden="true">→</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .services_head {
+    display: grid;
+    gap: var(--space_md) var(--space_xl);
+    margin-bottom: var(--space_lg);
+  }
+
+  @media (min-width: 960px) {
+    .services_head {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+    }
+  }
+
+  .services_intro {
+    display: grid;
+    gap: var(--space_md);
+  }
+
+  .services_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .services_chips li {
+    padding: 6px 12px;
+    border: 1px solid var(--color_line_strong);
+    border-radius: var(--radius_full);
+    font-size: var(--text_sm);
+    color: var(--color_text_secondary);
+  }
+
+  .services_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: var(--space_md);
+  }
+
+  .services_grid > li {
+    position: relative;
+    border-radius: var(--radius_2xl);
+  }
+
+  .service {
+    display: grid;
+    gap: 14px;
+    height: 100%;
+    padding: clamp(24px, 3vw, 36px);
+    border-radius: var(--radius_2xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_bg);
+    color: var(--color_text_secondary);
+    text-decoration: none;
+    transition: border-color var(--duration_fast) ease;
+  }
+
+  .service_n {
+    font-size: var(--text_xs);
+    color: var(--color_accent_text);
+  }
+
+  .service h3 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--color_text);
+  }
+
+  .service_points {
+    display: grid;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color_line);
+    font-size: 0.9375rem;
+    color: var(--color_text);
+  }
+
+  .service_points li::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: var(--color_text_muted);
+    vertical-align: middle;
+  }
+
+  .service_more {
+    align-self: end;
+    margin-top: 8px;
+    font-weight: 600;
+    color: var(--color_text);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .service:hover {
+      border-color: var(--color_line_strong);
+      color: var(--color_text_secondary);
+    }
+  }
+</style>

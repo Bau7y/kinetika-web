@@ -35,8 +35,8 @@ async function open(path) {
 describe('páginas clave', () => {
   const paths = [
     '/', '/en', '/cotizar', '/en/quote', '/guias', '/en/guides', '/privacidad', '/en/privacy',
-    '/productos/sitios-web', '/productos/pedidos', '/productos/tramimunisc', '/productos/plataforma-contable',
-    '/en/products/websites', '/guias/declaracion-de-bienes-inmuebles',
+    '/servicios/automatizacion-de-procesos', '/servicios/sitios-web', '/proyectos/pedidos', '/proyectos/tramimunisc', '/proyectos/plataforma-contable',
+    '/en/services/websites', '/en/projects/tramimunisc', '/guias/declaracion-de-bienes-inmuebles',
   ];
 
   for (const path of paths) {
@@ -105,7 +105,7 @@ describe('cotización', () => {
   });
 
   it('la lista de espera también valida', async () => {
-    const page = await open('/productos/plataforma-contable');
+    const page = await open('/proyectos/plataforma-contable');
     await page.click('[data-waitlist] button[type="submit"]');
     assert.equal(await page.textContent('[data-waitlist] [data-error-for="email"]'), 'Escribí tu correo.');
     await page.close();
@@ -114,9 +114,9 @@ describe('cotización', () => {
 
 describe('idioma', () => {
   it('el selector lleva a la misma página en el otro idioma', async () => {
-    const page = await open('/productos/pedidos');
+    const page = await open('/proyectos/pedidos');
     await page.click('[data-lang-switch]');
-    await page.waitForURL(/\/en\/products\/ordering$/);
+    await page.waitForURL(/\/en\/projects\/ordering$/);
     assert.equal(await page.getAttribute('html', 'lang'), 'en');
     await page.close();
   });
@@ -161,18 +161,31 @@ describe('SEO', () => {
 
   it('llms-full.txt trae el contenido completo y llms.txt lo enlaza', async () => {
     const full = await (await get('/llms-full.txt')).text();
-    assert.match(full, /# Productos/);
+    assert.match(full, /# Proyectos/);
     assert.match(full, /# Guías/);
     assert.match(await (await get('/llms.txt')).text(), /llms-full\.txt/);
   });
 
+  it('las URLs antiguas de productos redirigen a servicios y proyectos', async () => {
+    const config = JSON.parse(await readFile('.vercel/output/config.json', 'utf8'));
+    const routes = JSON.stringify(config.routes);
+    assert.match(routes, /productos\/pedidos/);
+    assert.match(routes, /proyectos\/pedidos/);
+  });
+
+  it('cada proyecto muestra su caso: antes, qué se automatizó y hoy', async () => {
+    const html = await (await get('/proyectos/tramimunisc')).text();
+    assert.match(html, /id="case_title"/);
+    assert.match(html, /En producción en tramimunisc\.com\./);
+  });
+
   it('cada producto responde qué es en un bloque propio', async () => {
-    const html = await (await get('/productos/tramimunisc')).text();
+    const html = await (await get('/proyectos/tramimunisc')).text();
     assert.match(html, /<h2 id="answer_title"[^>]*>¿Qué es TramiMuniSC\?<\/h2>/);
   });
 
   it('los datos estructurados son JSON válido en todas las páginas clave', async () => {
-    for (const path of ['/', '/en', '/productos/sitios-web', '/guias/declaracion-de-bienes-inmuebles']) {
+    for (const path of ['/', '/en', '/servicios/sitios-web', '/proyectos/pedidos', '/guias/declaracion-de-bienes-inmuebles']) {
       const html = await (await get(path)).text();
       const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
       assert.ok(blocks.length > 0, path);
@@ -180,10 +193,11 @@ describe('SEO', () => {
     }
   });
 
-  it('llms.txt resume productos y guías', async () => {
+  it('llms.txt resume servicios, proyectos y guías', async () => {
     const text = await (await get('/llms.txt')).text();
     assert.match(text, /^# Kinetika/);
-    assert.match(text, /## Productos/);
+    assert.match(text, /## Servicios/);
+    assert.match(text, /## Proyectos/);
     assert.match(text, /## Guías/);
   });
 });

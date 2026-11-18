@@ -1,10 +1,10 @@
 ---
 /**
  * Facts in big type, right after the hero. Every number comes from the
- * site's own data (products, districts), never typed by hand.
+ * site's own data (projects, districts), never typed by hand.
  * The figures count up once when they appear (not with reduced motion).
  */
-import { getProducts } from '../../data/products';
+import { getProjects } from '../../data/work';
 import { districts } from '../../data/service_area';
 import { useTranslations, type Lang } from '../../i18n/ui';
 
@@ -13,11 +13,11 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const products = await getProducts(lang);
+const projects = await getProjects(lang);
 
 const stats = [
-  { value: products.length, text: t('stats.products') },
-  { value: products.filter((p) => p.data.status === 'in_production').length, text: t('stats.live') },
+  { value: projects.length, text: t('stats.projects') },
+  { value: projects.filter((p) => p.data.status === 'in_production').length, text: t('stats.live') },
   { value: districts.length, text: t('stats.districts') },
   { value: 2, text: t('stats.languages') },
 ];

@@ -2,13 +2,13 @@
  * Plain-Markdown versions of the site's content for AI assistants
  * (llms.txt and llms-full.txt). Pure functions over the content entries.
  */
-import type { Product } from '../data/products';
+import type { Work } from '../data/work';
 import type { Guide } from '../data/guides';
 import type { FaqItem } from '../data/faq';
 
 const abs = (base: URL, path: string) => new URL(path, base).toString();
 
-export function productMarkdown(base: URL, p: Product, status: string): string {
+export function workMarkdown(base: URL, p: Work, status: string): string {
   const d = p.data;
   const lines = [
     `## ${d.name}`,
@@ -18,6 +18,9 @@ export function productMarkdown(base: URL, p: Product, status: string): string {
     '',
     `**${d.answer.question}** ${d.answer.text}`,
     '',
+    ...(d.case
+      ? [`### Caso`, `- **Problema:** ${d.case.problem}`, `- **Solución:** ${d.case.solution}`, `- **Resultado:** ${d.case.result}`, '']
+      : []),
     `### ${d.highlights.title}`,
     ...d.highlights.items.map((i) => `- **${i.title}:** ${i.text}`),
   ];

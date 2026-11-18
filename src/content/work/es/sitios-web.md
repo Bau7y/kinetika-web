@@ -1,12 +1,13 @@
 ---
-order: 1
+kind: service
+order: 2
 url_slug: sitios-web
 status: available
 name: Sitios web a la medida
 title: Sitios web a la medida para negocios de San Carlos
 seo_title: Sitios web a la medida en San Carlos, Costa Rica
 meta_description: Diseñamos y programamos sitios web rápidos, listos para Google y con formularios protegidos para negocios de San Carlos y todo Costa Rica.
-summary: Un sitio propio, rápido y fácil de encontrar en Google, con un formulario que te trae clientes y no spam. Lo ves funcionando antes de contratar.
+summary: Un sitio propio que amplía el alcance de tu negocio o cadena comercial. Rápido, fácil de encontrar en Google y con un formulario que te trae clientes y no spam. Lo ves funcionando antes de contratar.
 service_type: Diseño y desarrollo web
 audience: Negocios y profesionales de San Carlos y Costa Rica
 updated: 2026-11-17

@@ -18,7 +18,7 @@ export const faq: Record<Lang, FaqItem[]> = {
   es: [
     {
       q: '¿Qué es Kinetika?',
-      a: 'Un estudio de software de San Carlos, Costa Rica, que diseña y programa sitios web a la medida y desarrolla software para negocios: pedidos en línea para restaurantes, TramiMuniSC para trámites municipales y una plataforma para despachos contables.',
+      a: 'Un estudio de San Carlos, Costa Rica, que automatiza procesos de negocios con sitios y sistemas web y crea sitios que amplían su alcance. Sus proyectos muestran cómo: TramiMuniSC para trámites municipales, pedidos en línea para restaurantes y una plataforma para despachos contables.',
     },
     {
       q: '¿Trabajan con negocios fuera de San Carlos?',
@@ -61,7 +61,7 @@ export const faq: Record<Lang, FaqItem[]> = {
   en: [
     {
       q: 'What is Kinetika?',
-      a: 'A software studio in San Carlos, Costa Rica, that designs and builds custom websites and develops business software: online ordering for restaurants, TramiMuniSC for municipal procedures and a platform for accounting firms.',
+      a: 'A studio in San Carlos, Costa Rica, that automates business processes with websites and web systems and builds sites that extend their reach. Its projects show how: TramiMuniSC for municipal procedures, online ordering for restaurants and a platform for accounting firms.',
     },
     {
       q: 'Do you work with businesses outside San Carlos?',
