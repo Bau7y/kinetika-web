@@ -2,7 +2,7 @@
  * Waitlist form: client checks (same rules as the server), inline errors with
  * a focused summary, and a status message once the sign-up is accepted.
  */
-import type { QuoteSender } from './quote_chat';
+import type { QuoteSender } from './quote_rules';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
