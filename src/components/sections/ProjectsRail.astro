@@ -1,0 +1,305 @@
+---
+/**
+ * Projects on the home page as a rail of panels: one is open and shows the
+ * logo and the case, the rest stay as narrow strips. Hover, focus or tap
+ * opens another one. Without JavaScript every panel is open as a plain card.
+ */
+import Badge from '../ui/Badge.astro';
+import SectionHead from '../ui/SectionHead.astro';
+import { getProjects } from '../../data/work';
+import { getProjectLogo } from '../../data/project_logos';
+import { statusBadge } from '../../data/work_status';
+import { routes, useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  number: string;
+}
+const { lang, number } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+---
+<section id="proyectos" class="section container" aria-labelledby="projects_title">
+  <SectionHead id="projects_title" number={number} label={t('label.projects')} title={t('projects.title')} lede={t('projects.lede')} />
+
+  <ul role="list" class="rail" data-rail data-active="0" data-count={projects.length}>
+    {projects.map((p, i) => {
+      const logo = getProjectLogo(p.key);
+      const badge = statusBadge[p.data.status];
+      return (
+        <li class="rail_panel" data-panel data-reveal data-i={i}>
+          <button type="button" class="rail_tab" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`rail_${p.key}`}>
+            <span class="mono rail_n">{String(i + 1).padStart(2, '0')}</span>
+            <span class="rail_vname">{p.data.name}</span>
+          </button>
+          <div class="rail_body" id={`rail_${p.key}`}>
+            <div class="rail_inner">
+              {logo && (
+                <div class="rail_logo" aria-hidden="true">
+                  <img src={logo.src} width={logo.width} height={logo.height} alt="" loading="lazy" decoding="async" />
+                  {logo.wordmark && (
+                    <span class="rail_word">{logo.wordmark[0]}<span>{logo.wordmark[1]}</span>{logo.wordmark[2]}</span>
+                  )}
+                </div>
+              )}
+              <Badge tone={badge.tone}>{t(badge.label)}</Badge>
+              <h3 class="rail_name">{p.data.name}</h3>
+              <p class="rail_text">{p.data.case?.solution}</p>
+              <a href={p.href} class="rail_link">{t('projects.view_case')} <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+
+  <p class="projects_all">
+    <a href={routes.projectsBase[lang]}>{t('projects.all')} <span aria-hidden="true">→</span></a>
+  </p>
+</section>
+
+<script>
+  import { initProjectsRail } from '../../scripts/projects_rail';
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  if (rail) initProjectsRail(rail);
+</script>
+
+<style>
+  /* Without JavaScript: plain cards, everything visible */
+  .rail {
+    display: grid;
+    gap: var(--space_md);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+
+  .rail_panel {
+    display: grid;
+    gap: var(--space_sm);
+    padding: var(--space_md);
+    border-radius: var(--radius_xl);
+    border: 1px solid var(--color_line);
+    background: var(--color_surface);
+  }
+
+  .rail_tab {
+    display: none;
+  }
+
+  .rail_inner {
+    display: grid;
+    gap: var(--space_xs);
+    justify-items: start;
+  }
+
+  .rail_logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: var(--space_2xs);
+  }
+
+  .rail_logo img {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .rail_word {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--color_text);
+  }
+
+  .rail_word span {
+    color: #9bd07a; /* the project's own accent, not Kinetika's */
+  }
+
+  .rail_name {
+    font-size: var(--text_h3);
+    font-weight: 600;
+    letter-spacing: var(--tracking_tight);
+    color: var(--color_text);
+  }
+
+  .rail_text {
+    color: var(--color_text_secondary);
+  }
+
+  .rail_link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: var(--tap_min);
+    font-weight: 600;
+    color: var(--color_accent_text);
+  }
+
+  .projects_all {
+    margin-top: var(--space_lg);
+  }
+
+  .projects_all a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: var(--tap_min);
+    font-weight: 600;
+  }
+
+  /* ── Enhanced: one open panel, the rest as strips (script sets data-ready) ── */
+  .rail:global([data-ready]) {
+    --rail_h: 400px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .rail:global([data-ready]) .rail_panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: border-color var(--duration_base) var(--ease_out), background-color var(--duration_base) var(--ease_out);
+  }
+
+  .rail:global([data-ready]) .rail_panel:has(.rail_tab[aria-expanded='true']) {
+    border-color: var(--color_accent_border);
+    background: var(--color_raised);
+  }
+
+  .rail:global([data-ready]) .rail_tab {
+    display: flex;
+    align-items: center;
+    gap: var(--space_xs);
+    min-height: var(--tap_min);
+    padding: 14px var(--space_md);
+    text-align: left;
+    color: var(--color_text_secondary);
+    transition: color var(--duration_fast) var(--ease_out);
+  }
+
+  .rail_n {
+    font-size: var(--text_sm);
+    color: var(--color_accent_text);
+  }
+
+  .rail_vname {
+    font-weight: 600;
+    color: inherit;
+  }
+
+  .rail_tab[aria-expanded='true'] {
+    color: var(--color_text);
+  }
+
+  /* Small screens: accordion. The body grows from 0 to its content height */
+  .rail:global([data-ready]) .rail_body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration_move) var(--ease_out);
+  }
+
+  .rail:global([data-ready]) .rail_tab[aria-expanded='true'] + .rail_body {
+    grid-template-rows: 1fr;
+  }
+
+  .rail:global([data-ready]) .rail_inner {
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 var(--space_md);
+    opacity: 0;
+    transition: opacity var(--duration_fast) var(--ease_out);
+  }
+
+  .rail:global([data-ready]) .rail_tab[aria-expanded='true'] + .rail_body .rail_inner {
+    padding-bottom: var(--space_md);
+    opacity: 1;
+    transition: opacity var(--duration_base) var(--ease_out) 120ms;
+  }
+
+  /* Wide screens: horizontal rail, the open panel takes 3 of every 5 parts */
+  @media (min-width: 900px) {
+    .rail:global([data-ready]) {
+      grid-template-columns: 1fr 1fr 1fr;
+      height: var(--rail_h);
+      gap: 12px;
+      transition: grid-template-columns var(--duration_slow) var(--ease_out);
+    }
+
+    .rail:global([data-ready][data-count='3'][data-active='0']) { grid-template-columns: 3fr 1fr 1fr; }
+    .rail:global([data-ready][data-count='3'][data-active='1']) { grid-template-columns: 1fr 3fr 1fr; }
+    .rail:global([data-ready][data-count='3'][data-active='2']) { grid-template-columns: 1fr 1fr 3fr; }
+
+    .rail:global([data-ready]) .rail_tab {
+      position: absolute;
+      inset: 0 auto 0 0;
+      z-index: 1;
+      width: 88px;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space_md) 0;
+      border-radius: var(--radius_xl);
+    }
+
+    .rail:global([data-ready]) .rail_tab:focus-visible {
+      outline-offset: -4px;
+    }
+
+    .rail:global([data-ready]) .rail_vname {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      transition: opacity var(--duration_fast) var(--ease_out);
+    }
+
+    /* The open panel already shows its name in the body */
+    .rail:global([data-ready]) .rail_tab[aria-expanded='true'] .rail_vname {
+      opacity: 0;
+    }
+
+    .rail:global([data-ready]) .rail_body {
+      display: block;
+      flex: 1;
+      min-width: 0;
+      margin-left: 88px;
+    }
+
+    .rail:global([data-ready]) .rail_inner {
+      height: 100%;
+      align-content: end;
+      min-width: 420px;
+      padding: var(--space_md) var(--space_md) var(--space_md) var(--space_xs);
+    }
+
+    .rail:global([data-ready]) .rail_tab[aria-expanded='true'] + .rail_body .rail_inner {
+      padding-bottom: var(--space_md);
+      transform: none;
+    }
+
+    .rail:global([data-ready]) .rail_inner {
+      transform: translateX(16px);
+      transition: opacity var(--duration_fast) var(--ease_out), transform var(--duration_fast) var(--ease_out);
+    }
+
+    .rail:global([data-ready]) .rail_tab[aria-expanded='true'] + .rail_body .rail_inner {
+      transition: opacity var(--duration_base) var(--ease_out) 180ms, transform var(--duration_move) var(--ease_out) 180ms;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .rail:global([data-ready]) .rail_tab[aria-expanded='false']:hover {
+      color: var(--color_text);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rail:global([data-ready]),
+    .rail:global([data-ready]) .rail_body,
+    .rail:global([data-ready]) .rail_inner {
+      transition-duration: 1ms;
+      transform: none;
+    }
+  }
+</style>
