@@ -54,10 +54,12 @@ const liveHost = new URL(site.external.tramimunisc).hostname.replace(/^www\./, '
   </div>
 
   <div class="hero_strip hero_in" style="--d: 2">
-    <ul role="list" class="container hero_credentials" aria-label={t('hero.credentials_label')}>
+    <div class="container">
+    <ul role="list" class="hero_credentials" aria-label={t('hero.credentials_label')}>
       {credentials.map((c) => <li><strong>{c.title}</strong>{c.text}</li>)}
       <li><strong>{t('hero.cred_live')}</strong><a href={site.external.tramimunisc}>{liveHost}</a></li>
     </ul>
+    </div>
   </div>
 </section>
 
