@@ -28,15 +28,19 @@ kinetika-web/
 ├── public/
 │   └── favicon.svg
 ├── scripts/
-│   └── a11y.mjs                  # axe sobre el build local, en ambos idiomas
+│   ├── a11y.mjs                  # axe sobre el build local, en escritorio y móvil
+│   └── lib/static_server.mjs     # sirve el build para las pruebas locales
 ├── src/
 │   ├── actions/
-│   │   └── index.ts              # acción del chat de cotización (servidor)
+│   │   └── index.ts              # cotización y lista de espera (validación + anti-spam + Resend)
+│   ├── assets/
+│   │   └── hero.jpg              # fondo del hero (se sirve en AVIF/WebP)
 │   ├── components/
 │   │   ├── brand/
 │   │   │   ├── Logo.astro        # K de vidrio en SVG
 │   │   │   └── Intro.astro       # la K se arma al cargar
 │   │   ├── layout/
+│   │   │   ├── Fonts.astro       # @font-face y precarga
 │   │   │   ├── NavBar.astro
 │   │   │   ├── LangSwitch.astro
 │   │   │   ├── LangSuggest.astro # sugerencia de idioma no intrusiva
@@ -53,11 +57,18 @@ kinetika-web/
 │   │   ├── product/              # bloques de las páginas de producto
 │   │   │   ├── ProductHero.astro
 │   │   │   ├── ProductDemo.astro
-│   │   │   └── WaitlistForm.astro
+│   │   │   ├── WaitlistForm.astro
+│   │   │   └── demos/            # una demo funcional por producto (datos de ejemplo)
+│   │   │       ├── index.ts
+│   │   │       ├── WebsiteDemo.astro
+│   │   │       ├── OrdersDemo.astro
+│   │   │       ├── TramiDemo.astro
+│   │   │       └── AccountingDemo.astro
 │   │   └── ui/
 │   │       ├── Badge.astro
 │   │       ├── Button.astro
 │   │       ├── Breadcrumbs.astro
+│   │       ├── GuideCards.astro
 │   │       ├── Prose.astro
 │   │       └── JsonLd.astro
 │   ├── content/                  # un archivo por idioma y entrada
@@ -67,22 +78,25 @@ kinetika-web/
 │   ├── content.config.ts
 │   ├── data/
 │   │   ├── site.ts               # nombre, dominio, contacto, redes
-│   │   ├── products.ts           # productos y su estado
+│   │   ├── pages.ts              # registro único de páginas (sitemap, OG, llms.txt, hreflang)
+│   │   ├── localized.ts          # colecciones por idioma con su ruta
+│   │   ├── products.ts / guides.ts / legal.ts
+│   │   ├── product_status.ts     # estados de producto y su etiqueta
 │   │   ├── day_scenes.ts
 │   │   ├── service_area.ts       # 13 distritos de San Carlos
 │   │   ├── faq.ts
-│   │   └── pages.ts              # registro único de páginas (sitemap, OG, llms.txt, hreflang)
+│   │   └── quote_options.ts      # opciones del chat de cotización
 │   ├── i18n/
 │   │   ├── ui.ts                 # textos de interfaz ES / EN
 │   │   └── routes.ts             # rutas traducidas y equivalencias entre idiomas
 │   ├── layouts/
 │   │   └── BaseLayout.astro
 │   ├── lib/
-│   │   ├── email.ts
+│   │   ├── email.ts              # el dominio del correo recibe correo (MX/A)
 │   │   ├── structured_data.ts    # ProfessionalService, Service, FAQPage, Article, BreadcrumbList
 │   │   ├── og_image.ts
-│   │   ├── theme_init.mjs
-│   │   └── spam/                 # honeypot, tiempo mínimo, límite por IP, Turnstile, análisis
+│   │   ├── theme_init.mjs        # clase js e intro antes del primer pintado (hash en la CSP)
+│   │   └── spam/                 # campo trampa, tiempo mínimo, límite por IP, Turnstile, análisis
 │   ├── views/                    # vistas compartidas por ES y EN
 │   │   ├── HomeView.astro
 │   │   ├── ProductView.astro
@@ -99,38 +113,42 @@ kinetika-web/
 │   │   ├── [legal].astro                   # /privacidad, /aviso-legal
 │   │   ├── en/
 │   │   │   ├── index.astro                 # /en
-│   │   │   ├── products/[slug].astro
+│   │   │   ├── products/[slug].astro       # /en/products/websites, /ordering, /tramimunisc, /accounting-platform
 │   │   │   ├── guides/index.astro
 │   │   │   ├── guides/[slug].astro
 │   │   │   ├── quote.astro
 │   │   │   └── [legal].astro               # /en/privacy, /en/legal-notice
 │   │   ├── 404.astro
-│   │   ├── og/[...slug].png.ts
+│   │   ├── og/[...path].png.ts
 │   │   ├── robots.txt.ts
 │   │   ├── sitemap.xml.ts
 │   │   └── llms.txt.ts
 │   ├── scripts/                  # JS de cliente por sección
-│   │   ├── intro.ts
 │   │   ├── switch_compare.ts
 │   │   ├── day_timeline.ts
 │   │   ├── blueprint.ts
-│   │   └── quote_chat.ts
+│   │   ├── quote_chat.ts
+│   │   ├── quote_sender.ts       # respuesta de una acción → código de error
+│   │   └── waitlist.ts
 │   └── styles/
 │       ├── tokens.css            # paleta, tipografía, espaciado, curvas de animación
 │       └── global.css
 ├── tests/
-│   ├── unit/
-│   └── e2e/
+│   ├── unit/                     # Vitest: anti-spam, correo, captcha, límite, reglas de formulario
+│   └── e2e/                      # node:test + Playwright sobre el build
 ├── .github/workflows/ci.yml
 ├── .env.example
 ├── astro.config.mjs
 ├── package.json
 ├── tsconfig.json
 ├── vercel.json
+├── vitest.config.ts
 └── README.md
 ```
 
 ## Plan de trabajo (un commit por sección)
+
+Estado: los 44 commits del plan están hechos. Además hubo commits de corrección y ajuste (`fix(home)`, `fix(brand)`, `feat(layout)` para los productos del pie, `feat(home)` para enlazar las escenas del día), visibles en el historial.
 
 Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traducidas y `hreflang` recíproco.
 
@@ -249,7 +267,13 @@ Idiomas: español (por defecto, sin prefijo) e inglés (`/en`), con rutas traduc
 | Variable | Uso | Obligatoria |
 |---|---|---|
 | `RESEND_API_KEY` | Envío de correos | Sí |
-| `CONTACT_TO` | Correo que recibe las cotizaciones | Sí |
+| `CONTACT_TO` | Correo que recibe las cotizaciones y la lista de espera | Sí |
 | `CONTACT_FROM` | Remitente verificado en Resend | Sí |
 | `PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | Captcha invisible | No |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Límite de envíos compartido | No |
+
+## Pendientes de contenido
+
+- Correo público de contacto (`src/data/site.ts → email`): hoy la política de privacidad indica el formulario como canal.
+- Teléfono y perfiles públicos (`phone`, `profiles`): se publican en los datos estructurados solo cuando tengan valor.
+- Precios: no se publican hasta definirlos.
