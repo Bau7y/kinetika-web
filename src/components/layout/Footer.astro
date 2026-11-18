@@ -1,4 +1,5 @@
 ---
+import Logo from '../brand/Logo.astro';
 import { site } from '../../data/site';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
@@ -22,7 +23,7 @@ const company = [
     <div class="footer_grid">
       <div class="footer_brand">
         <a href={routes.home[lang]} class="footer_logo" aria-label={t('nav.home_label')} translate="no">
-          <slot name="brand"><span class="footer_wordmark">KINETIKA</span></slot>
+      <Logo />
         </a>
         <p>{t('site.description')}</p>
       </div>
@@ -70,10 +71,6 @@ const company = [
     text-decoration: none;
   }
 
-  .footer_wordmark {
-    font-weight: 700;
-    letter-spacing: 0.3em;
-  }
 
   .footer_brand p {
     margin-top: var(--space_xs);

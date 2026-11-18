@@ -1,4 +1,5 @@
 ---
+import Logo from '../brand/Logo.astro';
 import LangSwitch from './LangSwitch.astro';
 import { homeAnchor, routes, useTranslations, type Lang } from '../../i18n/ui';
 
@@ -26,7 +27,7 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
 <header class="navbar" data-navbar>
   <div class="navbar_inner container">
     <a href={routes.home[lang]} class="navbar_brand" aria-label={t('nav.home_label')} translate="no">
-      <slot name="brand"><span class="navbar_wordmark">KINETIKA</span></slot>
+      <Logo />
     </a>
 
     <nav class="navbar_nav" aria-label={t('nav.main_label')}>
@@ -153,11 +154,6 @@ const current = (href: string) => (path === href || path.startsWith(`${href}/`) 
     text-decoration: none;
   }
 
-  .navbar_wordmark {
-    font-weight: 700;
-    font-size: 0.9375rem;
-    letter-spacing: 0.3em;
-  }
 
   .navbar_nav {
     display: none;

@@ -1,0 +1,42 @@
+---
+/**
+ * The Kinetika K: three glass planes crossed by a beam of light.
+ * Decorative (aria-hidden): the link around it carries the accessible name.
+ * No gradient ids, so it can appear several times on one page.
+ */
+interface Props {
+  /** Symbol size in px. */
+  size?: number;
+  /** Show the KINETIKA wordmark next to the symbol. */
+  wordmark?: boolean;
+  class?: string;
+}
+const { size = 26, wordmark = true, class: className } = Astro.props;
+---
+<span class:list={['logo', className]}>
+  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 100 100" class="logo_symbol">
+    <g fill="rgb(255 255 255 / 0.18)" stroke="#fff" stroke-opacity="0.8" stroke-width="3" stroke-linejoin="round">
+      <polygon points="26,8 40,8 30,92 16,92" />
+      <polygon points="40,50 72,8 90,8 52,58" />
+      <polygon points="47,53 58,45 86,92 69,92" />
+    </g>
+    <line x1="2" y1="80" x2="98" y2="22" stroke="var(--color_accent_text)" stroke-width="4" />
+  </svg>
+  {wordmark && <span class="logo_wordmark" translate="no">KINETIKA</span>}
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo_wordmark {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: 0.3em;
+    /* Optical balance: tracking adds space after the last letter */
+    margin-right: -0.3em;
+  }
+</style>
