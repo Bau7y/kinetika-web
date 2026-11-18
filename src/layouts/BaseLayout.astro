@@ -82,6 +82,10 @@ const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alterna
     <Footer lang={lang} replayIntro={intro} />
     <LangSuggest lang={lang} altHref={alternates[otherLang]} />
     <script>
+      import { initSpotlight } from '../scripts/spotlight';
+      initSpotlight();
+    </script>
+    <script>
       // Scroll reveal: each [data-reveal] fades and rises in once, when 15 % of it is visible.
       const revealed = document.querySelectorAll<HTMLElement>('[data-reveal]');
       if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {

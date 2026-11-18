@@ -23,7 +23,7 @@ const t = useTranslations(Astro.props.lang);
       <p class="why_signature">{t('why.signature')} <span>· {t('why.place')}</span></p>
     </div>
 
-    <aside class="why_area" aria-labelledby="area_title" data-reveal>
+    <aside class="why_area" aria-labelledby="area_title" data-reveal data-spotlight>
       <h3 id="area_title">{t('area.title')}</h3>
       <ul role="list">
         {districts.map((d) => <li>{d}</li>)}

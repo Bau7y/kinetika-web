@@ -47,7 +47,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
                 <span class="day_hour">{scene.hour}</span>
                 <span class="eyebrow day_moment">{scene.moment}</span>
               </div>
-              <article class="day_card">
+              <article class="day_card" data-spotlight>
                 <div class="day_card_head">
                   <h3>{scene.name}</h3>
                   <Badge tone={badge.tone}>{t(badge.label)}</Badge>

@@ -369,3 +369,28 @@ main:focus {
     transform: translateY(12px);
   }
 }
+
+/* ── Spotlight (scripts/spotlight.ts) ─────────────── */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.spotlight {
+  position: absolute;
+  top: -180px;
+  left: -180px;
+  z-index: -1;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(61 139 255 / 0.16), rgb(61 139 255 / 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration_base) ease;
+}
+
+.spotlight_on .spotlight {
+  opacity: 1;
+}
