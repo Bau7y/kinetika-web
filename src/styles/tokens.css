@@ -92,7 +92,10 @@
   --duration_press: 160ms;
   --duration_fast: 200ms;
   --duration_base: 260ms;
+  --duration_move: 400ms;
   --duration_slow: 600ms;
+  /* Exits run at about 70 % of the entrance */
+  --duration_exit: 180ms;
 
   /* Stacking */
   --z_navbar: 20;

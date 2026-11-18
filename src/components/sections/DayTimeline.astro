@@ -262,7 +262,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
     background: var(--color_accent);
     transform: scaleX(0.25);
     transform-origin: 0 50%;
-    transition: transform var(--duration_slow) var(--ease_in_out);
+    transition: transform var(--duration_move) var(--ease_in_out);
   }
 
   /* ── Enhanced: buttons move the track ── */
@@ -277,7 +277,7 @@ const hrefs = new Map((await getProducts(lang)).map((p) => [p.key, p.href]));
   }
 
   :global(html.js) .day_track {
-    transition: transform var(--duration_slow) var(--ease_in_out);
+    transition: transform var(--duration_move) var(--ease_in_out);
   }
 
   /* The current scene stands out by its border and dot, not by fading the
