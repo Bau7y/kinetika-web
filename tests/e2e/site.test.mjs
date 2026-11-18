@@ -122,6 +122,18 @@ describe('idioma', () => {
   });
 });
 
+describe('proyectos', () => {
+  it('el filtro por estado oculta las demás tarjetas y anuncia el total', async () => {
+    const page = await open('/proyectos');
+    await page.click('[data-project-filter] button[data-status="in_production"]');
+    assert.equal(await page.locator('li[data-status]:visible').count(), 1);
+    assert.match(await page.textContent('[data-project-count]'), /^1 proyecto$/);
+    await page.click('[data-project-filter] button[data-status="all"]');
+    assert.equal(await page.locator('li[data-status]:visible').count(), 3);
+    await page.close();
+  });
+});
+
 describe('SEO', () => {
   it('la 404 no se indexa ni declara canonical', async () => {
     const html = await (await get('/404.html')).text();
@@ -171,6 +183,18 @@ describe('SEO', () => {
     const routes = JSON.stringify(config.routes);
     assert.match(routes, /productos\/pedidos/);
     assert.match(routes, /proyectos\/pedidos/);
+  });
+
+  it('el índice de proyectos lista cada caso con su enlace', async () => {
+    const html = await (await get('/proyectos')).text();
+    for (const slug of ['pedidos', 'tramimunisc', 'plataforma-contable']) assert.match(html, new RegExp(`href="/proyectos/${slug}"`));
+    assert.match(html, /"@type":"ItemList"/);
+    assert.equal((await get('/en/projects')).status, 200);
+  });
+
+  it('las preguntas usan details nativo y la primera empieza abierta', async () => {
+    const html = await (await get('/')).text();
+    assert.match(html, /<details[^>]*class="faq_item[^"]*"[^>]*open/);
   });
 
   it('cada proyecto muestra su caso: antes, qué se automatizó y hoy', async () => {

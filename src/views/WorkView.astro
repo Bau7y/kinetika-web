@@ -13,6 +13,9 @@ import Button from '../components/ui/Button.astro';
 import WaitlistForm from '../components/work/WaitlistForm.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/structured_data';
+import Faq from '../components/ui/Faq.astro';
+import Chips from '../components/ui/Chips.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
 import { render } from 'astro:content';
 import { getProjects, getWork, type Work } from '../data/work';
 import { pairHrefs } from '../data/pages';
@@ -40,7 +43,7 @@ const showcase = isProject ? [] : await getProjects(lang);
 const crumbs = [
   { name: t('nav.home'), href: routes.home[lang] },
   isProject
-    ? { name: t('nav.projects'), href: homeAnchor(lang, 'proyectos') }
+    ? { name: t('nav.projects'), href: routes.projectsBase[lang] }
     : { name: t('nav.services'), href: homeAnchor(lang, 'servicios') },
   { name: data.name, href: work.href },
 ];
@@ -84,9 +87,7 @@ const crumbs = [
         <li data-reveal data-i="1"><h3 class="eyebrow">{t('case.solution')}</h3><p>{data.case.solution}</p></li>
         <li data-reveal data-i="2" class="work_case_result"><h3 class="eyebrow">{t('case.result')}</h3><p>{data.case.result}</p></li>
       </ol>
-      <ul role="list" class="work_tags" aria-label={t('case.tags')}>
-        {data.case.tags.map((tag) => <li>{tag}</li>)}
-      </ul>
+      <Chips items={data.case.tags} label={t('case.tags')} class="work_tags" />
     </section>
   )}
 
@@ -179,26 +180,20 @@ const crumbs = [
     <section class:list={['section', data.status !== 'waitlist' && 'section_band']} aria-labelledby="product_faq_title">
       <div class="container">
         <h2 id="product_faq_title" class="section_title product_h2">{t('product.faq_title')}</h2>
-        <dl class="product_faq">
-          {data.faq.map((item) => (
-            <div>
-              <dt>{item.q}</dt>
-              <dd>{item.a}</dd>
-            </div>
-          ))}
-        </dl>
+        <Faq items={data.faq} />
       </div>
     </section>
   )}
 
-  <section class="section container product_cta" aria-labelledby="product_cta_title">
-    <h2 id="product_cta_title" class="section_title">{data.cta.title}</h2>
-    <p class="lede">{data.cta.text}</p>
-    {data.status === 'waitlist' ? (
-      <Button href="#lista-de-espera" arrow>{t('product.cta_waitlist')}</Button>
-    ) : (
-      <Button href={routes.quote[lang]} arrow>{t('product.cta_quote')}</Button>
-    )}
+  <ClosingCta
+    eyebrow={t('closing.eyebrow')}
+    title={data.cta.title}
+    text={data.cta.text}
+    primary={data.status === 'waitlist'
+      ? { href: '#lista-de-espera', label: t('product.cta_waitlist') }
+      : { href: routes.quote[lang], label: t('product.cta_quote') }}
+    secondary={{ href: routes.projectsBase[lang], label: t('hero.cta_secondary') }}
+  >
     {others.length > 0 && (
       <nav class="product_others" aria-labelledby="product_others_title">
         <h3 id="product_others_title" class="eyebrow">{t(isProject ? 'case.others' : 'service.others')}</h3>
@@ -207,7 +202,7 @@ const crumbs = [
         </ul>
       </nav>
     )}
-  </section>
+  </ClosingCta>
 </BaseLayout>
 
 <style>
@@ -237,20 +232,10 @@ const crumbs = [
     color: var(--color_text);
   }
 
-  .work_tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  .work_case :global(.work_tags) {
     margin-top: var(--space_md);
   }
 
-  .work_tags li {
-    padding: 6px 12px;
-    border: 1px solid var(--color_line_strong);
-    border-radius: var(--radius_full);
-    font-size: var(--text_sm);
-    color: var(--color_text_secondary);
-  }
 
   .work_showcase {
     display: grid;
@@ -503,33 +488,6 @@ const crumbs = [
     margin-top: var(--space_xl);
   }
 
-  .product_faq {
-    display: grid;
-    column-gap: var(--space_xl);
-  }
-
-  .product_faq > div {
-    padding-block: var(--space_md);
-    border-top: 1px solid var(--color_line);
-  }
-
-  .product_faq dt {
-    font-size: var(--text_lg);
-    font-weight: 600;
-  }
-
-  .product_faq dd {
-    margin-top: 8px;
-    font-size: 0.9375rem;
-    color: var(--color_text_secondary);
-  }
-
-  .product_cta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space_md);
-  }
 
   .product_others {
     margin-top: var(--space_lg);
@@ -537,6 +495,7 @@ const crumbs = [
 
   .product_others ul {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 8px 24px;
     margin-top: var(--space_xs);
@@ -556,10 +515,6 @@ const crumbs = [
 
     .product_steps {
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-
-    .product_faq {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

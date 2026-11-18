@@ -1,0 +1,141 @@
+---
+/**
+ * Projects index, shared by /proyectos and /en/projects: every case study,
+ * with a status filter. Without JavaScript all cards stay visible.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import ClosingCta from '../components/ui/ClosingCta.astro';
+import JsonLd from '../components/ui/JsonLd.astro';
+import ProjectCard from '../components/ui/ProjectCard.astro';
+import { getProjects } from '../data/work';
+import { statusBadge } from '../data/work_status';
+import { breadcrumbSchema, itemListSchema } from '../lib/structured_data';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+const statuses = [...new Set(projects.map((p) => p.data.status))];
+const crumbs = [
+  { name: t('nav.home'), href: routes.home[lang] },
+  { name: t('nav.projects'), href: routes.projectsBase[lang] },
+];
+const countText = (n: number) => (n === 1 ? t('projects.count_one') : t('projects.count').replace('{n}', String(n)));
+---
+<BaseLayout lang={lang} title={t('projects.seo_title')} description={t('projects.meta')} alternates={routes.projectsBase}>
+  <JsonLd
+    slot="head"
+    data={[
+      breadcrumbSchema(Astro.site!, crumbs),
+      itemListSchema(Astro.site!, projects.map((p) => ({ name: p.data.name, path: p.href }))),
+    ]}
+  />
+  <section class="projects_index" aria-labelledby="projects_index_title">
+    <div class="container">
+      <Breadcrumbs lang={lang} items={crumbs} />
+      <h1 id="projects_index_title" class="projects_index_title">{t('projects.title')}</h1>
+      <p class="lede">{t('projects.lede')}</p>
+
+      {statuses.length > 1 && (
+        <div class="projects_filter" role="group" aria-label={t('projects.filter_label')} data-project-filter hidden>
+          <button type="button" aria-pressed="true" data-status="all">{t('projects.filter_all')}</button>
+          {statuses.map((s) => (
+            <button type="button" aria-pressed="false" data-status={s}>{t(statusBadge[s].label)}</button>
+          ))}
+        </div>
+      )}
+      <p class="projects_count" aria-live="polite" data-project-count data-one={t('projects.count_one')} data-many={t('projects.count')}>
+        {countText(projects.length)}
+      </p>
+
+      <ul role="list" class="projects_index_grid">
+        {projects.map((p, i) => (
+          <li data-status={p.data.status} data-reveal data-i={i % 3}>
+            <ProjectCard lang={lang} project={p} index={i} level={2} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <ClosingCta
+    eyebrow={t('closing.eyebrow')}
+    title={t('closing.title')}
+    text={t('closing.text')}
+    primary={{ href: routes.quote[lang], label: t('nav.quote') }}
+  />
+</BaseLayout>
+
+<script>
+  import { initProjectFilter } from '../scripts/project_filter';
+  initProjectFilter();
+</script>
+
+<style>
+  .projects_index {
+    padding: calc(var(--navbar_h) + var(--space_sm)) 0 var(--section_py);
+  }
+
+  .projects_index_title {
+    max-width: 18ch;
+    margin: var(--space_lg) 0 var(--space_sm);
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: var(--leading_tight);
+    letter-spacing: -0.035em;
+  }
+
+  .projects_filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space_lg);
+  }
+
+  .projects_filter button {
+    min-height: var(--tap_min);
+    padding: 0 18px;
+    border-radius: var(--radius_full);
+    border: 1px solid var(--color_line_strong);
+    background: transparent;
+    color: var(--color_text_secondary);
+    font: inherit;
+    font-size: var(--text_sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background-color var(--duration_fast) ease,
+      color var(--duration_fast) ease;
+  }
+
+  .projects_filter button[aria-pressed='true'] {
+    border-color: var(--color_accent);
+    background: var(--color_accent_tint_strong);
+    color: var(--color_text);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .projects_filter button:hover {
+      color: var(--color_text);
+    }
+  }
+
+  .projects_count {
+    margin: var(--space_md) 0 var(--space_md);
+    font-family: var(--font_mono);
+    font-size: var(--text_xs);
+    letter-spacing: var(--tracking_label);
+    text-transform: uppercase;
+    color: var(--color_text_muted);
+  }
+
+  .projects_index_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--space_lg) var(--space_md);
+  }
+</style>
