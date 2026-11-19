@@ -402,28 +402,23 @@ main:focus {
 
 /* ── Card lift ────────────────────────────────────── */
 /*
- * Hovering a card raises it and gives it a quick shuffle, like a playing card
- * lifted off the deck. It uses the individual `translate` and `rotate`
- * properties, so it composes with the reveal transform and runs on the
- * compositor. Mouse only; with reduced motion the card just stays put.
+ * scripts/card_tilt.ts adds .lift_ready on the first hover and .lift_on while
+ * the pointer is over a [data-lift] card, and feeds --tilt_x / --tilt_y. The
+ * card rises and leans toward the pointer with a short lag, so it seems to
+ * follow it. Transform and translate only. Without a fine pointer or with
+ * reduced motion the script does nothing and the cards stay still.
  */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  [data-lift] {
-    transition: translate var(--duration_base) var(--ease_out);
-  }
-
-  [data-lift]:hover {
-    translate: 0 -6px;
-    animation: card_shuffle 520ms ease-in-out;
-  }
+.js [data-lift].lift_ready {
+  transition:
+    opacity var(--duration_slow) var(--ease_out),
+    transform 220ms var(--ease_out),
+    translate var(--duration_base) var(--ease_out);
+  transition-delay: 0s;
 }
 
-@keyframes card_shuffle {
-  0%, 100% { rotate: 0deg; }
-  16% { rotate: -1.1deg; }
-  38% { rotate: 0.9deg; }
-  60% { rotate: -0.5deg; }
-  80% { rotate: 0.2deg; }
+.js [data-lift].lift_on {
+  translate: 0 -6px;
+  transform: perspective(900px) rotateX(var(--tilt_x, 0deg)) rotateY(var(--tilt_y, 0deg));
 }
 
 /* ── Spotlight (scripts/spotlight.ts) ─────────────── */

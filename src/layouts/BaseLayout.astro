@@ -87,6 +87,10 @@ const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alterna
       initSpotlight();
     </script>
     <script>
+      import { initCardTilt } from '../scripts/card_tilt';
+      initCardTilt();
+    </script>
+    <script>
       import { initButtonSweep } from '../scripts/button_sweep';
       initButtonSweep();
     </script>
