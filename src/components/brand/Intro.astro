@@ -1,16 +1,19 @@
 ---
 /**
- * Loading intro: the K assembles (stem, arm, leg), the beam crosses it, the
- * letters appear and a curtain lifts to reveal the page. About 2 s.
+ * Loading intro: the K assembles (stem, arm, leg), the beam crosses it and the
+ * letters appear. Then the backdrop cross-fades into the page while the K
+ * travels to its place in the navigation bar. About 1.8 s.
  *
  * - Shown only when <html> has the `intro` class (see lib/theme_init.mjs):
  *   once per session, never with prefers-reduced-motion.
  * - The page underneath is already painted (the hero h1 is not animated), so
  *   it does not delay the Largest Contentful Paint.
- * - Any click or key skips it. Only transform, opacity and clip-path animate.
+ * - Any click or key skips it. Only transform and opacity animate.
  */
 ---
 <div class="intro" data-intro aria-hidden="true">
+  <div class="intro_bg"></div>
+  <div class="intro_fly" data-intro-fly><div class="intro_k" data-intro-end>
   <svg width="180" height="180" viewBox="0 0 100 100" overflow="visible">
     <defs>
       <linearGradient id="intro_glass" x1="0" y1="0" x2="1" y2="1">
@@ -35,6 +38,7 @@
     <g class="intro_glow"><line x1="-6" y1="84" x2="106" y2="18" stroke="url(#intro_beam)" stroke-width="4" filter="url(#intro_blur)" /></g>
     <line class="intro_beam" x1="-6" y1="84" x2="106" y2="18" stroke="url(#intro_beam)" stroke-width="1" />
   </svg>
+  </div></div>
   <div class="intro_word" translate="no">
     {'KINETIKA'.split('').map((letter, i) => <span data-i={i}>{letter}</span>)}
   </div>
@@ -44,8 +48,8 @@
   const root = document.documentElement;
   const intro = document.querySelector<HTMLElement>('[data-intro]');
 
-  /** When the curtain starts lifting by itself (ms after start). */
-  const LIFT_AT = 1550;
+  /** When the cross-fade starts by itself (ms after start). A skip after this just lets it finish. */
+  const FADE_AT = 1150;
   let startedAt = 0;
 
   const finish = () => {
@@ -54,12 +58,11 @@
     removeEventListener('keydown', skip);
   };
 
-  /** A click or key lifts the curtain quickly instead of cutting to the page. */
+  /** A click or key fades the intro out quickly instead of cutting to the page. */
   function skip() {
     removeEventListener('pointerdown', skip);
     removeEventListener('keydown', skip);
-    // Already lifting: let it finish on its own
-    if (performance.now() - startedAt < LIFT_AT) root.classList.add('intro_skip');
+    if (performance.now() - startedAt < FADE_AT) root.classList.add('intro_skip');
   }
 
   const start = () => {
@@ -72,8 +75,26 @@
   };
 
   if (intro) {
-    // The curtain (normal or fast) is the last animation: when it ends, the intro is over.
-    intro.addEventListener('animationend', (e) => e.target === intro && finish());
+    // The last animation (the K handing over to the nav logo, or the fast fade of a skip) ends the intro.
+    intro.addEventListener('animationend', (e) => {
+      const target = e.target as HTMLElement;
+      if (target === intro || target.hasAttribute('data-intro-end')) finish();
+    });
+
+    /* Where the K lands: the nav logo. Measured inside a ResizeObserver callback,
+       which runs right after layout, so reading rects forces no reflow. */
+    const fly = intro.querySelector<HTMLElement>('[data-intro-fly]');
+    if (fly) {
+      new ResizeObserver(() => {
+        const target = document.querySelector('[data-navbar] .logo_symbol')?.getBoundingClientRect();
+        if (!target || target.width === 0) return;
+        const from = fly.getBoundingClientRect();
+        fly.style.setProperty('--fly_x', `${target.left + target.width / 2 - (from.left + from.width / 2)}px`);
+        fly.style.setProperty('--fly_y', `${target.top + target.height / 2 - (from.top + from.height / 2)}px`);
+        fly.style.setProperty('--fly_s', String(target.width / from.width));
+      }).observe(fly);
+    }
+
     if (root.classList.contains('intro')) start();
 
     // "Replay the intro" button in the footer: restart every animation.
@@ -103,19 +124,35 @@
     align-items: center;
     justify-content: center;
     gap: 28px;
-    background: radial-gradient(60% 60% at 50% 45%, #0f1a30, var(--color_bg) 70%);
     cursor: pointer;
-    animation: intro_lift 640ms var(--ease_in_out) 1550ms both;
   }
 
-  /* Skipped: the same curtain, lifted right away and fast. A different
-     keyframe name restarts it instead of retiming the running one. */
+  /* Skipped: everything fades together, fast */
   :global(html.intro.intro_skip) .intro {
-    animation: intro_lift_fast 200ms var(--ease_out) both;
+    animation: intro_out_fast 200ms var(--ease_out) both;
   }
 
   :global(html.intro) {
     overflow: hidden;
+  }
+
+  /* The backdrop is its own layer so it can dissolve while the K is still moving */
+  .intro_bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(60% 60% at 50% 45%, #0f1a30, var(--color_bg) 70%);
+    animation: intro_bg_out 600ms var(--ease_in_out) 1150ms both;
+  }
+
+  /* The K travels to the nav logo (--fly_x/--fly_y/--fly_s come from the script) */
+  .intro_fly {
+    animation: intro_fly 600ms var(--ease_in_out) 1150ms both;
+  }
+
+  /* Hand-over: it fades as it lands on the logo that is already under it */
+  .intro_k {
+    animation: intro_k_out 100ms linear 1700ms both;
   }
 
   .intro polygon,
@@ -125,26 +162,26 @@
 
   .intro_stem {
     transform-origin: 50% 100%;
-    animation: intro_stem 620ms var(--ease_out) 120ms both;
+    animation: intro_stem 520ms var(--ease_out) 80ms both;
   }
 
   .intro_arm {
     transform-origin: 0% 100%;
-    animation: intro_arm 620ms var(--ease_out) 300ms both;
+    animation: intro_arm 520ms var(--ease_out) 200ms both;
   }
 
   .intro_leg {
     transform-origin: 0% 0%;
-    animation: intro_leg 620ms var(--ease_out) 460ms both;
+    animation: intro_leg 520ms var(--ease_out) 320ms both;
   }
 
   .intro_beam {
     transform-origin: 0% 50%;
-    animation: intro_beam 460ms var(--ease_in_out) 860ms both;
+    animation: intro_beam 400ms var(--ease_in_out) 600ms both;
   }
 
   .intro_glow {
-    animation: intro_fade 500ms var(--ease_out) 980ms both;
+    animation: intro_fade 420ms var(--ease_out) 680ms both;
   }
 
   .intro_word {
@@ -153,11 +190,12 @@
     letter-spacing: 0.42em;
     padding-left: 0.42em;
     color: var(--color_text);
+    animation: intro_word_out 300ms var(--ease_out) 1100ms both;
   }
 
   .intro_word span {
     display: inline-block;
-    animation: intro_letter 420ms var(--ease_out) calc(1000ms + var(--i) * 40ms) both;
+    animation: intro_letter 380ms var(--ease_out) calc(700ms + var(--i) * 30ms) both;
   }
 
   @keyframes intro_stem {
@@ -184,14 +222,24 @@
     from { transform: translateY(10px); opacity: 0; }
   }
 
-  @keyframes intro_lift {
-    from { clip-path: inset(0 0 0 0); }
-    to { clip-path: inset(0 0 100% 0); }
+  @keyframes intro_bg_out {
+    to { opacity: 0; }
   }
 
-  @keyframes intro_lift_fast {
-    from { clip-path: inset(0 0 0 0); }
-    to { clip-path: inset(0 0 100% 0); }
+  @keyframes intro_fly {
+    to { transform: translate(var(--fly_x, 0px), var(--fly_y, 0px)) scale(var(--fly_s, 1)); }
+  }
+
+  @keyframes intro_k_out {
+    to { opacity: 0; }
+  }
+
+  @keyframes intro_word_out {
+    to { opacity: 0; transform: translateY(6px); }
+  }
+
+  @keyframes intro_out_fast {
+    to { opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {

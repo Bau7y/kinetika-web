@@ -354,8 +354,9 @@ const anchor = (id: string) => homeAnchor(lang, id);
       animation: hero_word 700ms var(--ease_out) calc(260ms + var(--w, 0) * 28ms) both;
     }
 
+    /* The words rise while the intro backdrop dissolves (starts 1150 ms) */
     :global(html.intro) .hero_word {
-      animation-delay: calc(1960ms + var(--w, 0) * 28ms);
+      animation-delay: calc(1400ms + var(--w, 0) * 28ms);
     }
   }
 
@@ -379,9 +380,9 @@ const anchor = (id: string) => homeAnchor(lang, id);
       animation: hero_rise 900ms var(--ease_out) calc(120ms + var(--i) * 110ms) both;
     }
 
-    /* After the intro curtain lifts (1550 ms + 640 ms) */
+    /* While the intro dissolves (it starts at 1150 ms and ends at 1800 ms) */
     :global(html.intro) .hero_in {
-      animation-delay: calc(1820ms + var(--i) * 110ms);
+      animation-delay: calc(1500ms + var(--i) * 110ms);
     }
   }
   /*
