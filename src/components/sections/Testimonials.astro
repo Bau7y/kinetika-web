@@ -20,7 +20,7 @@ const items = testimonials[lang];
     <SectionHead id="testimonials_title" number={number} label={t('testimonials.label')} title={t('testimonials.title')} />
     <ul role="list" class="testimonials">
       {items.map((item, i) => (
-        <li data-reveal data-i={i % 3}>
+        <li data-reveal data-i={i % 3} data-lift>
           <figure>
             <blockquote><p>“{item.quote}”</p></blockquote>
             <figcaption>

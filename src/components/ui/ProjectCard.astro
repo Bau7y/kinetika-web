@@ -24,7 +24,7 @@ const captures = import.meta.glob<{ default: ImageMetadata }>('../../assets/work
 const capture = captures[`../../assets/work/${project.key}.png`]?.default;
 const badge = statusBadge[project.data.status];
 ---
-<a href={project.href} class="project_link" aria-labelledby={`project_${project.key}`}>
+<a href={project.href} class="project_link" data-lift aria-labelledby={`project_${project.key}`}>
   <div class="project_media">
     {capture && (
       <Picture src={capture} formats={['avif', 'webp']} widths={[480, 800, 1200]} sizes="(min-width: 1100px) 380px, (min-width: 700px) 45vw, 92vw" alt="" class="project_img" />

@@ -400,6 +400,32 @@ main:focus {
   }
 }
 
+/* ── Card lift ────────────────────────────────────── */
+/*
+ * Hovering a card raises it and gives it a quick shuffle, like a playing card
+ * lifted off the deck. It uses the individual `translate` and `rotate`
+ * properties, so it composes with the reveal transform and runs on the
+ * compositor. Mouse only; with reduced motion the card just stays put.
+ */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-lift] {
+    transition: translate var(--duration_base) var(--ease_out);
+  }
+
+  [data-lift]:hover {
+    translate: 0 -6px;
+    animation: card_shuffle 520ms ease-in-out;
+  }
+}
+
+@keyframes card_shuffle {
+  0%, 100% { rotate: 0deg; }
+  16% { rotate: -1.1deg; }
+  38% { rotate: 0.9deg; }
+  60% { rotate: -0.5deg; }
+  80% { rotate: 0.2deg; }
+}
+
 /* ── Spotlight (scripts/spotlight.ts) ─────────────── */
 [data-spotlight] {
   position: relative;

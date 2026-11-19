@@ -12,7 +12,7 @@ const { guides, as: Title = 'h3' } = Astro.props;
 <ul role="list" class="guide_cards">
   {guides.map((g, i) => (
     <li data-reveal data-i={i}>
-      <a href={g.href} class="guide_card" data-spotlight>
+      <a href={g.href} class="guide_card" data-spotlight data-lift>
         <span class="eyebrow">{g.data.topic}</span>
         <Title class="guide_card_title">{g.data.title}</Title>
         <span class="guide_card_text">{g.data.summary}</span>
@@ -39,7 +39,9 @@ const { guides, as: Title = 'h3' } = Astro.props;
     border: 1px solid var(--color_line);
     color: var(--color_text);
     text-decoration: none;
-    transition: transform var(--duration_press) var(--ease_out);
+    transition:
+      transform var(--duration_press) var(--ease_out),
+      translate var(--duration_base) var(--ease_out);
   }
 
   /* Hover ring on a layer that only fades */

@@ -28,7 +28,7 @@ const services = await getServices(lang);
 
     <ul role="list" class="services_grid">
       {services.map((s, i) => (
-        <li data-reveal data-i={i} data-spotlight>
+        <li data-reveal data-i={i} data-spotlight data-lift>
           <a href={s.href} class="service" aria-labelledby={`service_${s.key}`}>
             <span class="mono service_n">{String(i + 1).padStart(2, '0')}</span>
             <h3 id={`service_${s.key}`}>{s.data.name}</h3>
@@ -154,10 +154,6 @@ const services = await getServices(lang);
       border-color: var(--color_line_strong);
       color: var(--color_text_secondary);
     }
-  }
-
-  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .service:hover { transform: translateY(-3px); }
   }
 
   .service:is(:hover, :focus-visible) .service_points li::after {
