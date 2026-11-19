@@ -51,8 +51,13 @@ export function initNavbar() {
     highlight.classList.add('is_on');
   }
 
-  new ResizeObserver(measure).observe(list);
-  document.fonts?.ready.then(measure);
+  // ResizeObserver callbacks run right after layout, so reading offsets there
+  // forces nothing. Watching every item also covers a font swap that resizes
+  // the links, which is why measure() is not called from document.fonts.ready
+  // (that runs while styles are still dirty and forces a reflow).
+  const resizeObserver = new ResizeObserver(measure);
+  resizeObserver.observe(list);
+  links.forEach((a) => resizeObserver.observe(a.parentElement!));
 
   if (finePointer) {
     links.forEach((a, i) => a.addEventListener('pointerenter', () => paint(i)));
