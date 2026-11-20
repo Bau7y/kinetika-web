@@ -42,6 +42,6 @@ Before filling it in, have the property details at hand: property number (númer
 
 ## If you want help with the procedure
 
-TramiMuniSC, our service in production, helps with the declaration: it reviews the details, fills in the form and follows up. At [tramimunisc.com](https://www.tramimunisc.com) you will find more detailed guides (in Spanish) on how much is paid, the exemption and what happens if you do not declare.
+[TramiMuniSC](/en/work/tramimunisc), our service in production, helps with the declaration: it reviews the details, fills in the form and follows up. At [tramimunisc.com](https://www.tramimunisc.com) you will find more detailed guides (in Spanish) on how much is paid, the exemption and what happens if you do not declare.
 
 *This guide is general information based on Law 7509 as of the date above. It does not replace a municipal decision or legal advice for your case.*

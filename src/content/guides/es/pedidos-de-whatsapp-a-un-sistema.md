@@ -12,7 +12,7 @@ faq:
   - q: "¿Tengo que dejar de usar WhatsApp?"
     a: "No. WhatsApp puede seguir como canal de avisos; lo que cambia es que el pedido se toma en un solo lugar."
   - q: "¿Por dónde empiezo?"
-    a: "Por el menú: platos, precios y lo que se acaba temprano. Sirve aunque todavía atiendas solo por WhatsApp."
+    a: "Por el menú: platos, precios y lo que se acaba temprano. Sirve aunque todavía atienda solo por WhatsApp."
 ---
 
 ## Por qué el chat se complica en la hora pico
@@ -48,4 +48,6 @@ Un sistema de pedidos no reemplaza la atención: ordena la parte repetitiva para
 - ¿Sus clientes pueden pedir desde el celular sin descargar una aplicación?
 - ¿La cocina ve los pedidos en una pantalla o en el celular que ya tiene?
 - ¿Puede cambiar precios y platos sin pedirle ayuda a nadie?
-- ¿Te muestran una demo con su propio menú antes de pagar?
+- ¿Le muestran una demo con su propio menú antes de pagar?
+
+Así funciona nuestro [sistema de pedidos para restaurantes](/experiencia/pedidos), y aquí está la solución de [automatización de procesos](/soluciones/automatizacion-de-procesos) que lo respalda.

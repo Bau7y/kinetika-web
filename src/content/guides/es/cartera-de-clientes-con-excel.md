@@ -55,3 +55,4 @@ Con **Formato condicional** pintá en rojo las filas atrasadas y en amarillo las
 ## Cuando la hoja se queda corta
 
 Excel funciona bien hasta que sus clientes tienen que mandarle documentos por varios canales o hay más de una persona actualizando el mismo archivo. Ahí sirve un portal donde cada cliente sube lo suyo y una cartera que se importa directo desde esta misma hoja.
+ Vea la [plataforma contable](/experiencia/plataforma-contable) que estamos construyendo o cómo funciona la [automatización de procesos](/soluciones/automatizacion-de-procesos).
