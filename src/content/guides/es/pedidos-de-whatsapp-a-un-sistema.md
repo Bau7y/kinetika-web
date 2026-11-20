@@ -39,7 +39,7 @@ Un sistema de pedidos no reemplaza la atención: ordena la parte repetitiva para
 
 1. **Ordene el menú.** Platos, precios y lo que se acaba temprano. Es la base de todo lo demás y sirve aunque todavía use solo WhatsApp.
 2. **Defina los estados.** Por ejemplo: nuevo, en cocina y listo. Si su equipo ya los usa de palabra, el sistema solo los hace visibles.
-3. **Pruebe con un grupo pequeño.** Compartí el enlace con clientes de confianza antes de anunciarlo a todos.
+3. **Pruebe con un grupo pequeño.** Comparta el enlace con clientes de confianza antes de anunciarlo a todos.
 4. **Mantenga WhatsApp para avisos.** No tiene que cerrar el canal que sus clientes ya usan; el cambio es que el pedido se toma en un solo lugar.
 5. **Revise después de una semana.** Vea qué preguntas siguen llegando al chat y ajuste el menú o las indicaciones.
 

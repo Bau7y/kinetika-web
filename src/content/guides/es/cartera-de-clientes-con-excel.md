@@ -43,13 +43,13 @@ Estas fórmulas funcionan también en Excel 2019, sin funciones nuevas:
 - Estado automático: `=SI([@Documentos]="Recibidos";"Al día";SI([@[Fecha límite]]<HOY();"Atrasado";"Pendiente"))`
 - Cuántos clientes están atrasados: `=CONTAR.SI(Tabla1[Estado];"Atrasado")`
 
-Con **Formato condicional** pintá en rojo las filas atrasadas y en amarillo las que vencen en menos de cinco días.
+Con **Formato condicional** pinte en rojo las filas atrasadas y en amarillo las que vencen en menos de cinco días.
 
 ## El cierre de cada mes
 
-1. Duplicá la hoja del mes anterior y renombrala con el mes nuevo.
-2. Poné todos los documentos en "Pendientes".
-3. Actualizá las fechas límite del periodo.
+1. Duplique la hoja del mes anterior y renómbrela con el mes nuevo.
+2. Ponga todos los documentos en "Pendientes".
+3. Actualice las fechas límite del periodo.
 4. Filtre por "Pendiente" cada pocos días y escriba solo a quien le falta algo.
 
 ## Cuando la hoja se queda corta

@@ -6,7 +6,7 @@ status: in_development
 name: Pedidos para restaurantes
 title: Pedidos en línea para restaurantes que hoy atienden por WhatsApp
 seo_title: Pedidos en línea para restaurantes en Ciudad Quesada
-meta_description: Sistema de pedidos en línea para restaurantes y sodas de Ciudad Quesada que hoy reciben pedidos por WhatsApp. En desarrollo; probalo en la demo.
+meta_description: Sistema de pedidos en línea para restaurantes y sodas de Ciudad Quesada que hoy reciben pedidos por WhatsApp. En desarrollo; pruébelo en la demo.
 summary: Sus clientes eligen del menú, el pedido llega ordenado al panel de cocina y nadie se pierde en el chat. Está en desarrollo y buscamos restaurantes de la zona para probarlo.
 service_type: Sistema de pedidos en línea
 audience: Restaurantes y sodas de San Carlos

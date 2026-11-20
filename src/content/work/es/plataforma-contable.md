@@ -6,14 +6,14 @@ status: waitlist
 name: Plataforma contable
 title: Plataforma para despachos contables de Costa Rica
 seo_title: Plataforma para despachos contables en Costa Rica
-meta_description: Cartera de clientes, portal para recibir documentos, calendario de obligaciones y revisión de hallazgos con Hacienda. Importá su Excel. Lista de espera.
+meta_description: Cartera de clientes, portal para recibir documentos, calendario de obligaciones y revisión de hallazgos con Hacienda. Importe su Excel. Lista de espera.
 summary: Organice la cartera de sus clientes, reciba sus documentos por un portal y revise los registros antes de declarar. Se suma al software que ya usa y empieza con su Excel. Estamos abriendo la lista de espera.
 service_type: Software para despachos contables
 audience: Despachos y contadores independientes de Costa Rica
 updated: 2026-11-17
 demo:
   title: Traiga su Excel y empiece hoy.
-  text: Importá una cartera de ejemplo, filtrá lo pendiente y corré una revisión para ver qué hallazgos aparecen.
+  text: Importe una cartera de ejemplo, filtre lo pendiente y corra una revisión para ver qué hallazgos aparecen.
 highlights:
   title: Lo que va a incluir.
   items:
@@ -44,7 +44,7 @@ faq:
   - q: ¿Cuándo va a estar disponible?
     a: Estamos en la etapa de lista de espera. Le avisamos por correo cuando haya una versión para probar.
 cta:
-  title: Sumate a la lista de espera.
+  title: Súmese a la lista de espera.
   text: Le escribimos cuando abramos la primera versión para despachos de la zona.
 answer:
   question: "¿Qué es la plataforma contable de Kinetika?"

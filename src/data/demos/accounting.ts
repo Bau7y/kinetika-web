@@ -11,7 +11,7 @@ export const accountingCopy = {
     review: 'Correr revisión',
     caption: 'Cartera de clientes',
     cols: ['Cliente', 'Pendiente', 'Vence'],
-    empty: 'Importá la hoja para ver la cartera.',
+    empty: 'Importe la hoja para ver la cartera.',
     rows: [
       ['Ferretería El Roble', 'Faltan 2 documentos', '15 nov'],
       ['Taller JR', 'IVA del mes', '15 nov'],

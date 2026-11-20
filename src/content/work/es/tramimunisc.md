@@ -13,8 +13,8 @@ audience: Propietarios, comercios y productores de San Carlos
 external_url: https://www.tramimunisc.com
 updated: 2026-11-17
 demo:
-  title: Seguí un trámite de principio a fin.
-  text: Marcá los documentos y avance el trámite como lo vería una persona que usa el servicio.
+  title: Siga un trámite de principio a fin.
+  text: Marque los documentos y avance el trámite como lo vería una persona que usa el servicio.
 highlights:
   title: Qué trámites acompaña.
   items:
