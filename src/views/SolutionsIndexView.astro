@@ -6,7 +6,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
-import Chips from '../components/ui/Chips.astro';
+import BeforeAfter from '../components/sections/BeforeAfter.astro';
+import PageBuilder from '../components/sections/PageBuilder.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { getServices } from '../data/work';
 import { breadcrumbSchema, collectionPageSchema, itemListSchema } from '../lib/structured_data';
@@ -18,7 +19,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const services = await getServices(lang);
-const capabilities = t('services.capabilities').split('|');
 const crumbs = [
   { name: t('nav.home'), href: routes.home[lang] },
   { name: t('nav.solutions'), href: routes.solutions[lang] },
@@ -38,7 +38,6 @@ const crumbs = [
       <Breadcrumbs lang={lang} items={crumbs} />
       <h1 id="solutions_title" class="solutions_title">{t('solutions.title')}</h1>
       <p class="lede">{t('solutions.lede')}</p>
-      <Chips items={capabilities} label={t('services.capabilities_label')} />
 
       <h2 class="solutions_list_title">{t('solutions.list_title')}</h2>
       <ul role="list" class="solutions_grid">
@@ -58,6 +57,9 @@ const crumbs = [
       </ul>
     </div>
   </section>
+
+  <BeforeAfter lang={lang} number="01" />
+  <PageBuilder lang={lang} number="02" />
 
   <ClosingCta
     eyebrow={t('closing.eyebrow')}
@@ -106,9 +108,8 @@ const crumbs = [
     flex-direction: column;
     gap: var(--space_xs);
     height: 100%;
-    padding: var(--space_lg);
-    border: 1px solid var(--color_line);
-    border-radius: var(--radius_lg);
+    padding: var(--space_md) 0 0;
+    border-top: 1px solid var(--color_line_strong);
     color: inherit;
     text-decoration: none;
     transition: border-color 160ms var(--ease_out), transform 160ms var(--ease_out);
@@ -117,7 +118,6 @@ const crumbs = [
   @media (hover: hover) and (pointer: fine) {
     .solution:hover {
       border-color: var(--color_accent);
-      transform: translateY(-2px);
     }
   }
 

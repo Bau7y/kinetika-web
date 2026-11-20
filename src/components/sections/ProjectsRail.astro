@@ -76,9 +76,8 @@ const projects = await getProjects(lang);
     display: grid;
     gap: var(--space_sm);
     padding: var(--space_md);
-    border-radius: var(--radius_xl);
+    border-radius: var(--radius_lg);
     border: 1px solid var(--color_line);
-    background: var(--color_surface);
   }
 
   .rail_tab {
@@ -165,8 +164,7 @@ const projects = await getProjects(lang);
   }
 
   .rail:global([data-ready]) .rail_panel:has(.rail_tab[aria-expanded='true']) {
-    border-color: var(--color_accent_border);
-    background: var(--color_raised);
+    border-color: var(--color_line_strong);
   }
 
   .rail:global([data-ready]) .rail_tab {

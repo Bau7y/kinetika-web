@@ -33,7 +33,7 @@ Convierta el rango en **tabla** (Insertar → Tabla): los filtros y las fórmula
 
 ## Listas para no escribir distinto cada vez
 
-En las columnas Régimen, Documentos y Estado usá **Validación de datos → Lista**. Así nadie escribe "pendiente", "Pend." y "falta" para lo mismo, y los filtros funcionan.
+En las columnas Régimen, Documentos y Estado use **Validación de datos → Lista**. Así nadie escribe "pendiente", "Pend." y "falta" para lo mismo, y los filtros funcionan.
 
 ## Fórmulas que marcan lo atrasado
 
@@ -50,7 +50,7 @@ Con **Formato condicional** pintá en rojo las filas atrasadas y en amarillo las
 1. Duplicá la hoja del mes anterior y renombrala con el mes nuevo.
 2. Poné todos los documentos en "Pendientes".
 3. Actualizá las fechas límite del periodo.
-4. Filtrá por "Pendiente" cada pocos días y escribí solo a quien le falta algo.
+4. Filtre por "Pendiente" cada pocos días y escriba solo a quien le falta algo.
 
 ## Cuando la hoja se queda corta
 

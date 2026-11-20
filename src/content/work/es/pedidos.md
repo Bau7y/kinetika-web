@@ -13,7 +13,7 @@ audience: Restaurantes y sodas de San Carlos
 updated: 2026-11-17
 demo:
   title: Haga un pedido y vea cómo llega a la cocina.
-  text: Agregá platos, enviá el pedido y cambiale el estado desde el panel, como lo haría su equipo.
+  text: Agregue platos, envíe el pedido y cámbiele el estado desde el panel, como lo haría su equipo.
 highlights:
   title: Lo que va a resolver.
   items:
@@ -59,5 +59,4 @@ case:
   problem: "Los pedidos llegan por WhatsApp repartidos en varios mensajes; precios y disponibilidad se responden uno por uno y en la cocina se anotan a mano."
   solution: "Un menú en línea donde el cliente arma su pedido y un panel de cocina donde cada orden entra con hora, total y estado."
   result: "En desarrollo. La demo ya funciona y buscamos restaurantes de la zona para probarlo."
-  tags: ["Menú en línea", "Panel de cocina", "Estados de pedido"]
 ---

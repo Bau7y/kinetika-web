@@ -7,12 +7,12 @@ name: Plataforma contable
 title: Plataforma para despachos contables de Costa Rica
 seo_title: Plataforma para despachos contables en Costa Rica
 meta_description: Cartera de clientes, portal para recibir documentos, calendario de obligaciones y revisión de hallazgos con Hacienda. Importá su Excel. Lista de espera.
-summary: Organizá la cartera de sus clientes, recibí sus documentos por un portal y revisá los registros antes de declarar. Se suma al software que ya usa y empieza con su Excel. Estamos abriendo la lista de espera.
+summary: Organice la cartera de sus clientes, reciba sus documentos por un portal y revise los registros antes de declarar. Se suma al software que ya usa y empieza con su Excel. Estamos abriendo la lista de espera.
 service_type: Software para despachos contables
 audience: Despachos y contadores independientes de Costa Rica
 updated: 2026-11-17
 demo:
-  title: Traé su Excel y empezá hoy.
+  title: Traiga su Excel y empiece hoy.
   text: Importá una cartera de ejemplo, filtrá lo pendiente y corré una revisión para ver qué hallazgos aparecen.
 highlights:
   title: Lo que va a incluir.
@@ -61,5 +61,4 @@ case:
   problem: "Los despachos reúnen los documentos de cada cliente por correo y WhatsApp, llevan los vencimientos en hojas de Excel y revisan los registros a mano antes de declarar."
   solution: "Un portal para recibir documentos, una cartera de clientes con calendario de obligaciones y una revisión de hallazgos antes de declarar ante Hacienda. Empieza importando el Excel del despacho."
   result: "Lista de espera abierta. La demo ya muestra el flujo completo."
-  tags: ["Portal de documentos", "Calendario de obligaciones", "Importar Excel"]
 ---

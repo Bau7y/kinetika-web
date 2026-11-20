@@ -2,13 +2,8 @@
 /** Home page, shared by / and /en. Each section is its own component. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
-import StatsStrip from '../components/sections/StatsStrip.astro';
-import Testimonials from '../components/sections/Testimonials.astro';
 import ProjectsRail from '../components/sections/ProjectsRail.astro';
 import ServicesSection from '../components/sections/ServicesSection.astro';
-import BeforeAfter from '../components/sections/BeforeAfter.astro';
-import PageBuilder from '../components/sections/PageBuilder.astro';
-import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
 import Process from '../components/sections/Process.astro';
 import FaqGuides from '../components/sections/FaqGuides.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
@@ -31,20 +26,10 @@ const business = businessSchema(Astro.site!, lang, {
   knowsAbout: t('site.knows_about').split('|'),
   services: services.map((s) => ({ name: s.data.name, path: s.href, description: s.data.meta_description })),
 });
-// Story order of the home page: each numbered section takes its place here
-import { testimonials } from '../data/testimonials';
-// Testimonials take a number only once there are real ones
-type Chapter = 'projects' | 'services' | 'compare' | 'about' | 'testimonials' | 'process' | 'proof' | 'faq';
-const chapters: Chapter[] = [
-  'projects',
-  'services',
-  'compare',
-  'about',
-  ...(testimonials[lang].length > 0 ? (['testimonials'] as const) : []),
-  'process',
-  'proof',
-  'faq',
-];
+// Story order of the home page: a short, quiet path. The rest of the story
+// (comparison, area, figures, builder demo) lives on its own pages.
+type Chapter = 'projects' | 'services' | 'process' | 'faq';
+const chapters: Chapter[] = ['projects', 'services', 'process', 'faq'];
 const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
 ---
 <BaseLayout intro lang={lang} title={t('home.seo_title')} description={t('site.description')} alternates={routes.home}>
@@ -52,13 +37,8 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
   <Hero lang={lang} />
   <ProjectsRail lang={lang} number={n('projects')} />
   <ServicesSection lang={lang} number={n('services')} />
-  <BeforeAfter lang={lang} number={n('compare')} />
-  <WhyServiceArea lang={lang} number={n('about')} />
-  <StatsStrip lang={lang} />
-  <Testimonials lang={lang} number={n('testimonials')} />
   <Process lang={lang} number={n('process')} />
-  <PageBuilder lang={lang} number={n('proof')} />
-  <FaqGuides lang={lang} number={n('faq')} />
+  <FaqGuides lang={lang} number={n('faq')} showGuides={false} />
   <ClosingCta
     id="contacto"
     eyebrow={t('closing.eyebrow')}

@@ -10,8 +10,10 @@ interface Props {
   lang: Lang;
   /** Position in the home page, set by HomeView. */
   number: string;
+  /** The guides preview is left out of the home page to keep it quiet. */
+  showGuides?: boolean;
 }
-const { lang, number } = Astro.props;
+const { lang, number, showGuides = true } = Astro.props;
 const t = useTranslations(lang);
 const items = faq[lang];
 const guides = (await getGuides(lang)).slice(0, 3);
@@ -22,11 +24,15 @@ const guides = (await getGuides(lang)).slice(0, 3);
   <h2 id="faq_title" class="section_title faq_title" data-reveal data-i="1">{t('faq.title')}</h2>
   <FaqPanel items={items} />
 
-  <div class="guides_head">
-    <h3>{t('guides.preview_title')}</h3>
-    <a href={routes.guides[lang]}>{t('guides.see_all')}</a>
-  </div>
-  <GuideCards guides={guides} />
+  {showGuides && (
+    <>
+      <div class="guides_head">
+        <h3>{t('guides.preview_title')}</h3>
+        <a href={routes.guides[lang]}>{t('guides.see_all')}</a>
+      </div>
+      <GuideCards guides={guides} />
+    </>
+  )}
 </section>
 
 <style>

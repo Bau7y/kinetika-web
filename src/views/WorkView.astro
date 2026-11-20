@@ -14,7 +14,6 @@ import WaitlistForm from '../components/work/WaitlistForm.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/structured_data';
 import Faq from '../components/ui/Faq.astro';
-import Chips from '../components/ui/Chips.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
 import { render } from 'astro:content';
 import { getProjects, getWork, type Work } from '../data/work';
@@ -87,7 +86,6 @@ const crumbs = [
         <li data-reveal data-i="1"><h3 class="eyebrow">{t('case.solution')}</h3><p>{data.case.solution}</p></li>
         <li data-reveal data-i="2" class="work_case_result"><h3 class="eyebrow">{t('case.result')}</h3><p>{data.case.result}</p></li>
       </ol>
-      <Chips items={data.case.tags} label={t('case.tags')} class="work_tags" />
       {data.case.milestones.length > 0 && (
         <ol role="list" class="work_milestones" aria-label={t('case.milestones')}>
           {data.case.milestones.map((m) => (
@@ -231,7 +229,8 @@ const crumbs = [
     align-content: start;
     gap: 12px;
     padding: clamp(20px, 3vw, 32px);
-    background: var(--color_surface);
+    /* Same as the page: the 1px grid gap shows the container color as a divider */
+    background: var(--color_bg);
   }
 
   .work_case_steps p {
@@ -240,10 +239,6 @@ const crumbs = [
 
   .work_case_steps .work_case_result p {
     color: var(--color_text);
-  }
-
-  .work_case :global(.work_tags) {
-    margin-top: var(--space_md);
   }
 
 
@@ -279,7 +274,6 @@ const crumbs = [
     padding: 24px;
     border: 1px solid var(--color_line);
     border-radius: var(--radius_xl);
-    background: var(--color_surface);
     color: var(--color_text_secondary);
     text-decoration: none;
     transition: border-color var(--duration_fast) ease;
@@ -479,7 +473,6 @@ const crumbs = [
   .work_highlights li {
     padding: 28px;
     border-radius: var(--radius_xl);
-    background: var(--color_raised);
     border: 1px solid var(--color_line);
   }
 
