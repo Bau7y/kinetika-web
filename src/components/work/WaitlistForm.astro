@@ -14,7 +14,7 @@ interface Props {
 }
 const { lang, product, privacyHref } = Astro.props;
 const t = useTranslations(lang);
-const errorKeys = ['email_required', 'email_invalid', 'email_unreachable', 'firm_max', 'consent_required', 'rate_limited', 'captcha_failed', 'offensive', 'generic'] as const;
+const errorKeys = ['email_required', 'email_invalid', 'email_unreachable', 'firm_max', 'consent_required', 'rate_limited', 'captcha_failed', 'offensive', 'generic', 'network'] as const;
 const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiKey)]));
 ---
 <section id="lista-de-espera" class="section section_band" aria-labelledby="waitlist_title">

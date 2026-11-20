@@ -56,6 +56,8 @@ const es = {
   'not_found.title': 'Esta página no existe',
   'not_found.text': 'Puede que el enlace esté mal escrito o que la página se haya movido.',
   'not_found.home': 'Volver al inicio',
+  'server_error.title': 'Algo salió mal de nuestro lado',
+  'server_error.text': 'No fue su culpa. Intente de nuevo en unos minutos o escríbanos desde la página de contacto.',
   'work.cta_quote': 'Cotizar mi proyecto',
   'work.cta_live': 'Ver el sitio en producción',
   'work.cta_waitlist': 'Unirme a la lista de espera',
@@ -244,8 +246,9 @@ const es = {
   'error.consent_required': 'Necesitamos su autorización para usar estos datos.',
   'error.rate_limited': 'Recibimos varios mensajes desde su conexión. Pruebe de nuevo en una hora.',
   'error.captcha_failed': 'No pudimos verificar que no es un robot. Recargue la página e intente de nuevo.',
-  'error.offensive': 'Su mensaje tiene lenguaje ofensivo. Reescribilo, por favor.',
+  'error.offensive': 'Su mensaje tiene lenguaje ofensivo. Reescríbalo, por favor.',
   'error.generic': 'No pudimos enviar el mensaje. Intente de nuevo en unos minutos.',
+  'error.network': 'Parece que no hay conexión. Revise su internet e intente de nuevo.',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -299,6 +302,8 @@ const en: Strings = {
   'not_found.title': 'This page does not exist',
   'not_found.text': 'The link may be mistyped or the page may have moved.',
   'not_found.home': 'Back to home',
+  'server_error.title': 'Something went wrong on our side',
+  'server_error.text': 'It was not your fault. Try again in a few minutes or write to us from the contact page.',
   'work.cta_quote': 'Get a quote',
   'work.cta_live': 'Visit the live site',
   'work.cta_waitlist': 'Join the waitlist',
@@ -489,6 +494,7 @@ const en: Strings = {
   'error.captcha_failed': 'We could not verify you are not a robot. Reload the page and try again.',
   'error.offensive': 'Your message contains offensive language. Please rewrite it.',
   'error.generic': 'We could not send the message. Please try again in a few minutes.',
+  'error.network': 'It looks like you are offline. Check your connection and try again.',
 };
 
 export const ui = { es, en } as const;
