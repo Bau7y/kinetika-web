@@ -61,5 +61,4 @@ case:
   problem: "Firms collect each client’s documents by email and WhatsApp, track deadlines in Excel sheets and check records by hand before filing."
   solution: "A portal to receive documents, a client portfolio with a deadline calendar and a review of findings before filing with Hacienda. It starts by importing the firm’s Excel file."
   result: "Waitlist open. The demo already shows the whole flow."
-  tags: ["Document portal", "Deadline calendar", "Excel import"]
 ---

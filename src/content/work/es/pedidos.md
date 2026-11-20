@@ -59,5 +59,4 @@ case:
   problem: "Los pedidos llegan por WhatsApp repartidos en varios mensajes; precios y disponibilidad se responden uno por uno y en la cocina se anotan a mano."
   solution: "Un menú en línea donde el cliente arma su pedido y un panel de cocina donde cada orden entra con hora, total y estado."
   result: "En desarrollo. La demo ya funciona y buscamos restaurantes de la zona para probarlo."
-  tags: ["Menú en línea", "Panel de cocina", "Estados de pedido"]
 ---

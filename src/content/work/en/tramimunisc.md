@@ -60,5 +60,4 @@ case:
   problem: "Declaring a property, requesting an exemption or getting a business license means finding out the requirements, filling in forms and going back to the municipality several times."
   solution: "A site with a guide for each procedure and a contact form that validates the data and filters spam, so every request is clear from the start."
   result: "Live at tramimunisc.com."
-  tags: ["Procedure guides", "Validated forms", "Anti-spam", "SEO"]
 ---

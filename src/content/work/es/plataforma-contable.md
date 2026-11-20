@@ -61,5 +61,4 @@ case:
   problem: "Los despachos reúnen los documentos de cada cliente por correo y WhatsApp, llevan los vencimientos en hojas de Excel y revisan los registros a mano antes de declarar."
   solution: "Un portal para recibir documentos, una cartera de clientes con calendario de obligaciones y una revisión de hallazgos antes de declarar ante Hacienda. Empieza importando el Excel del despacho."
   result: "Lista de espera abierta. La demo ya muestra el flujo completo."
-  tags: ["Portal de documentos", "Calendario de obligaciones", "Importar Excel"]
 ---

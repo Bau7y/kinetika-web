@@ -60,5 +60,4 @@ case:
   problem: "Declarar una propiedad, pedir una exoneración o sacar una patente obliga a averiguar requisitos, llenar formularios y volver varias veces a la municipalidad."
   solution: "Un sitio con guías por trámite y un formulario de contacto que valida los datos y filtra el spam, para que cada consulta llegue clara desde el inicio."
   result: "En producción en tramimunisc.com."
-  tags: ["Guías por trámite", "Formularios validados", "Anti-spam", "SEO"]
 ---

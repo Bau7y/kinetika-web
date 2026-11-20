@@ -59,5 +59,4 @@ case:
   problem: "Orders arrive on WhatsApp split across several messages; prices and availability are answered one by one and the kitchen writes orders down by hand."
   solution: "An online menu where customers build their order and a kitchen panel where each order arrives with its time, total and status."
   result: "In development. The demo already works and we are looking for local restaurants to try it."
-  tags: ["Online menu", "Kitchen panel", "Order status"]
 ---
