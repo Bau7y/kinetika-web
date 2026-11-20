@@ -260,11 +260,11 @@ main:focus {
   justify-content: center;
   gap: 10px;
   min-height: 48px;
-  padding-inline: 1.25rem;
-  border-radius: var(--radius_md);
+  padding-inline: 1.5rem;
+  border-radius: var(--radius_full);
   border: 1px solid transparent;
   font-size: var(--text_base);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
