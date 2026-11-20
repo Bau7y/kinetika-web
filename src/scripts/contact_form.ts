@@ -78,6 +78,8 @@ export function initContactForm(form: HTMLFormElement, send: QuoteSender) {
       resetCaptcha();
       return showErrors({ [fieldFor(code)]: code });
     }
+    // A page of its own gives the conversion a URL to measure
+    if (form.dataset.thanksHref) return location.assign(form.dataset.thanksHref);
     if (!done) return;
     form.hidden = true;
     done.hidden = false;
