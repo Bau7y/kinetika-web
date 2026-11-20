@@ -6,7 +6,7 @@ product: pedidos
 title: Cómo pasar los pedidos de WhatsApp a un sistema
 seo_title: Cómo pasar los pedidos de WhatsApp a un sistema en su restaurante
 meta_description: Qué cambia en la cocina, en la caja y para sus clientes cuando los pedidos dejan el chat de WhatsApp y entran a un sistema de pedidos en línea.
-summary: Empezá por el menú, mantené WhatsApp como canal de aviso y mové solo la toma del pedido al sistema. Así la cocina ve cada pedido con estado y nadie se pierde en el chat.
+summary: Empiece por el menú, mantenga WhatsApp como canal de aviso y mueva solo la toma del pedido al sistema. Así la cocina ve cada pedido con estado y nadie se pierde en el chat.
 updated: 2026-11-17
 faq:
   - q: "¿Tengo que dejar de usar WhatsApp?"

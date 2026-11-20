@@ -13,7 +13,7 @@ audience: Restaurantes y sodas de San Carlos
 updated: 2026-11-17
 demo:
   title: Haga un pedido y vea cómo llega a la cocina.
-  text: Agregá platos, enviá el pedido y cambiale el estado desde el panel, como lo haría su equipo.
+  text: Agregue platos, envíe el pedido y cámbiele el estado desde el panel, como lo haría su equipo.
 highlights:
   title: Lo que va a resolver.
   items:
