@@ -6,7 +6,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
-import Chips from '../components/ui/Chips.astro';
 import BeforeAfter from '../components/sections/BeforeAfter.astro';
 import PageBuilder from '../components/sections/PageBuilder.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
@@ -20,7 +19,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const services = await getServices(lang);
-const capabilities = t('services.capabilities').split('|');
 const crumbs = [
   { name: t('nav.home'), href: routes.home[lang] },
   { name: t('nav.solutions'), href: routes.solutions[lang] },
@@ -40,7 +38,6 @@ const crumbs = [
       <Breadcrumbs lang={lang} items={crumbs} />
       <h1 id="solutions_title" class="solutions_title">{t('solutions.title')}</h1>
       <p class="lede">{t('solutions.lede')}</p>
-      <Chips items={capabilities} label={t('services.capabilities_label')} />
 
       <h2 class="solutions_list_title">{t('solutions.list_title')}</h2>
       <ul role="list" class="solutions_grid">
