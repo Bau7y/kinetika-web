@@ -38,7 +38,7 @@ const n = (key: Chapter) => String(chapters.indexOf(key) + 1).padStart(2, '0');
   <ProjectsRail lang={lang} number={n('projects')} />
   <ServicesSection lang={lang} number={n('services')} />
   <Process lang={lang} number={n('process')} />
-  <FaqGuides lang={lang} number={n('faq')} />
+  <FaqGuides lang={lang} number={n('faq')} showGuides={false} />
   <ClosingCta
     id="contacto"
     eyebrow={t('closing.eyebrow')}

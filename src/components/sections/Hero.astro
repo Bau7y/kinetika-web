@@ -15,7 +15,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const capabilities = t('services.capabilities').split('|');
 // The lede appears word by word (secondary text only: the h1 paints at once)
 const words = t('hero.lede').split(' ');
 const anchor = (id: string) => homeAnchor(lang, id);
@@ -41,24 +40,18 @@ const anchor = (id: string) => homeAnchor(lang, id);
       <Button href={routes.quote[lang]} arrow>{t('nav.quote')}</Button>
       <Button href={anchor('proyectos')} variant="ghost">{t('hero.cta_secondary')}</Button>
     </div>
-    <a href={anchor('proyectos')} class="hero_scroll hero_in" data-i="3">
-      <span>{t('hero.scroll_a')}</span>
-      <span class="hero_mouse" aria-hidden="true"><span></span></span>
-      <span>{t('hero.scroll_b')}</span>
-    </a>
   </div>
 
-  <!-- What we build, as a quiet marquee. The second copy only fills the loop. -->
-  <div class="hero_strip hero_in" data-i="4">
-    <div class="hero_marquee">
-      <ul role="list" class="hero_marquee_track" aria-label={t('services.capabilities_label')}>
-        {capabilities.map((c) => <li>{c}</li>)}
-      </ul>
-      <ul role="list" class="hero_marquee_track" aria-hidden="true">
-        {capabilities.map((c) => <li>{c}</li>)}
-      </ul>
-    </div>
-  </div>
+  <!-- The Kinetika K, large and quiet: three glass planes crossed by a beam -->
+  <svg class="hero_mark hero_in" data-i="3" aria-hidden="true" focusable="false" viewBox="0 0 100 100">
+    <g class="hero_mark_planes">
+      <polygon points="26,8 40,8 30,92 16,92" />
+      <polygon points="40,50 72,8 90,8 52,58" />
+      <polygon points="47,53 58,45 86,92 69,92" />
+    </g>
+    <line class="hero_mark_beam" x1="2" y1="80" x2="98" y2="22" />
+  </svg>
+
 </section>
 
 <script>
@@ -114,15 +107,15 @@ const anchor = (id: string) => homeAnchor(lang, id);
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding-block: var(--space_lg) var(--space_2xl);
-    text-align: center;
+    text-align: left;
   }
 
   /* What and where, in words search engines and assistants read first */
   .hero_title {
-    max-width: 1040px;
+    max-width: 11em;
     font-size: var(--text_display);
     font-weight: 500;
     line-height: 1.04;
@@ -143,163 +136,44 @@ const anchor = (id: string) => homeAnchor(lang, id);
   .hero_actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 12px;
     margin-top: 36px;
   }
 
-  .hero_scroll {
-    display: none;
-    align-items: center;
-    gap: 16px;
-    margin-top: var(--space_xl);
-    font-size: var(--text_sm);
-    color: var(--color_text_muted);
-    text-decoration: none;
+  /* The K: outline only, so it reads as light on glass, not as a logo sticker */
+  .hero_mark {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    right: -6vw;
+    width: min(88vw, 640px);
+    height: auto;
+    translate: 0 -44%;
+    opacity: 0.22;
+    pointer-events: none;
   }
 
-  .hero_scroll::before,
-  .hero_scroll::after {
-    content: '';
-    order: 1;
-    width: clamp(40px, 12vw, 160px);
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color_line_strong));
+  .hero_mark_planes polygon {
+    fill: rgb(150 190 255 / 0.07);
+    stroke: rgb(200 220 255 / 0.55);
+    stroke-width: 1.25px;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
   }
 
-  .hero_scroll::after {
-    order: 3;
-    background: linear-gradient(90deg, var(--color_line_strong), transparent);
+  .hero_mark_beam {
+    stroke: var(--color_accent_text);
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 0 6px var(--color_accent));
   }
 
-  .hero_scroll > :first-child {
-    order: 0;
-  }
-
-  .hero_mouse {
-    order: 2;
-    display: grid;
-    justify-items: center;
-    width: 18px;
-    height: 28px;
-    padding-top: 5px;
-    border: 1.5px solid var(--color_text_secondary);
-    border-radius: 10px;
-  }
-
-  .hero_mouse span {
-    width: 2px;
-    height: 6px;
-    border-radius: 2px;
-    background: var(--color_text);
-  }
-
-  .hero_scroll > :last-child {
-    order: 4;
-  }
-
-  @media (min-width: 900px) and (hover: hover) {
-    .hero_scroll {
-      display: inline-flex;
-    }
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .hero_mouse span {
-      animation: hero_wheel 1.8s var(--ease_in_out) infinite;
-    }
-  }
-
-  @keyframes hero_wheel {
-    0%,
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    60% {
-      transform: translateY(8px);
-      opacity: 0;
-    }
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .hero_scroll:hover {
-      color: var(--color_text);
-    }
-  }
-
-  .hero_strip {
-    border-top: 1px solid var(--color_line);
-    background: rgb(7 11 20 / 0.6);
-  }
-
-  /* Marquee: two identical tracks slide by their own width (transform only) */
-  .hero_marquee {
-    display: flex;
-    overflow: hidden;
-    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-  }
-
-  .hero_marquee_track {
-    flex: none;
-    display: flex;
-    gap: 48px;
-    padding: 22px 24px;
-    font-size: var(--text_md);
-    font-weight: 500;
-    color: var(--color_text_muted);
-    white-space: nowrap;
-  }
-
-  .hero_marquee_track li::before {
-    content: '✦';
-    margin-right: 48px;
-    color: var(--color_line_strong);
-  }
-
-  .hero_marquee_track li:first-child::before {
-    content: none;
-  }
-
-  .hero_marquee_track li:first-child {
-    margin-left: 0;
-  }
-
-  .hero_marquee_track + .hero_marquee_track li:first-child::before {
-    content: '✦';
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .hero_marquee_track {
-      animation: hero_marquee 40s linear infinite;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      .hero_marquee:hover .hero_marquee_track {
-        animation-play-state: paused;
-      }
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero_marquee {
-      justify-content: center;
-    }
-
-    .hero_marquee_track {
-      flex-wrap: wrap;
-      justify-content: center;
-      white-space: normal;
-    }
-
-    .hero_marquee_track[aria-hidden='true'] {
-      display: none;
-    }
-  }
-
-  @keyframes hero_marquee {
-    to {
-      transform: translateX(-100%);
+  @media (min-width: 900px) {
+    .hero_mark {
+      right: clamp(2rem, 6vw, 8rem);
+      width: min(34vw, 500px);
+      opacity: 0.85;
     }
   }
 
