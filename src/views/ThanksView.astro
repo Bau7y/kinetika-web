@@ -1,0 +1,51 @@
+---
+/** Shown after a quote is sent, in both languages. Not indexed. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import { routes, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<BaseLayout lang={lang} title={t('contact.done_title')} noindex description={t('quote.done')} alternates={routes.thanks}>
+  <section class="thanks container" aria-labelledby="thanks_title">
+    <h1 id="thanks_title">{t('contact.done_title')}</h1>
+    <p class="lede">{t('quote.done')}</p>
+    <p class="thanks_next">{t('thanks.next')}</p>
+    <div class="thanks_actions">
+      <Button href={routes.howWeWork[lang]} arrow>{t('thanks.how')}</Button>
+      <Button href={routes.projectsBase[lang]} variant="ghost">{t('hero.cta_secondary')}</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .thanks {
+    display: grid;
+    justify-items: start;
+    gap: var(--space_md);
+    min-height: 80dvh;
+    align-content: center;
+    padding-top: var(--navbar_h);
+  }
+
+  .thanks h1 {
+    font-size: var(--text_h2);
+    font-weight: 500;
+    line-height: var(--leading_tight);
+    letter-spacing: var(--tracking_tight);
+  }
+
+  .thanks_next {
+    color: var(--color_text_secondary);
+  }
+
+  .thanks_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space_xs);
+  }
+</style>

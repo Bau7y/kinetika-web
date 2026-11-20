@@ -49,3 +49,5 @@ An ordering system does not replace service: it organizes the repetitive part so
 - Does the kitchen see orders on a screen or on the phone it already has?
 - Can you change prices and dishes without asking anyone for help?
 - Do they show you a demo with your own menu before you pay?
+
+This is how our [ordering system for restaurants](/en/work/ordering) works, and here is the [process automation](/en/solutions/process-automation) solution behind it.

@@ -1,0 +1,52 @@
+---
+/** Server error page for both languages: Spanish first, English below. Not indexed. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/brand/Logo.astro';
+import Button from '../components/ui/Button.astro';
+import { routes, useTranslations } from '../i18n/ui';
+
+const t = useTranslations('es');
+const tEn = useTranslations('en');
+---
+<BaseLayout lang="es" title="500" noindex description={t('server_error.text')} alternates={routes.home}>
+  <section class="server_error container" aria-labelledby="server_error_title">
+    <Logo size={64} wordmark={false} />
+    <span class="eyebrow">Error 500</span>
+    <h1 id="server_error_title">{t('server_error.title')}</h1>
+    <p class="lede">{t('server_error.text')}</p>
+    <p class="server_error_en" lang="en">{tEn('server_error.title')}. {tEn('server_error.text')}</p>
+    <div class="server_error_actions">
+      <Button href={routes.home.es} arrow>{t('not_found.home')}</Button>
+      <Button href={routes.quote.es} variant="ghost">{t('nav.quote')}</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .server_error {
+    display: grid;
+    justify-items: start;
+    gap: var(--space_md);
+    min-height: 80dvh;
+    align-content: center;
+    padding-top: var(--navbar_h);
+  }
+
+  .server_error h1 {
+    font-size: var(--text_h2);
+    font-weight: 500;
+    line-height: var(--leading_tight);
+    letter-spacing: var(--tracking_tight);
+  }
+
+  .server_error_en {
+    font-size: var(--text_sm);
+    color: var(--color_text_muted);
+  }
+
+  .server_error_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

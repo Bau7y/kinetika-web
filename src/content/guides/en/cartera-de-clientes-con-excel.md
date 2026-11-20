@@ -55,3 +55,4 @@ With **Conditional Formatting**, paint late rows red and those due in less than 
 ## When the sheet is not enough
 
 Excel works well until your clients send documents through several channels or more than one person updates the same file. That is when a portal where each client uploads their own documents helps, along with a portfolio imported straight from this same sheet.
+ See the [accounting platform](/en/work/accounting-platform) we are building or how [process automation](/en/solutions/process-automation) works.

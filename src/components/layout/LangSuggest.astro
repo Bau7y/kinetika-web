@@ -62,7 +62,7 @@ const t = useTranslations(target);
   .lang_suggest {
     position: fixed;
     right: var(--container_px);
-    bottom: 1rem;
+    bottom: 5.5rem; /* above the fixed quote button */
     left: var(--container_px);
     z-index: var(--z_toast);
     display: flex;
@@ -112,6 +112,12 @@ const t = useTranslations(target);
     from {
       opacity: 0;
       transform: translateY(16px);
+    }
+  }
+
+  @media (min-width: 760px) {
+    .lang_suggest {
+      bottom: 1rem;
     }
   }
 

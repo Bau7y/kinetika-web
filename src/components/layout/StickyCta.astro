@@ -1,0 +1,68 @@
+---
+/**
+ * Fixed quote button for small screens. It slides in once the visitor leaves
+ * the top of the page (the navbar's `scrolled` state) and is left out of the
+ * contact page, where the form already is the call to action.
+ * Only transform and opacity animate.
+ */
+import Button from '../ui/Button.astro';
+import { routes, useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const href = routes.quote[lang];
+const onQuotePage = Astro.url.pathname.replace(/\/$/, '') === href.replace(/\/$/, '');
+---
+{!onQuotePage && (
+  <div class="sticky_cta">
+    <Button href={href} arrow>{t('nav.quote')}</Button>
+  </div>
+)}
+
+<style>
+  .sticky_cta {
+    display: none;
+  }
+
+  @media (max-width: 759px) {
+    .sticky_cta {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: var(--z_navbar);
+      display: flex;
+      padding: var(--space_xs) var(--container_px) calc(var(--space_xs) + env(safe-area-inset-bottom));
+      background: linear-gradient(to top, var(--color_bg) 55%, transparent);
+      opacity: 0;
+      transform: translateY(100%);
+      pointer-events: none;
+      transition:
+        opacity var(--duration_base) var(--ease_out),
+        transform var(--duration_base) var(--ease_out);
+    }
+
+    .sticky_cta :global(.btn) {
+      flex: 1;
+    }
+
+    :global(body:has(.navbar.scrolled):not(:has(.navbar.menu_open))) .sticky_cta {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    /* Room so the footer is not covered */
+    :global(.footer) {
+      padding-bottom: 88px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sticky_cta {
+      transition: opacity var(--duration_fast) ease;
+      transform: none;
+    }
+  }
+</style>

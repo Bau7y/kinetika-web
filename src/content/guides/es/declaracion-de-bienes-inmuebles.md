@@ -42,6 +42,6 @@ Antes de llenarlo conviene tener a mano los datos de la propiedad: número de fi
 
 ## Si quiere ayuda con el trámite
 
-TramiMuniSC, nuestro servicio en producción, acompaña la declaración: revisa los datos, llena el formulario y da seguimiento. En [tramimunisc.com](https://www.tramimunisc.com) hay guías más detalladas sobre cuánto se paga, la exoneración y qué pasa si no se declara.
+[TramiMuniSC](/experiencia/tramimunisc), nuestro servicio en producción, acompaña la declaración: revisa los datos, llena el formulario y da seguimiento. En [tramimunisc.com](https://www.tramimunisc.com) hay guías más detalladas sobre cuánto se paga, la exoneración y qué pasa si no se declara.
 
 *Esta guía es información general basada en la Ley 7509 a la fecha indicada arriba. No sustituye una resolución de la municipalidad ni una asesoría legal para su caso.*

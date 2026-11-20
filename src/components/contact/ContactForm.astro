@@ -6,7 +6,7 @@
  */
 import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 import { BUSINESS_TYPES, MESSAGE_MAX, NEEDS } from '../../data/quote_options';
-import { useTranslations, type Lang, type UiKey } from '../../i18n/ui';
+import { routes, useTranslations, type Lang, type UiKey } from '../../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -18,11 +18,11 @@ const id = 'contacto';
 
 const errorKeys = [
   'business_required', 'need_required', 'email_required', 'email_invalid', 'email_unreachable', 'message_max',
-  'consent_required', 'rate_limited', 'captcha_failed', 'offensive', 'generic',
+  'consent_required', 'rate_limited', 'captcha_failed', 'offensive', 'generic', 'network',
 ] as const;
 const errors = Object.fromEntries(errorKeys.map((k) => [k, t(`error.${k}` as UiKey)]));
 ---
-<form id={`${id}_form`} class="contact_form" novalidate aria-label={t('quote.form_label')} data-contact-form data-errors={JSON.stringify(errors)}>
+<form id={`${id}_form`} class="contact_form" novalidate aria-label={t('quote.form_label')} data-contact-form data-thanks-href={routes.thanks[lang]} data-errors={JSON.stringify(errors)}>
   <input type="hidden" name="lang" value={lang} />
   <input type="hidden" name="loaded_at" value="0" data-loaded-at />
   <!-- Honeypot: hidden from people and assistive tech; bots fill it in -->

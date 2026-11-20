@@ -52,8 +52,10 @@ export default defineConfig({
   // Astro hashes every script and style it emits, so nothing injected from
   // outside can run. Turnstile (captcha) is the only third party.
   security: isDev
-    ? {}
+    ? { checkOrigin: true }
     : {
+        // Rejects form posts whose Origin differs from the site (CSRF)
+        checkOrigin: true,
         csp: {
           directives: [
             "default-src 'self'",

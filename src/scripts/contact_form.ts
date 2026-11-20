@@ -69,7 +69,7 @@ export function initContactForm(form: HTMLFormElement, send: QuoteSender) {
     sending = true;
     submit.setAttribute('aria-disabled', 'true');
     submit.textContent = submit.dataset.sending ?? '';
-    const code = await send(data).catch(() => 'generic');
+    const code = await send(data).catch(() => (navigator.onLine ? 'generic' : 'network'));
     sending = false;
     submit.removeAttribute('aria-disabled');
     submit.textContent = submit.dataset.label ?? '';
@@ -78,6 +78,8 @@ export function initContactForm(form: HTMLFormElement, send: QuoteSender) {
       resetCaptcha();
       return showErrors({ [fieldFor(code)]: code });
     }
+    // A page of its own gives the conversion a URL to measure
+    if (form.dataset.thanksHref) return location.assign(form.dataset.thanksHref);
     if (!done) return;
     form.hidden = true;
     done.hidden = false;

@@ -56,6 +56,8 @@ const es = {
   'not_found.title': 'Esta página no existe',
   'not_found.text': 'Puede que el enlace esté mal escrito o que la página se haya movido.',
   'not_found.home': 'Volver al inicio',
+  'server_error.title': 'Algo salió mal de nuestro lado',
+  'server_error.text': 'No fue su culpa. Intente de nuevo en unos minutos o escríbanos desde la página de contacto.',
   'work.cta_quote': 'Cotizar mi proyecto',
   'work.cta_live': 'Ver el sitio en producción',
   'work.cta_waitlist': 'Unirme a la lista de espera',
@@ -214,6 +216,8 @@ const es = {
   'contact.area': 'Atendemos en persona en los {n} distritos de San Carlos y en línea en todo Costa Rica.',
   'contact.done_title': 'Recibimos su mensaje.',
   'contact.again': 'Enviar otro mensaje',
+  'thanks.next': 'Mientras tanto, conozca cómo trabajamos o vea los proyectos.',
+  'thanks.how': 'Cómo trabajamos',
   'quote.meta': 'Cuéntenos qué proceso quiere automatizar o qué sitio necesita. Le respondemos por correo con preguntas o una propuesta sin costo.',
   'quote.form_label': 'Cotización',
   'quote.business.restaurant': 'Restaurante o soda',
@@ -242,8 +246,9 @@ const es = {
   'error.consent_required': 'Necesitamos su autorización para usar estos datos.',
   'error.rate_limited': 'Recibimos varios mensajes desde su conexión. Pruebe de nuevo en una hora.',
   'error.captcha_failed': 'No pudimos verificar que no es un robot. Recargue la página e intente de nuevo.',
-  'error.offensive': 'Su mensaje tiene lenguaje ofensivo. Reescribilo, por favor.',
+  'error.offensive': 'Su mensaje tiene lenguaje ofensivo. Reescríbalo, por favor.',
   'error.generic': 'No pudimos enviar el mensaje. Intente de nuevo en unos minutos.',
+  'error.network': 'Parece que no hay conexión. Revise su internet e intente de nuevo.',
 } as const;
 
 type Strings = { readonly [K in keyof typeof es]: string };
@@ -297,6 +302,8 @@ const en: Strings = {
   'not_found.title': 'This page does not exist',
   'not_found.text': 'The link may be mistyped or the page may have moved.',
   'not_found.home': 'Back to home',
+  'server_error.title': 'Something went wrong on our side',
+  'server_error.text': 'It was not your fault. Try again in a few minutes or write to us from the contact page.',
   'work.cta_quote': 'Get a quote',
   'work.cta_live': 'Visit the live site',
   'work.cta_waitlist': 'Join the waitlist',
@@ -455,6 +462,8 @@ const en: Strings = {
   'contact.area': 'We meet in person in the {n} districts of San Carlos and online across Costa Rica.',
   'contact.done_title': 'We got your message.',
   'contact.again': 'Send another message',
+  'thanks.next': 'In the meantime, see how we work or browse the projects.',
+  'thanks.how': 'How we work',
   'quote.meta': 'Tell us which process you want to automate or which site you need. We reply by email with questions or a free proposal.',
   'quote.form_label': 'Quote',
   'quote.business.restaurant': 'Restaurant or diner',
@@ -485,6 +494,7 @@ const en: Strings = {
   'error.captcha_failed': 'We could not verify you are not a robot. Reload the page and try again.',
   'error.offensive': 'Your message contains offensive language. Please rewrite it.',
   'error.generic': 'We could not send the message. Please try again in a few minutes.',
+  'error.network': 'It looks like you are offline. Check your connection and try again.',
 };
 
 export const ui = { es, en } as const;

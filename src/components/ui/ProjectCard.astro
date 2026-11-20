@@ -56,7 +56,30 @@ const badge = statusBadge[project.data.status];
     background: var(--color_surface);
   }
 
+  /* Skeleton: a soft sweep under the image until it loads (transform only) */
+  .project_media::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.05) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: project_skeleton 1.4s var(--ease_in_out) infinite;
+  }
+
+  @keyframes project_skeleton {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project_media::before {
+      animation: none;
+    }
+  }
+
   .project_media :global(picture) {
+    position: relative;
     display: block;
     height: 100%;
   }

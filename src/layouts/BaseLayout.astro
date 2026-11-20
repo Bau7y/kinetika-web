@@ -6,6 +6,7 @@ import Fonts from '../components/layout/Fonts.astro';
 import NavBar from '../components/layout/NavBar.astro';
 import LangSuggest from '../components/layout/LangSuggest.astro';
 import Footer from '../components/layout/Footer.astro';
+import StickyCta from '../components/layout/StickyCta.astro';
 import SkipLink from '../components/layout/SkipLink.astro';
 import Intro from '../components/brand/Intro.astro';
 import { site } from '../data/site';
@@ -55,6 +56,8 @@ const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alterna
       </>
     )}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#070B14" />
 
     <meta property="og:type" content="website" />
@@ -81,6 +84,7 @@ const ogImageUrl = new URL(ogImagePath(inRegistry ? Astro.url.pathname : alterna
       <slot />
     </main>
     <Footer lang={lang} replayIntro={intro} />
+    <StickyCta lang={lang} />
     <LangSuggest lang={lang} altHref={alternates[otherLang]} />
     <script>
       import { initSpotlight } from '../scripts/spotlight';
