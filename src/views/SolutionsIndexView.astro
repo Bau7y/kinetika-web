@@ -7,6 +7,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
 import Chips from '../components/ui/Chips.astro';
+import BeforeAfter from '../components/sections/BeforeAfter.astro';
+import PageBuilder from '../components/sections/PageBuilder.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { getServices } from '../data/work';
 import { breadcrumbSchema, collectionPageSchema, itemListSchema } from '../lib/structured_data';
@@ -58,6 +60,9 @@ const crumbs = [
       </ul>
     </div>
   </section>
+
+  <BeforeAfter lang={lang} number="01" />
+  <PageBuilder lang={lang} number="02" />
 
   <ClosingCta
     eyebrow={t('closing.eyebrow')}

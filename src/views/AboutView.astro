@@ -8,6 +8,9 @@ import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import ProjectCard from '../components/ui/ProjectCard.astro';
+import WhyServiceArea from '../components/sections/WhyServiceArea.astro';
+import StatsStrip from '../components/sections/StatsStrip.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
 import { getProjects } from '../data/work';
 import { aboutPageSchema, breadcrumbSchema } from '../lib/structured_data';
 import { routes, useTranslations, type Lang } from '../i18n/ui';
@@ -75,6 +78,10 @@ const values = [
       </ul>
     </div>
   </section>
+
+  <WhyServiceArea lang={lang} number="01" />
+  <StatsStrip lang={lang} />
+  <Testimonials lang={lang} number="02" />
 
   <ClosingCta
     eyebrow={t('closing.eyebrow')}
