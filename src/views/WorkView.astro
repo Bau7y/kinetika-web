@@ -14,7 +14,6 @@ import WaitlistForm from '../components/work/WaitlistForm.astro';
 import JsonLd from '../components/ui/JsonLd.astro';
 import { breadcrumbSchema, faqSchema, serviceSchema } from '../lib/structured_data';
 import Faq from '../components/ui/Faq.astro';
-import Chips from '../components/ui/Chips.astro';
 import ClosingCta from '../components/ui/ClosingCta.astro';
 import { render } from 'astro:content';
 import { getProjects, getWork, type Work } from '../data/work';
@@ -87,7 +86,6 @@ const crumbs = [
         <li data-reveal data-i="1"><h3 class="eyebrow">{t('case.solution')}</h3><p>{data.case.solution}</p></li>
         <li data-reveal data-i="2" class="work_case_result"><h3 class="eyebrow">{t('case.result')}</h3><p>{data.case.result}</p></li>
       </ol>
-      <Chips items={data.case.tags} label={t('case.tags')} class="work_tags" />
       {data.case.milestones.length > 0 && (
         <ol role="list" class="work_milestones" aria-label={t('case.milestones')}>
           {data.case.milestones.map((m) => (
@@ -240,10 +238,6 @@ const crumbs = [
 
   .work_case_steps .work_case_result p {
     color: var(--color_text);
-  }
-
-  .work_case :global(.work_tags) {
-    margin-top: var(--space_md);
   }
 
 
